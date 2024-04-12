@@ -14,7 +14,7 @@
 
 int	ft_lstadd_back(t_list **lst, t_list *to_add)
 {
-	if (!lst || !to_add || *lst == NULL || to_add == *lst)
+	if (!lst || !to_add || to_add == *lst)
 		return (0);
 	to_add->next = *lst;
 	*lst = to_add;

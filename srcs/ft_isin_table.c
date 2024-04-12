@@ -10,15 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isin_table(int value, int *table, int size)
-{
-	int	i;
+#include <stdio.h>
+#include "../libft.h"
 
-	i = 0;
+int	ft_isin_table(int value, char *table)
+{
+	char	*tmp;
+	
 	if (!table)
-		return (0);
-	while (i < size && table[i])
-		if (value == table[i++])
+		return (-1);
+	tmp = table;
+	while (*tmp != '\0')
+		if (value == *tmp++)
 			return (1);
 	return (0);
 }
