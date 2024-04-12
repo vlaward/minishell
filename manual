@@ -1,0 +1,33 @@
+This is just gonna be note for what I change since the libft I pushed : 
+
+Lists :
+
+-I added a "ft_lstblast" To hae the element before the last one in a list.
+-Inverse ft_lstadd_back and ft_lstadd_front, the name were messed up for me.
+-ft_lstante return the node before the one add in parameter. If it's the first node, return the last node (like, doing a full circle).
+-In ft_lstadd_(front/back) if the lst is one element longue it would circle. I patched it.
+-In ft_strncmp, added ft_strcmp. To compare without needing the length.
+-Added "ft_isin_table" to test if a value is in a table (may change it to isin mem with void pointer instead of int).
+-Added "ft_lstnodi" to find the node at a certain index (usefull sometimes).
+
+Others :
+
+-added "ft_mapi" to do an action on all of a table elements (typically free all of a **char).
+
+To_do;
+-ft_insin_mem.
+-Secure all new fuctions.
+-find a new name for "ft_mapi" (or verify this name doesn't mean what it doesn't do). <- is in ft_strmapi.c
+
+-actually correct ft_mapi, it doesn't work ;-; it's the "void" type, I don't mean norhing but wathever. it'as annoying
+
+-Coorect ft_split, it need to have a \0 at the end of each str wich he don't have
+
+-Make all the void function into int return to make test. And secure each case (if the args used are incorecte)
+
+-Differenciate differente part of the lib to make litles ones. And then a big one :
+	->like having libft_str and libft_lst and libft_memory and merge the 3 in a libft
+	->So having 3 makes different. make str, make lst, and make meme.
+
+"THIS IS JUSTE A TEST FOR THE GIT SUBTREE"
+"and another one"
