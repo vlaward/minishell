@@ -1,0 +1,3 @@
+subtree commands : 
+	git subtree pull --prefix libft/ git@github.com:vlaward/libft.git main --squash
+	git subtree push --prefix libft/ git@github.com:vlaward/libft.git main
