@@ -1,3 +1,11 @@
 subtree commands : 
 	git subtree pull --prefix libft/ git@github.com:vlaward/libft.git main --squash
 	git subtree push --prefix libft/ git@github.com:vlaward/libft.git main
+
+git branchs : (not sure about that. Modifie stv, je coco pas nn plus)
+branchs list normalement :
+    ->main   ;   Nahla    ;   Maya
+  command :
+    git branch <name> == ajoute une branche
+    git checkout <name> == tu passe sur la branche 'name'
+    git branch --list == self explenatory
