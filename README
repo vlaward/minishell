@@ -10,6 +10,7 @@ branchs list normalement :
     git checkout <name> == tu passe sur la branche 'name'
     git branch --list == self explenatory
     git merge <branch> == merge la branche "branch" dans la branche actuel (souvent main du coup)
- 
+     	
+
 notes :
 -> cat Makefile > txt ; cat txt = le prompt n'est pas a la ligne
