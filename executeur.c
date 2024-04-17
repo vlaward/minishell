@@ -27,6 +27,63 @@ int	pipe_handler(t_list *list)
 	return (1);
 }
 
+int	out_handler(t_list *list)
+{
+	int		status;
+
+	status = 0;
+	if (!ft_strcmp(list->content, "exec"))
+	{
+		if (!fork())
+		{
+			dup2(open("txt", O_WRONLY | O_CREAT), STDOUT_FILENO);
+			execute_wpath(list->next->content);
+		}
+		else
+			while( wait(&status) > 0);
+	}
+	//le close a metre la 
+
+}
+
+int	in_handler(t_list *list)
+{
+	int		status;
+
+	status = 0;
+	if (!ft_strcmp(list->content, "exec"))
+	{
+		if (!fork())
+		{
+			dup2(open("txt", O_RDONLY), STDIN_FILENO);//fd in other line so test open fail
+			execute_wpath(list->next->content);
+		}
+		else
+			while( wait(&status) > 0);
+	}
+	//le close a metre la 
+
+}
+
+int	append_handler(t_list *list)
+{
+	int		status;
+
+	status = 0;
+	if (!ft_strcmp(list->content, "exec"))
+	{
+		if (!fork())
+		{
+			dup2(open("txt", O_WRONLY | O_CREAT | O_APPEND), STDOUT_FILENO);
+			execute_wpath(list->next->content);
+		}
+		else
+			while( wait(&status) > 0);
+	}
+	//le close a metre la 
+
+}
+
 t_stof	*str_to_func()
 {
 	t_stof	*ret;
@@ -35,13 +92,13 @@ t_stof	*str_to_func()
 	ret[0].str = "|";
 	ret[0].func = &pipe_handler;
 	ret[1].str = "<";
-	ret[1].func = &pipe_handler;
+	ret[1].func = &in_handler;
 	ret[2].str = ">";
-	ret[2].func = &pipe_handler;
+	ret[2].func = &out_handler;
 	ret[3].str = "<<";
 	ret[3].func = &pipe_handler;
 	ret[4].str = ">>";
-	ret[4].func = &pipe_handler;
+	ret[4].func = &append_handler;
 	ret[5].str = NULL;
 	ret[5].func = NULL;
 	return (ret);
@@ -73,7 +130,7 @@ int	executeur(t_list *list)
 	}
 	else
 	{
-		stof->func(list);
+		stof->func(list->next);
 	}
 	return (1);
 }

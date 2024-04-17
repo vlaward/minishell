@@ -4,6 +4,24 @@
 //au cas ou, les apostrophes ca existe... JK'ai l'air d'avoir oublier... ;-;
 //puis les >> << mais ca j'ai pas zappe X))
 
+char	*parse_cpy(char *line)
+{
+	char	*ret;
+	int		i;
+
+	i = 0;
+	while (line[i] != ' ' && line[i] != '\0' && (i) <= 2)
+		i++;
+	ret = malloc(sizeof(char) * (i + 1));
+	ret[i--] = '\0';
+	while (i >= 0)
+	{
+		ret[i] = line[i];
+		line[i--] = '\0';
+	}
+	return (ret);
+}
+
 char	*sort_parse(char *signe, t_list **list, char *line)
 {
 	char	*content;
@@ -13,9 +31,7 @@ char	*sort_parse(char *signe, t_list **list, char *line)
 	content = signe;
 	if (*signe != '\0')
 	{
-		content = malloc(sizeof(char) * 2);
-		content[1] = '\0';
-		content[0] = *signe;
+		content = parse_cpy(signe);
 		ft_lstadd_back(list, ft_lstnew(content));
 		ft_lstadd_front(list, ft_lstnew(ft_strdup("exec")));
 		//ajouter le "exe"
