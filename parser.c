@@ -4,22 +4,33 @@
 //au cas ou, les apostrophes ca existe... JK'ai l'air d'avoir oublier... ;-;
 //puis les >> << mais ca j'ai pas zappe X))
 
-char	*parse_cpy(char *line)
-{
-	char	*ret;
-	int		i;
+char	*surely_an_exe(char	*signe, t_list **list)
+{//je passe ici un truc pour verifier si il  y a des double pipe, 
+	char	*content;
+	int		nbr_signe;
 
-	i = 0;
-	while (line[i] != ' ' && line[i] != '\0' && (i) <= 2)
-		i++;
-	ret = malloc(sizeof(char) * (i + 1));
-	ret[i--] = '\0';
-	while (i >= 0)
+	content = signe;
+	if (*signe != '\0')
 	{
-		ret[i] = line[i];
-		line[i--] = '\0';
+		nbr_signe = 2;
+		if (signe[1] == '>' || signe[1] == '<')
+			nbr_signe = 3;
+		content = malloc(sizeof(char) * nbr_signe);
+		if (!content)
+			return (NULL);
+		nbr_signe = 0;
+		while (signe[nbr_signe] == *signe && nbr_signe < 3)//0, 1 et 2 
+			content[nbr_signe] = signe[nbr_signe++];
+		if (nbr_signe > 2)
+			return (free(content), printf("icit ? \n"),  NULL);
+		ft_lstadd_back(list, ft_lstnew(content));
+		ft_lstadd_front(list, ft_lstnew(ft_strdup("exec")));
 	}
-	return (ret);
+	if (!*list)
+		(ft_lstadd_front(list, ft_lstnew(ft_strdup("exec"))));
+	printf("content : %s\n", content);
+	*signe = '\0';//pour le split
+	return (content);
 }
 
 char	*sort_parse(char *signe, t_list **list, char *line)
@@ -28,24 +39,17 @@ char	*sort_parse(char *signe, t_list **list, char *line)
 	char	**args;
 	int		i;
 
-	content = signe;
-	if (*signe != '\0')
-	{
-		content = parse_cpy(signe);
-		ft_lstadd_back(list, ft_lstnew(content));
-		ft_lstadd_front(list, ft_lstnew(ft_strdup("exec")));
-		//ajouter le "exe"
-	}
-	if (!*list)
-		(ft_lstadd_front(list, ft_lstnew(ft_strdup("exec"))));
-	*signe = '\0';
+	if (signe == line)// dans le cas ou line commence ou finis avec un signe. donc que le cote droit ou gauche n'existe pas.
+		return (NULL);//free t_list with a func here
+	content = surely_an_exe(signe, list);
 	args = ft_split(line, ' ');
 	//add environmement variables and guillemets
 	i = 0;
 	ft_lstadd_front(list, ft_lstnew(args));
-	if (content != signe)
+	if (content != signe)//rajoute le prochain type d'entree. on ne peus pas tester SIGNE != \0 a cause du split (qui nous demande de passer *signe a \0)
 		ft_lstadd_front(list, ft_lstnew(ft_strdup("file")));
-	if (content != signe && content[0] == '|')
+	printf("content : %s\n", content);
+	if (content)
 		ft_lstlast(*list)->content = ft_strdup("exec");
 	while (*line != '\0')
 		line++;
@@ -65,10 +69,11 @@ t_list	*parse(char *line)
 	{
 		if (ft_isin_table(*tmp, "|><"))
 			line = sort_parse(tmp, &ret, line);
+		if (!line)
+			return (free(tmpLine), NULL);
 		tmp++;
 	}
-	sort_parse(tmp, &ret, line);
-
+	sort_parse(tmp, &ret, line);//no need to protect it. If failed, the ret will be null
 	free(tmpLine);
 	return (ret);
 }
