@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+const PATH_MAX = 10
+
 int	main()
 {
 	char	*line;
