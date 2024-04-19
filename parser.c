@@ -22,8 +22,11 @@ char	*surely_an_exe(char	*signe, t_list **list)
 		nbr_signe = 0;
 		while (signe[nbr_signe] == *signe && nbr_signe < 3)//0, 1 et 2 
 		{
-			printf("je comprends pas : %c\n", signe[nbr_signe]);
-			content[nbr_signe] = signe[nbr_signe++];
+			printf("je comprends pas : %c : %c : %d\n", content[0], content[1], nbr_signe);
+			content[nbr_signe] = signe[nbr_signe];
+			nbr_signe++;
+			printf("je comprends pas : %c : %c : %d\n", content[0], content[1], nbr_signe);
+			printf("alors que la contenus = %s\n", content);
 		}
 		if (nbr_signe > 2)
 			return (free(content), printf("icit ? \n"),  NULL);
@@ -31,9 +34,9 @@ char	*surely_an_exe(char	*signe, t_list **list)
 		ft_lstadd_front(list, ft_lstnew(ft_strdup("exec")));
 	}
 	if (!*list)
-		(ft_lstadd_front(list, ft_lstnew(ft_strdup("exec"))));
+		(ft_lstadd_front(list, ft_lstnew(ft_strdup("exec"))), printf("tu grand mama \n"));
 	*signe = '\0';//pour le split
-	return (content);
+	return (content); 
 }
 
 char	*sort_parse(char *signe, t_list **list, char *line)
@@ -51,8 +54,7 @@ char	*sort_parse(char *signe, t_list **list, char *line)
 	ft_lstadd_front(list, ft_lstnew(args));
 	if (content != signe)//rajoute le prochain type d'entree. on ne peus pas tester SIGNE != \0 a cause du split (qui nous demande de passer *signe a \0)
 		ft_lstadd_front(list, ft_lstnew(ft_strdup("file")));
-	printf("content : %s\n", content);
-	if (content)
+	if (*content)
 		ft_lstlast(*list)->content = ft_strdup("exec");
 	while (*line != '\0')
 		line++;
@@ -74,17 +76,19 @@ t_list	*parse(char *line)
 			line = sort_parse(tmp, &ret, line);
 		if (!line)
 			return (free(tmpLine), NULL);
-		if (*tmp == '\'' && tmp++)
-			while (*tmp != '\'')
-				if (*tmp++ == '\0')
+		if (*tmp == '\'')
+			while (++*tmp != '\'')
+				if (*tmp == '\0')
 					return (NULL);
 		else if (*tmp++ == '\"')
 			while (*tmp != '\"')
 				if (*tmp++ == '\0')
 					return (NULL);
+		tmp++;
 		printf(": %d :", tmp - tmpLine);
 	}
 	sort_parse(tmp, &ret, line);//no need to protect it. If failed, the ret will be null
 	free(tmpLine);
+	printf("le contenus est sense etre : %s\n", ret->content);
 	return (ret);
 }

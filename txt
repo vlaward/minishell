@@ -7,12 +7,13 @@ libft
 main.c
 minishell
 minishell.h
+objs
 parser.c
 parser.o
 test.c
 test.sh
 txt
- --prefix libft/ git@github.com:vlaward/libft.git main
+efix libft/ git@github.com:vlaward/libft.git main
 
 git branchs : (not sure about that. Modifie stv, je coco pas nn plus)
 branchs list normalement :

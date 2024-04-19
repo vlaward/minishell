@@ -32,11 +32,12 @@ int	out_handler(t_list *list)
 	int		status;
 
 	status = 0;
+	printf("ca vas la dedans\n");
 	if (!ft_strcmp(list->content, "exec"))
 	{
 		if (!fork())
 		{
-			dup2(open("txt", O_WRONLY | O_CREAT), STDOUT_FILENO);
+			dup2(open("txt", O_WRONLY), STDOUT_FILENO);
 			execute_wpath(list->next->content);
 		}
 		else
@@ -113,7 +114,8 @@ int	executeur(t_list *list)
 	stof = str_to_func();
 	while (stof->str != NULL)
 	{
-		if (!ft_strcmp(stof->str, list->content))
+		printf("icit nous avons : %d : %s : %s\n", ft_strlen(stof->str), stof->str, list->content);
+		if (!ft_strncmp(stof->str, list->content, ft_strlen(stof->str)))
 				break;
 		stof++;
 	}
