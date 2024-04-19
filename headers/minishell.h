@@ -8,7 +8,7 @@
 #include <readline/history.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 typedef struct s_stof
 {
