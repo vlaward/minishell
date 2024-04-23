@@ -5,18 +5,15 @@
             "label": "C/C++: gcc build active file",
             "command": "/usr/bin/gcc",
             "args": [
-                "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
+				"minishell",
+                "parser.o",
+				"executeur.o",
+				"-lreadline",
+				"libft/libft.a"
+			],
             "group": {
                 "kind": "build",
                 "isDefault": true

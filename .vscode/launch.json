@@ -1,0 +1,18 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "DBG minishell",
+			"type": "cppdbg",
+			"request": "launch",
+			//In oder to link with gdbserver, set another program to cheat vscode
+			"program": "${workspaceFolder}/minishell",
+			"args": [],
+			"cwd": "${workspaceFolder}"
+		}
+	]
+
+}

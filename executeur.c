@@ -30,14 +30,19 @@ int	pipe_handler(t_list *list)
 int	out_handler(t_list *list)
 {
 	int		status;
+	int		fd;
+	int		flags;
 
 	status = 0;
-	printf("ca vas la dedans\n");
+	flags = O_WRONLY | O_CREAT | O_TRUNC;
 	if (!ft_strcmp(list->content, "exec"))
 	{
 		if (!fork())
 		{
-			dup2(open("txt", O_WRONLY), STDOUT_FILENO);
+			fd = open("test", flags, S_IRWXO);//concretement la ca gere les authorisation etc... avec un open moded
+			if (fd == -1)
+				return (printf("wait a minute... something aint right\n"));
+			dup2(fd, STDOUT_FILENO);//maybe protect the dup ? Donno how it could fail but still
 			execute_wpath(list->next->content);
 		}
 		else
@@ -50,13 +55,19 @@ int	out_handler(t_list *list)
 int	in_handler(t_list *list)
 {
 	int		status;
+	int		fd;
+	int		falgs;
 
+	falgs = O_RDONLY;
 	status = 0;
 	if (!ft_strcmp(list->content, "exec"))
 	{
 		if (!fork())
 		{
-			dup2(open("txt", O_RDONLY), STDIN_FILENO);//fd in other line so test open fail
+			fd = open("test", flags);//concretement la ca gere les authorisation etc... avec un open moded
+			if (fd == -1)
+				return (printf("wait a minute... something aint right\n"));
+			dup2(fd, STDIN_FILENO);//fd in other line so test open fail
 			execute_wpath(list->next->content);
 		}
 		else
@@ -69,13 +80,20 @@ int	in_handler(t_list *list)
 int	append_handler(t_list *list)
 {
 	int		status;
+	int		fd;
+	int		falgs;
 
 	status = 0;
+	falgs = O_WRONLY | O_CREAT | O_APPEND;
+	printf("e pourtant !!\n");
 	if (!ft_strcmp(list->content, "exec"))
 	{
 		if (!fork())
 		{
-			dup2(open("txt", O_WRONLY | O_CREAT | O_APPEND), STDOUT_FILENO);
+			fd = open("test", flags, S_IRWXO);//concretement la ca gere les authorisation etc... avec un open moded
+			if (fd == -1)
+				return (printf("wait a minute... something aint right\n"));
+			dup2(fd), STDOUT_FILENO);
 			execute_wpath(list->next->content);
 		}
 		else
@@ -114,8 +132,7 @@ int	executeur(t_list *list)
 	stof = str_to_func();
 	while (stof->str != NULL)
 	{
-		printf("icit nous avons : %d : %s : %s\n", ft_strlen(stof->str), stof->str, list->content);
-		if (!ft_strncmp(stof->str, list->content, ft_strlen(stof->str)))
+		if (!ft_strncmp(stof->str, list->content, ft_strlen(list->content)))
 				break;
 		stof++;
 	}

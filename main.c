@@ -10,14 +10,17 @@ int	main()
 	char	*prompt;
 	t_list	*list;
 
-	prompt = malloc(PATH_MAX * sizeof(char));
+	prompt = ft_calloc(sizeof(char), PATH_MAX);
 	getcwd(prompt, PATH_MAX * sizeof(char));
 	prompt = ft_strjoin(prompt, "> ");
+	line = NULL;
 	while (1)// add signal global test
 	{
 		line = readline(prompt);
 		add_history(line);
 		list = parse(line);
+		if (!list)
+			return (0);//free ()
 		executeur(list);
 		ft_lstclear(&list, &free);
 		//free la list pour sur ici
