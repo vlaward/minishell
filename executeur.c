@@ -108,18 +108,16 @@ t_stof	*str_to_func()
 	t_stof	*ret;
 
 	ret = malloc(sizeof(t_stof) * 6);
-	ret[0].str = "|";
-	ret[0].func = &pipe_handler;
-	ret[1].str = "<";
-	ret[1].func = &in_handler;
-	ret[2].str = ">";
-	ret[2].func = &out_handler;
-	ret[3].str = "<<";
-	ret[3].func = &pipe_handler;
-	ret[4].str = ">>";
-	ret[4].func = &append_handler;
-	ret[5].str = NULL;
-	ret[5].func = NULL;
+	ret[2].str = "<";
+	ret[2].func = &in_handler;
+	ret[3].str = ">";
+	ret[3].func = &out_handler;
+	ret[4].str = "<<";
+	ret[4].func = &pipe_handler;
+	ret[5].str = ">>";
+	ret[5].func = &append_handler;
+	ret[6].str = NULL;
+	ret[6].func = NULL;
 	return (ret);
 }
 

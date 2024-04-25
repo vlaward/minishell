@@ -37,7 +37,7 @@ char	*surely_an_exe(char	*signe, t_list **list, char **ret)
 char	*sort_parse(char *signe, t_list **list, char *line)
 {
 	char	*content;
-	char	*ret;//not a table but ** 
+	char	*ret;//not a table but a ** 
 	char	**args;
 	int		i;
  
@@ -51,7 +51,7 @@ char	*sort_parse(char *signe, t_list **list, char *line)
 	args = ft_split(line, ' ');//peu etre besoin de faire un split pour gerere les guillemets ? Not sure
 	if (!args)
 		return (NULL); 
-	//add environmement variables and guillemets
+	//add environmement variables and guillemetsp
 	ft_lstadd_front(list, ft_lstnew(args));
 	if (content != signe)//rajoute le prochain type d'entree. on ne peus pas tester SIGNE != \0 a cause du split (qui nous demande de passer *signe a \0)
 		ft_lstadd_front(list, ft_lstnew(ft_strdup("file")));
@@ -79,14 +79,14 @@ t_list	*parse(char *line)
 		}
 		if (!line)
 			return (free(tmpLine), printf("ca pete la !?\n"), NULL);
-		if (*tmp == '\'')
+		if (*tmp == '\'')//prendre en compte guillemets intercroise 
 			while (++*tmp != '\'')
 				if (*tmp == '\0')
-					return (NULL);
+					return (NULL);//free
 		else if (*tmp++ == '\"')
 			while (*tmp != '\"')
 				if (*tmp++ == '\0')
-					return (NULL);
+					return (NULL);//free
 		tmp++;
 	}
 	sort_parse(tmp, &ret, line);//no need to protect it. If failed, the ret will be null
