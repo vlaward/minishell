@@ -14,25 +14,92 @@ int		execve_cmd(char **command, int flag)
 	exec;
 }
 
-char	*redirects(cahr **cmd, char *start_cmd)
+char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 {
+	int	i;
 
-	return (string_without_redirect)
+	i = 1;
+	while (itterand[i - 1] == *itterand)
+		if (i++ >= 2)
+			return (free(start_cmd), free(stofs), NULL);//a savoir dans quel sens je met les free (que je double free pas dans la fonction appellante)
+	while (stofs->str)
+		if (!ft_strncmp((stofs++)->str, itterand, i))
+			break;
+	start_cmd = stofs->func(itterand + i, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
+	return (start_cmd);//pas besoin de gerer une erreur dans func, si il y en a une func renverras NULL. Donc c'est gerer auto
+}
+
+char	*do_this_env(char **start_cmd, char *itterand)
+{
+	char	*start_env;
+	char	*env_key;
+	char	*env_value;
+	char	*tmp_cmd;
+
+	*itterand++ = '\0';
+	start_env = itterand;
+	while (!ft_isin_table(*itterand, "\'\"<>$"))//LISTE A VERIFIER <======== !!!!!!
+		itterand++;
+	env_key = ft_calloc(itterand - start_env + 1, sizeof(char));
+	ft_strlcpy(env_key, start_env, itterand - start_env);
+	env_value = getenv(env_key);//peut etre besoin d'un strcpy mais pas besoin de securiser si env existe pas, il renverras juste NULL
+	tmp_cmd = ft_strjoin(*start_cmd, env_value);// devoir rajouter un espace peut etre ?
+	(free(*start_cmd), free(env_value), free(env_key));
+	*start_cmd = ft_strjoin(tmp_cmd, itterand);//peu etre chelou a faire
+	free(tmp_cmd);
+	return (itterand);
+}
+
+char	env_handler(char *start_cmd)
+{
+	char	*ret;
+	char	*itterand;
+	int		i;
+
+	itterand = start_cmd;
+	while (*itterand != 0)
+	{
+		i = 1;
+		if (ft_isin_table(*itterand, "\"\'"))
+		{
+			while (itterand[i] != '\0' && itterand[i] != *itterand)//pas besoin de verifier si itterand finis a '\0'. pars command le fait deja
+				i++;
+			itterand = &itterand[i];
+		}
+		if (*itterand == '$')
+		itterand = do_this_env(&start_cmd, itterand);
+		itterand++;
+	}
+	return (ret);
 }
 
 char	**pars_command(char *cmd)
-{
+{//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
 	t_stof	*stofs;
 	char	*start_cmd;
+	int		i;
 
 	stofs = str_to_func();//maybe put it in main ? not to do it evrytime, save time. And if we put evrything in a struct in the end
+	start_cmd = cmd;
 	while (*cmd)
 	{
-		if (*cmd is in "><")
+		i = 1;
+		if (ft_isin_table(*cmd, "\"\'"))
+		{
+			while (cmd[i] != '\0' && cmd[i] != *cmd)
+				i++;
+			if  (cmd[i] == '\0')
+				return (NULL);//surement un free ou deux a faire la
+			cmd = &cmd[i];
+		}
+	if (*cmd is in "><")
 			start_cmd = redirects(&cmd, start_cmd);
+		if (start_cmd == NULL)
+			return (NULL);
 		cmd++;
 	}
-	free();
+	free(stofs);
+	return (ft_minisplit(env_handler(start_cmd)));//MINISPLIT A FAIRE !!...... La facon dont je gere les guillemets c'est pas le plus beau mais bon...
 }
 
 int	fork_thing(char *line)
