@@ -149,7 +149,7 @@ int	main()
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
 	while (1)// add signal global test
 	{
-		line = readline(prompt);//est ce que reqdline plante ?
+		line = char	*tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
 
 		add_history(line);
 		parser(line, FIRST_COMMAND);

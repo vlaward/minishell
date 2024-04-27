@@ -20,3 +20,5 @@ typedef struct s_stof
 
 t_list	*parse(char *line);
 int	executeur(t_list *list);
+char	*tatu_ferme_tes_guillemets(char *str);
+char	**ft_minisplit(char	*str);
