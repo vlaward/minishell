@@ -6,12 +6,28 @@
 #define FIRST_COMMAND 0
 #define NOT_FIRST_COMMAND 0
 
-int		execve_cmd(char **command, int flag)
+int     execute_cmd(char **args, int flags)
 {
-	if (option == FIRST_COMMAND)
+	char	**paths;
+	char	*tmp;
+	char	*args_0;
+	int		status;
+
+	if (flags == FIRST_COMMAND)
 		if (fork())
-			wait();
-	exec;
+			return (wait(&status), 1);
+	if (!ft_strncmp(args[0], "./", 2))
+		return (execve(args[0], args, NULL));
+	paths = ft_split(getenv("PATH"), ':');
+	args_0 = ft_strdup(args[0]);
+	tmp = ft_strjoin("/", args[0]);
+	while (*paths != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
+	{
+		args[0] = ft_strjoin(*paths++, tmp);
+		execve(args[0], args, NULL);
+		 free(args[0]);
+	}
+	return (0);
 }
 
 char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
@@ -99,7 +115,7 @@ char	**pars_command(char *cmd)
 		cmd++;
 	}
 	free(stofs);
-	return (ft_minisplit(env_handler(start_cmd)));//MINISPLIT A FAIRE !!...... La facon dont je gere les guillemets c'est pas le plus beau mais bon...
+	return (ft_minisplit(env_handler(start_cmd)));
 }
 
 int	fork_thing(char *line)
@@ -149,8 +165,7 @@ int	main()
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
 	while (1)// add signal global test
 	{
-		line = char	*tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
-
+		line = tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
 		add_history(line);
 		parser(line, FIRST_COMMAND);
 		rl_on_new_line();

@@ -1,7 +1,7 @@
 NAME  = minishell
 MAIN  = main.c
 LIBS = -lreadline libft/libft.a
-SRCS = parser.o executeur.o
+SRCS = parser.o executeur.o ft_minisplit.o Les_Guillemets_UwU.o
 FLAGS = -g
 
 %.o: %.c

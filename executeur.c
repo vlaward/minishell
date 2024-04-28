@@ -1,124 +1,90 @@
 #include "minishell.h"
 
-int	execute_wpath(char **args)
-{//si cette fonction return... c'est pas normal T^T c'est que l'executable est introuvable donc surement inexistant(mini chance pour que ca soit a cause de problemes d'allocation de memoire du cote hardware quoi)
-	char	**paths;
-	char	*tmp;
-	char	*args_0;
-
-	if (!ft_strncmp(args[0], "./", 2))
-		return (execve(args[0], args, NULL));
-	paths = ft_split(getenv("PATH"), ':');
-	args_0 = ft_strdup(args[0]);
-	tmp = ft_strjoin("/", args[0]);
-	while (*paths != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
-	{
-		args[0] = ft_strjoin(*paths++, tmp);
-		execve(args[0], args, NULL);
-		free(args[0]);
-	}
-	return (0);
-}
-
-int	pipe_handler(t_list *list)
-{
-	printf("voici le contenus du premier element de la liste... c'est parfeaitement inutil : %s\n", (char *)list->content);
-	printf("bigget fucking placeholder\n");
-	return (1);
-}
-
-int	out_handler(t_list *list)
+char	*out_handler(char *itterand, char *start_cmd)
 {
 	int		status;
 	int		fd;
 	int		flags;
+	char	**testons;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la itterand. bref
 
 	status = 0;
 	flags = O_WRONLY | O_CREAT | O_TRUNC;
-	if (!ft_strcmp(list->content, "exec"))
-	{
-		if (!fork())
-		{
-			fd = open("test", flags, S_IRWXO);//concretement la ca gere les authorisation etc... avec un open moded
-			if (fd == -1)
-				return (printf("wait a minute... something aint right\n"));
-			dup2(fd, STDOUT_FILENO);//maybe protect the dup ? Donno how it could fail but still
-			execute_wpath(list->next->content);
-		}
-		else
-			while( wait(&status) > 0);
-	}
-	//le close a metre la 
-
+	*itterand++ = '\0';
+	testons = ft_split(itterand, ' ');
+	free(itterand);
+	while (testons + 1 != NULL)
+		free(testons++);
+	fd = open(*testons, flags);
+	if (fd = -1)
+		return(printf("wait a minute... something aint right\n"), NULL);
+	else if (!dup2(fd, stdout->_fileno))//a voir si il faut pas utiliser stdout->_fileno en miniscule j'en suis presque sur
+		return (free(start_cmd), NULL);
+	return (start_cmd);
 }
 
-int	in_handler(t_list *list)
+char	*in_handler(char *itterand, char *start_cmd)
 {
 	int		status;
 	int		fd;
-	int		falgs;
+	int		flags;
+	char	**testons;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la itterand. bref
 
-	falgs = O_RDONLY;
 	status = 0;
-	if (!ft_strcmp(list->content, "exec"))
-	{
-		if (!fork())
-		{
-			fd = open("test", flags);//concretement la ca gere les authorisation etc... avec un open moded
-			if (fd == -1)
-				return (printf("wait a minute... something aint right\n"));
-			dup2(fd, STDIN_FILENO);//fd in other line so test open fail
-			execute_wpath(list->next->content);
-		}
-		else
-			while( wait(&status) > 0);
-	}
-	//le close a metre la 
-
+	flags = O_RDONLY;
+	*itterand++ = '\0';
+	testons = ft_split(itterand, ' ');
+	free(itterand);
+	while (testons + 1 != NULL)
+		free(testons++);
+	fd = open(*testons, flags);
+	(free(*testons), free(testons));
+	if (fd = -1)
+		return(printf("wait a minute... something aint right\n"), NULL);
+	else if (!dup2(fd, stdout->_fileno))
+		return (free(start_cmd), NULL);
+	return (start_cmd);
 }
 
-int	append_handler(t_list *list)
+char	*append_handler(char *itterand, char *start_cmd)
 {
 	int		status;
 	int		fd;
-	int		falgs;
+	int		flags;
+	char	**testons;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la itterand. bref
 
 	status = 0;
-	falgs = O_WRONLY | O_CREAT | O_APPEND;
-	printf("e pourtant !!\n");
-	if (!ft_strcmp(list->content, "exec"))
-	{
-		if (!fork())
-		{
-			fd = open("test", flags, S_IRWXO);//concretement la ca gere les authorisation etc... avec un open moded
-			if (fd == -1)
-				return (printf("wait a minute... something aint right\n"));
-			dup2(fd), STDOUT_FILENO);
-			execute_wpath(list->next->content);
-		}
-		else
-			while( wait(&status) > 0);
-	}
-	//le close a metre la 
-
+	flags = O_WRONLY | O_CREAT | O_APPEND;
+	*itterand++ = '\0';
+	testons = ft_split(itterand, ' ');
+	free(itterand);
+	while (testons + 1 != NULL)
+		free(testons++);
+	fd = open(*testons, flags);
+	if (fd = -1)
+		return(printf("wait a minute... something aint right\n"), NULL);
+	else if (!dup2(fd, stdout->_fileno))
+		return (free(start_cmd), NULL);
+	return (start_cmd);
 }
 
 t_stof	*str_to_func()
 {
-	t_stof	*ret;
+	int		status;
+	int		fd;
+	int		flags;
+	char	**testons;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la str. bref
 
-	ret = malloc(sizeof(t_stof) * 6);
-	ret[2].str = "<";
-	ret[2].func = &in_handler;
-	ret[3].str = ">";
-	ret[3].func = &out_handler;
-	ret[4].str = "<<";
-	ret[4].func = &pipe_handler;
-	ret[5].str = ">>";
-	ret[5].func = &append_handler;
-	ret[6].str = NULL;
-	ret[6].func = NULL;
-	return (ret);
+	status = 0;
+	flags = O_WRONLY | O_CREAT | O_TRUNC;
+	testons = ft_split(str);
+	while (teston + 1 != NULL)
+		free(testons++);
+	fd = open(testons, flags);
+	if (fd = -1)
+		return(printf("wait a minute... something aint right\n"));
+	else
+		return (dup2(fd, stdout));
+	return (fd);
 }
 
 int	executeur(t_list *list)
