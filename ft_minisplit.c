@@ -20,6 +20,8 @@ char	*add_to_list(char *itterand, t_list **liste)
 
 	while (*itterand && *itterand == ' ')
 		itterand++;
+	if (*itterand == '\0')
+		return (itterand);
 	start_word = itterand;
 	while (*itterand && *itterand != ' ')
 	{
@@ -47,14 +49,19 @@ char	**ft_minisplit(char	*str)
 	char	*itterand;
 	char	**ret;
 
+	if (!str)
+		return (free(str), NULL);
 	itterand = str;
 	will_be_ret = NULL;
 	while (*itterand != '\0')
 		itterand = add_to_list(itterand, &will_be_ret);
+	if (!will_be_ret)
+		return (free(str), NULL);
 	ret = ft_calloc(ft_lstsize(will_be_ret) + 1, sizeof(char *));
 	i = 0;
 	while (ft_lstnodi(&will_be_ret, i))
 		ret[i++] = ft_lstnodi(&will_be_ret, i)->content;
 	ft_lstclear(&will_be_ret, NULL);
-	return (free(str), ret);
+	// fprintf(stderr, "voici line : %s\n", str);
+	return (ret);//normalement y'as un fdree str
 }

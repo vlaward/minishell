@@ -4,29 +4,38 @@
 # endif
 
 #define FIRST_COMMAND 0
-#define NOT_FIRST_COMMAND 0
+#define NOT_FIRST_COMMAND 1
 
-int     execute_cmd(char **args, int flags)
+int	parser(char *line, int flag);
+
+
+int     execute_cmd(char **args)
 {
 	char	**paths;
 	char	*tmp;
-	char	*args_0;
+	int		i;
 	int		status;
 
-	if (flags == FIRST_COMMAND)
-		if (fork())
-			return (wait(&status), 1);
-	if (!ft_strncmp(args[0], "./", 2))
-		return (execve(args[0], args, NULL));
+	if (!args || *args == NULL)
+		exit(0);
+	if (!ft_strncmp(args[0], "./", 2))//gerer aussi le /bin/moncul : relativ path
+		return (execve(args[0], args, NULL), 127);
 	paths = ft_split(getenv("PATH"), ':');
-	args_0 = ft_strdup(args[0]);
 	tmp = ft_strjoin("/", args[0]);
-	while (*paths != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
+	i = 0;
+	while (paths[i] != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
 	{
-		args[0] = ft_strjoin(*paths++, tmp);
+		free(args[0]);
+		args[0] = ft_strjoin(paths[i], tmp);
 		execve(args[0], args, NULL);
-		 free(args[0]);
+		free(paths[i++]);
 	}
+	i = 0;
+	printf("%s : command not found\n", tmp + 1);
+	while (args[i])
+		free(args[i++]);
+	(free(args), free(paths), free(tmp));
+	exit(127);
 	return (0);
 }
 
@@ -66,9 +75,8 @@ char	*do_this_env(char **start_cmd, char *itterand)
 	return (itterand);
 }
 
-char	env_handler(char *start_cmd)
+char	*env_handler(char *start_cmd)
 {
-	char	*ret;
 	char	*itterand;
 	int		i;
 
@@ -86,7 +94,7 @@ char	env_handler(char *start_cmd)
 		itterand = do_this_env(&start_cmd, itterand);
 		itterand++;
 	}
-	return (ret);
+	return (start_cmd);
 }
 
 char	**pars_command(char *cmd)
@@ -108,8 +116,8 @@ char	**pars_command(char *cmd)
 				return (NULL);//surement un free ou deux a faire la
 			cmd = &cmd[i];
 		}
-	if (*cmd is in "><")
-			start_cmd = redirects(&cmd, start_cmd);
+	if (*cmd == '>' || *cmd == '<')
+			start_cmd = redirects(cmd, start_cmd, stofs);
 		if (start_cmd == NULL)
 			return (NULL);
 		cmd++;
@@ -118,57 +126,105 @@ char	**pars_command(char *cmd)
 	return (ft_minisplit(env_handler(start_cmd)));
 }
 
-int	fork_thing(char *line)
-{
+int	fork_thing(char *line, char *start_cmd)
+{//cheloiu et je suis sur que ca marche pas
 	int		status;
 	int		pid;
 	int		pipette[2];
 
 	pipe(pipette);
-	status = 0;
 	*line = '\0';
-	pid = !fork();
-	if (pid = -1)
-		return (-1);
-	if (!pid)
+	pid = fork();
+	if (pid == -1)
+		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
+	if (pid)
 	{
 		dup2(pipette[0], STDIN_FILENO);
-		parser(line + 1, NOT_FIRST_COMMAND);
+		int	w;
+		int f = EOF;
+		do{
+			w = waitpid(pid, &status, 0);
+			fprintf(stderr, "fork_thing w : %i et status %i\n", w, status);
+			write(pipette[0], &f, 1);
+		}
+		while(w != pid);
+			// printf(" : %i : ", WIFEXITED(status));
+		status = WEXITSTATUS(status);
+		if (status != 0)
+			return(free(start_cmd), exit(1), 1);
+		return (parser(line + 1, NOT_FIRST_COMMAND));
 	}
 	else
-		dup2(pipette[1], STDOUT_FILENO);
-	return (pid);
+	{
+	 	dup2(pipette[1], STDOUT_FILENO);
+		close(pipette[1]);
+	}
+	return (execute_cmd(pars_command(start_cmd)));
 }
 
-int	parser(char *line, int flag)//le flag c'est pour savoir si on est sur la premiere itteration ou une autre. pour la premiere ittertion on doit fork pour le exece  sinon on perds le prompt
-{//flag : 0 = first itteratio ; 1 = seconde+ iteration
+int	parser(char *line, int flag)
+{//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
 	char	*start_cmd;
+	int		status;
+	int		chpid;
 
+	if (*line == '\0')
+		return (free(line), 0);
+	status = 0;
 	start_cmd = line;
-	while (*line != '|' && *line++ != '\0');//autorisee et marche ?
-	if (*line == '|')
-		if (fork_thing(line) == -1)
-
-	if (!execute_cmd(pars_command(start_cmd), flag))
-		return (0);//depends code erreur ?
-	return (free(start_cmd), 1);
+	if (flag == FIRST_COMMAND)
+	{
+		chpid = fork();
+		if (chpid)
+		{
+			fprintf(stderr, "sale gentille personne te voila %i\n", chpid);
+			int	w;
+			do{
+				w = waitpid(chpid, &status, WNOHANG);
+				fprintf(stderr, " w : %i et status %i\n", w, status);
+				sleep(1);
+			}
+			while(w != chpid);
+			fprintf(stderr, "c''est la tout fin\n");
+			status = WEXITSTATUS(status);
+			free(line);
+			return (fprintf(stderr, "el_statito %i\n", status), 0);//mettre status dans $?
+		}
+	}
+	while (*line != '|' && *line != '\0')
+		line++;
+	if (*line && *line == '|')
+		return (fork_thing(line, start_cmd));
+	return (execute_cmd(pars_command(start_cmd)));
 }
 
 int	main()
 {
 	char	*line;
 	char	*prompt;
+	char	*cwd;
+	int		ret;
 
-	prompt = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
-	getcwd(prompt, PATH_MAX * sizeof(char));
-	prompt = ft_strjoin(prompt, "> ");
+	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
+	prompt = NULL;
 	while (1)// add signal global test
 	{
+		ft_bzero(cwd, sizeof(char) * PATH_MAX);
+		getcwd(cwd, PATH_MAX * sizeof(char));
+		if (ft_strncmp(cwd, prompt, ft_strlen(cwd)))
+		{
+			free(prompt);
+			prompt = ft_strjoin(cwd, "> ");
+		}
 		line = tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
 		add_history(line);
-		parser(line, FIRST_COMMAND);
+		ret = parser(line, FIRST_COMMAND);
+		if (ret)
+			break;
+
 		rl_on_new_line();
-	}	
-	return (0);
+	}
+	(free(cwd), free(prompt));
+	return (ret);
 }

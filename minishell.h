@@ -11,14 +11,16 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include "libft/libft.h"
+#include <errno.h>
 
 typedef struct s_stof
 {
 	char	*str;
-	int		(*func)(t_list *);
+	char		*(*func)(char *, char *);
 }t_stof;
 
 t_list	*parse(char *line);
 int	executeur(t_list *list);
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
+t_stof	*str_to_func();

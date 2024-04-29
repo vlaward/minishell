@@ -1,2 +1,6 @@
 faut que je close les fd !!
 ca vas partir dans la struct hein ;-; je crois que j'ai plus trop le choix que de faire une struct
+
+
+c'est con, apres execve y'as pas bvesoin de les close ;-;
+et y'as pas de raison que je l'open dans le minishel principale. seulemet dans ses enfants
