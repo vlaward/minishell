@@ -7,7 +7,7 @@
 #define NOT_FIRST_COMMAND 1
 
 int	parser(char *line, int flag);
-
+char	*env_handler(char *start_cmd);
 
 int     execute_cmd(char **args)
 {
@@ -64,18 +64,23 @@ char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 {
 	int	i;
 
-	i = 1;
-	while (itterand[i - 1] == *itterand)
-		if (i++ >= 2)
+	i = 0;
+	while (itterand[i] == *itterand)
+		if (i++ >= 1)
 			return (free(start_cmd), free(stofs), NULL);//a savoir dans quel sens je met les free (que je double free pas dans la fonction appellante)
 	while (stofs->str)
-		if (!ft_strncmp((stofs++)->str, itterand, i))
+	{
+		if (!ft_strncmp(stofs->str, itterand, i))
 			break;
-	start_cmd = stofs->func(itterand + i, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
+		stofs++;
+	}
+	printf("wii uze ze fukchion : %s\n", stofs->str);
+	if (stofs->func != NULL)
+		start_cmd = stofs->func(itterand + i, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
 	return (start_cmd);//pas besoin de gerer une erreur dans func, si il y en a une func renverras NULL. Donc c'est gerer auto
 }
 
-char	*do_this_env(char **start_cmd, char *itterand)
+char	*do_this_env(char *start_cmd, char *itterand)
 {
 	char	*start_env;
 	char	*env_key;
@@ -84,16 +89,16 @@ char	*do_this_env(char **start_cmd, char *itterand)
 
 	*itterand++ = '\0';
 	start_env = itterand;
-	while (!ft_isin_table(*itterand, "\'\"<>$"))//LISTE A VERIFIER <======== !!!!!!
+	while (*itterand && !ft_isin_table(*itterand, "\'\"<>$ "))//LISTE A VERIFIER <======== !!!!!!
 		itterand++;
-	env_key = ft_calloc(itterand - start_env + 1, sizeof(char));
-	ft_strlcpy(env_key, start_env, itterand - start_env);
+	env_key = ft_calloc(itterand - start_env + 2, sizeof(char));
+	ft_strlcpy(env_key, start_env, itterand - start_env + 1);
 	env_value = getenv(env_key);//peut etre besoin d'un strcpy mais pas besoin de securiser si env existe pas, il renverras juste NULL
-	tmp_cmd = ft_strjoin(*start_cmd, env_value);// devoir rajouter un espace peut etre ?
-	(free(*start_cmd), free(env_value), free(env_key));
-	*start_cmd = ft_strjoin(tmp_cmd, itterand);//peu etre chelou a faire
-	free(tmp_cmd);
-	return (itterand);
+	tmp_cmd = ft_strjoin(start_cmd, env_value);// devoir rajouter un espace peut etre ?
+	free(env_key);
+	itterand = ft_strjoin(tmp_cmd, itterand);
+	(free(start_cmd), free(tmp_cmd));
+	return (env_handler(itterand));
 }
 
 char	*env_handler(char *start_cmd)
@@ -102,17 +107,17 @@ char	*env_handler(char *start_cmd)
 	int		i;
 
 	itterand = start_cmd;
-	while (*itterand != 0)
+	while (*itterand != '\0')
 	{
 		i = 1;
-		if (ft_isin_table(*itterand, "\"\'"))
+		if (*itterand == '\'')
 		{
 			while (itterand[i] != '\0' && itterand[i] != *itterand)//pas besoin de verifier si itterand finis a '\0'. pars command le fait deja
 				i++;
 			itterand = &itterand[i];
 		}
 		if (*itterand == '$')
-		itterand = do_this_env(&start_cmd, itterand);
+			return(do_this_env(start_cmd, itterand));
 		itterand++;
 	}
 	return (start_cmd);
@@ -137,7 +142,7 @@ char	**pars_command(char *cmd)
 				return (NULL);//surement un free ou deux a faire la
 			cmd = &cmd[i];
 		}
-	if (*cmd == '>' || *cmd == '<')
+		if (*cmd == '>' || *cmd == '<')
 			start_cmd = redirects(cmd, start_cmd, stofs);
 		if (start_cmd == NULL)
 			return (NULL);
@@ -147,22 +152,31 @@ char	**pars_command(char *cmd)
 	return (ft_minisplit(env_handler(start_cmd)));
 }
 
-char	*fork_thing(char *start_cmd, int pipette[2])
-{//cheloiu et je suis sur que ca marche pas
-	char	*itterand;
-	pid_t	chpid;
-	int		da_stdin;
-	int		da_stdout;
+int	fork_thing(char *line, char *start_cmd)
+{
+	int		status;
+	int		pid;
+	int		pipette[2];
 
-	da_stdin = STDIN_FILENO;
-	da_stdout = STDOUT_FILENO;
-	itterand = start_cmd;
-	while (*itterand && *itterand != '|')
-		itterand++;
-	if (pipette[0] != -1)
+	pipe(pipette);
+	*line = '\0';
+	pid = fork();
+	if (pid == -1)
+		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
+	if (pid)
 	{
-		da_stdin = pipette[0];
+		dup2(pipette[0], STDIN_FILENO);
+		close(pipette[0]);
 		close(pipette[1]);
+		waitpid(pid, &status, 0);
+		return (parser(line + 1, NOT_FIRST_COMMAND));
+	}
+	else
+	{
+	 	dup2(pipette[1], STDOUT_FILENO);
+		close(pipette[0]);
+		close(pipette[1]);
+		
 	}
 	if (*itterand == '|')
 		if (pipe(pipette) == -1)//je ferme pas le pipe...
@@ -194,14 +208,20 @@ int	parser(char *start_line, int flag)
 	itterand = start_line;
 	while (*itterand != '\0')
 	{
-		itterand = fork_thing(itterand, pipette);
-		if (itterand == NULL)
-			return (free(start_line), 0);
+		chpid = fork();
+		if (chpid)
+		{
+			waitpid(chpid, &status, 0);
+			status = WEXITSTATUS(status);
+			free(line);
+			return (0);//mettre status dans $?
+		}
 	}
-	while(wait(&status) != -1)
-		put_to_qstnmark = WEXITSTATUS(status);
-	free(start_line);
-	return (1);
+	while (*line != '|' && *line != '\0')
+		line++;
+	if (*line && *line == '|')
+		return (fork_thing(line, start_cmd));
+	return (execute_cmd(pars_command(start_cmd)));
 }
 
 int	main()
@@ -223,8 +243,11 @@ int	main()
 			prompt = ft_strjoin(cwd, "> ");
 		}
 		line = tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
-		add_history(line);
-		parser(line, FIRST_COMMAND);
+		if (line)
+		{
+			add_history(line);
+			parser(line, FIRST_COMMAND);
+		}
 		rl_on_new_line();
 	}
 	(free(cwd), free(prompt));

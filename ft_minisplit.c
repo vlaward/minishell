@@ -18,12 +18,12 @@ char	*add_to_list(char *itterand, t_list **liste)
 	char	chose_your_guillemet;
 	char	*content;
 
-	while (*itterand && *itterand == ' ')
+	while (*itterand && (*itterand == ' ' || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
 		return (itterand);
 	start_word = itterand;
-	while (*itterand && *itterand != ' ')
+	while (*itterand && (*itterand != ' ' && *itterand != '\n'))
 	{
 		if (ft_isin_table(*itterand, "\'\""))
 		{
