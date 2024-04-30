@@ -39,6 +39,27 @@ int     execute_cmd(char **args)
 	return (0);
 }
 
+int in_n_out(int in, int out)
+{
+	int	ret;
+
+	ret = 1;
+	printf("voici : < %i  > %i\n", in, out);
+	if (in != STDIN_FILENO)
+	{
+		close(STDIN_FILENO);
+		dup(in);
+		close(in);
+	}
+	if (out != STDOUT_FILENO)
+	{
+		close(STDOUT_FILENO);
+		dup(out);
+		close(out);
+	}
+	return (ret);
+}
+
 char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 {
 	int	i;
@@ -126,76 +147,61 @@ char	**pars_command(char *cmd)
 	return (ft_minisplit(env_handler(start_cmd)));
 }
 
-int	fork_thing(char *line, char *start_cmd)
+char	*fork_thing(char *start_cmd, int pipette[2])
 {//cheloiu et je suis sur que ca marche pas
-	int		status;
-	int		pid;
-	int		pipette[2];
+	char	*itterand;
+	pid_t	chpid;
+	int		da_stdin;
+	int		da_stdout;
 
-	pipe(pipette);
-	*line = '\0';
-	pid = fork();
-	if (pid == -1)
-		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
-	if (pid)
+	da_stdin = STDIN_FILENO;
+	da_stdout = STDOUT_FILENO;
+	itterand = start_cmd;
+	while (*itterand && *itterand != '|')
+		itterand++;
+	if (pipette[0] != -1)
 	{
-		dup2(pipette[0], STDIN_FILENO);
-		int	w;
-		int f = EOF;
-		do{
-			w = waitpid(pid, &status, 0);
-			fprintf(stderr, "fork_thing w : %i et status %i\n", w, status);
-			write(pipette[0], &f, 1);
-		}
-		while(w != pid);
-			// printf(" : %i : ", WIFEXITED(status));
-		status = WEXITSTATUS(status);
-		if (status != 0)
-			return(free(start_cmd), exit(1), 1);
-		return (parser(line + 1, NOT_FIRST_COMMAND));
-	}
-	else
-	{
-	 	dup2(pipette[1], STDOUT_FILENO);
+		da_stdin = pipette[0];
 		close(pipette[1]);
 	}
-	return (execute_cmd(pars_command(start_cmd)));
+	if (*itterand == '|')
+		if (pipe(pipette) == -1)//je ferme pas le pipe...
+			return (NULL);
+	if (*itterand == '|')
+		da_stdout = pipette[1];
+	chpid = fork();
+	if (chpid)
+		return (itterand + (*itterand == '|'));
+	if (*itterand == '|')
+		close(pipette[0]);
+	*itterand = '\0';
+	if (in_n_out(da_stdin, da_stdout) <= 0)
+		return (NULL);
+	return (execute_cmd(pars_command(start_cmd)), NULL);//normalement ca vas pas la
 }
 
-int	parser(char *line, int flag)
+int	parser(char *start_line, int flag)
 {//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
-	char	*start_cmd;
+	char	*itterand;
+	int		pipette[2];
+	int		put_to_qstnmark;
 	int		status;
-	int		chpid;
 
-	if (*line == '\0')
-		return (free(line), 0);
+	pipette[0] = -1;
+	if (*start_line == '\0')
+		return (free(start_line), 0);
 	status = 0;
-	start_cmd = line;
-	if (flag == FIRST_COMMAND)
+	itterand = start_line;
+	while (*itterand != '\0')
 	{
-		chpid = fork();
-		if (chpid)
-		{
-			fprintf(stderr, "sale gentille personne te voila %i\n", chpid);
-			int	w;
-			do{
-				w = waitpid(chpid, &status, WNOHANG);
-				fprintf(stderr, " w : %i et status %i\n", w, status);
-				sleep(1);
-			}
-			while(w != chpid);
-			fprintf(stderr, "c''est la tout fin\n");
-			status = WEXITSTATUS(status);
-			free(line);
-			return (fprintf(stderr, "el_statito %i\n", status), 0);//mettre status dans $?
-		}
+		itterand = fork_thing(itterand, pipette);
+		if (itterand == NULL)
+			return (free(start_line), 0);
 	}
-	while (*line != '|' && *line != '\0')
-		line++;
-	if (*line && *line == '|')
-		return (fork_thing(line, start_cmd));
-	return (execute_cmd(pars_command(start_cmd)));
+	while(wait(&status) != -1)
+		put_to_qstnmark = WEXITSTATUS(status);
+	free(start_line);
+	return (1);
 }
 
 int	main()
@@ -203,7 +209,6 @@ int	main()
 	char	*line;
 	char	*prompt;
 	char	*cwd;
-	int		ret;
 
 	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
@@ -219,12 +224,9 @@ int	main()
 		}
 		line = tatu_ferme_tes_guillemets(readline(prompt));//est ce que reqdline plante ?
 		add_history(line);
-		ret = parser(line, FIRST_COMMAND);
-		if (ret)
-			break;
-
+		parser(line, FIRST_COMMAND);
 		rl_on_new_line();
 	}
 	(free(cwd), free(prompt));
-	return (ret);
+	return (0);
 }
