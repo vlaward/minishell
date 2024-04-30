@@ -39,27 +39,6 @@ int     execute_cmd(char **args)
 	return (0);
 }
 
-int in_n_out(int in, int out)
-{
-	int	ret;
-
-	ret = 1;
-	printf("voici : < %i  > %i\n", in, out);
-	if (in != STDIN_FILENO)
-	{
-		close(STDIN_FILENO);
-		dup(in);
-		close(in);
-	}
-	if (out != STDOUT_FILENO)
-	{
-		close(STDOUT_FILENO);
-		dup(out);
-		close(out);
-	}
-	return (ret);
-}
-
 char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 {
 	int	i;
@@ -178,35 +157,20 @@ int	fork_thing(char *line, char *start_cmd)
 		close(pipette[1]);
 		
 	}
-	if (*itterand == '|')
-		if (pipe(pipette) == -1)//je ferme pas le pipe...
-			return (NULL);
-	if (*itterand == '|')
-		da_stdout = pipette[1];
-	chpid = fork();
-	if (chpid)
-		return (itterand + (*itterand == '|'));
-	if (*itterand == '|')
-		close(pipette[0]);
-	*itterand = '\0';
-	if (in_n_out(da_stdin, da_stdout) <= 0)
-		return (NULL);
-	return (execute_cmd(pars_command(start_cmd)), NULL);//normalement ca vas pas la
+	return (execute_cmd(pars_command(start_cmd)));
 }
 
-int	parser(char *start_line, int flag)
+int	parser(char *line, int flag)
 {//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
-	char	*itterand;
-	int		pipette[2];
-	int		put_to_qstnmark;
+	char	*start_cmd;
 	int		status;
+	int		chpid;
 
-	pipette[0] = -1;
-	if (*start_line == '\0')
-		return (free(start_line), 0);
+	if (*line == '\0')
+		return (free(line), 0);
 	status = 0;
-	itterand = start_line;
-	while (*itterand != '\0')
+	start_cmd = line;
+	if (flag == FIRST_COMMAND)
 	{
 		chpid = fork();
 		if (chpid)
