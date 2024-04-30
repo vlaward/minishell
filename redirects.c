@@ -4,16 +4,17 @@ char	*out_handler(char *itterand, char *start_cmd)
 {
 	int		status;
 	int		fd;
-	int		flags;
+	int		i;
 	char	**testons;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la itterand. bref
 
 	status = 0;
-	flags = O_WRONLY | O_CREAT | O_TRUNC;
 	*itterand++ = '\0';
 	testons = ft_split(itterand, ' ');
-	while (testons + 1 != NULL)
-		free(testons++);
-	fd = open(*testons, flags);
+	i = 0;
+	while (testons[i + 1] != NULL)
+		free(testons[i++]);
+	printf("dat's de one : %s\n", testons[i]);
+	fd = open(testons[i], O_WRONLY | O_CREAT | O_TRUNC);
 	if (fd = -1)
 		return(printf("wait a minute... something aint right\n"), NULL);
 	else if (!dup2(fd, STDOUT_FILENO))//a voir si il faut pas utiliser STDOUT_FILENO en miniscule j'en suis presque sur

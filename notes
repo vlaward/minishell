@@ -4,3 +4,4 @@ ca vas partir dans la struct hein ;-; je crois que j'ai plus trop le choix que d
 
 c'est con, apres execve y'as pas bvesoin de les close ;-;
 et y'as pas de raison que je l'open dans le minishel principale. seulemet dans ses enfants
+remplacer certains fprintf oar des writes
