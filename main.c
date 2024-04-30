@@ -45,8 +45,8 @@ char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 
 	i = 0;
 	while (itterand[i] == *itterand)
-		if (i++ >= 1)
-			return (free(start_cmd), free(stofs), NULL);//a savoir dans quel sens je met les free (que je double free pas dans la fonction appellante)
+		if (i++ >= 2)
+			return (fprintf(stderr, "error ya 3 fois le meme signe frero\n"), free(start_cmd), free(stofs), NULL);//a savoir dans quel sens je met les free (que je double free pas dans la fonction appellante)
 	while (stofs->str)
 	{
 		if (!ft_strncmp(stofs->str, itterand, i))
@@ -55,7 +55,7 @@ char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
 	}
 	printf("wii uze ze fukchion : %s\n", stofs->str);
 	if (stofs->func != NULL)
-		start_cmd = stofs->func(itterand + i, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
+		start_cmd = stofs->func(itterand, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
 	return (start_cmd);//pas besoin de gerer une erreur dans func, si il y en a une func renverras NULL. Donc c'est gerer auto
 }
 

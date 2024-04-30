@@ -81,7 +81,7 @@ char	**ft_split(const char *s, char c)
 	char	**ret;
 	int		n;
 
-	if (s == NULL)
+	if (s == NULL || *s == '\0')
 		return (NULL);
 	ret = (char **)malloc(ft_fullsplitlen(s, c) * sizeof(char *));
 	if (!ret)
