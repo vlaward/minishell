@@ -21,7 +21,7 @@ OBJS		= $(addprefix $(OBJS_PATH), $(FILES:.c=.o))
 CFLAGS		= # -Wall -Wextra -Werror -g
 CC			= cc
 INCS		= $(addprefix -I, $(INCS_PATH))
-INCS		+= -lreadline libft/libft.a
+INCS		+= -lreadline
 
 # Create obj and dir
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.c
@@ -33,7 +33,7 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.c
 all:		${NAME}
 
 ${NAME}:	${OBJS}
-			@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(INCS) 
+			@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(INCS) libft/libft.a
 			@echo "${MSG_BUILD}${NAME}${MSG_FINISH}"
 			@echo "${FINISH}"
 
