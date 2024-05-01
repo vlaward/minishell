@@ -53,7 +53,14 @@ re:
 			@echo "${MSG_RMV}${NAME}"
 			@make -s
 
-rer:
-			@echo "Belek"
+panda:
+			@echo "${PANDA}"
+
+shrek:
+			@echo "${SHREK}"
+
+cat:
+			@echo "${CAT}"
+
 
 .PHONY:		all clean fclean re
