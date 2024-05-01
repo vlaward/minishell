@@ -3,7 +3,7 @@ include Colors.mk
 # Names 
 NAME		= minishell
 FILES		= main.c executeur.c parser.c
-F_BUILT		= echo.c env.c
+F_BUILT		= echo.c env.c builtins.c
 FILES		+= $(addprefix builtins/, $(F_BUILT))
 
 # Paths
