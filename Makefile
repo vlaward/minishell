@@ -2,9 +2,11 @@ include Colors.mk
 
 # Names 
 NAME		= minishell
-FILES		= main.c executeur.c parser.c
+FILES		= main.c parser.c
 F_BUILT		= echo.c env.c builtins.c
 FILES		+= $(addprefix builtins/, $(F_BUILT))
+F_EXEC		= executeur.c
+FILES		+= $(addprefix exec/, $(F_EXEC))
 
 # Paths
 SRCS_PATH	= srcs/
@@ -16,7 +18,7 @@ SRCS		= $(addprefix $(SRCS_PATH), $(FILES))
 OBJS		= $(addprefix $(OBJS_PATH), $(FILES:.c=.o))
 
 # Flags + compilation
-CFLAGS		= # -Wall -Wextra -Werror -g3
+CFLAGS		= # -Wall -Wextra -Werror -g
 CC			= cc
 INCS		= $(addprefix -I, $(INCS_PATH))
 INCS		+= -lreadline libft/libft.a
