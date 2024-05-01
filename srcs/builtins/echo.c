@@ -1,5 +1,16 @@
 #include <unistd.h>
 
+// remove in prod and link to libft
+int	ft_strlen(const char *str)
+{
+	int	n;
+
+	n = 0;
+	while (*str++ != '\0')
+		n++;
+	return (n);
+}
+
 static int	ft_option(char *av)
 {
 	int	i;
@@ -18,22 +29,26 @@ static int	ft_option(char *av)
 	return (1);
 }
 
-int	main(int ac, char **av, char **env)
-{
-	//ft_echo(av);
-	printf("est ce qu'il y a une option : %d\n", ft_option(av[1]));
-	return (0);
-}
-
 void	ft_echo(char **av)
 {
 	int	i;
-	int	j;
 
-	i = 0;
-	j = 0;
+	i = 1;
+	while (av[i] && ft_option(av[i]))
+		i++;
 	while (av[i])
 	{
-
+		write(1, av[i], ft_strlen(av[i]));
+		i++;
+		if (av[i])
+			write(1, " ", 1);
 	}
+	if (!ft_option(av[1]))
+		write(1, "\n", 1);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	ft_echo(av);
+	return (0);
 }
