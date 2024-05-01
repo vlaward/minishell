@@ -1,4 +1,4 @@
-#include <unistd.h>
+#include "minishell.h"
 
 /*
 typedef struct s_env
@@ -31,10 +31,4 @@ void	ft_env(char **env)
 		printf("%s\n", env[i]);
 		i++;
 	}
-}
-
-int	main(int ac, char **av, char **env)
-{
-	ft_env(env);
-	return (0);
 }

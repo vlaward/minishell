@@ -18,3 +18,6 @@ typedef struct s_stof
 
 t_list	*parse(char *line);
 int	executeur(t_list *list);
+
+void	ft_env(char **env);
+void	ft_echo(char **av);

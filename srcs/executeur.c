@@ -43,7 +43,7 @@ int	out_handler(t_list *list)
 			while( wait(&status) > 0);
 	}
 	//le close a metre la 
-
+	return (0); // return at end of int fct
 }
 
 int	in_handler(t_list *list)
@@ -62,7 +62,7 @@ int	in_handler(t_list *list)
 			while( wait(&status) > 0);
 	}
 	//le close a metre la 
-
+	return (0); // return at end of int fct
 }
 
 int	append_handler(t_list *list)
@@ -81,7 +81,7 @@ int	append_handler(t_list *list)
 			while( wait(&status) > 0);
 	}
 	//le close a metre la 
-
+	return (0); // return at end of int fct
 }
 
 t_stof	*str_to_func()

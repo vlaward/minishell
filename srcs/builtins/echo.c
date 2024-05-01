@@ -1,15 +1,4 @@
-#include <unistd.h>
-
-// remove in prod and link to libft
-int	ft_strlen(const char *str)
-{
-	int	n;
-
-	n = 0;
-	while (*str++ != '\0')
-		n++;
-	return (n);
-}
+#include "minishell.h"
 
 static int	ft_option(char *av)
 {
@@ -45,10 +34,4 @@ void	ft_echo(char **av)
 	}
 	if (!ft_option(av[1]))
 		write(1, "\n", 1);
-}
-
-int	main(int ac, char **av, char **env)
-{
-	ft_echo(av);
-	return (0);
 }
