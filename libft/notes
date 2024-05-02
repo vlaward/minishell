@@ -16,12 +16,12 @@ Others :
 
 To_do;
 -ft_insin_mem.
--Secure all new fuctions.
+-Secure all fuctions.
 -find a new name for "ft_mapi" (or verify this name doesn't mean what it doesn't do). <- is in ft_strmapi.c
 
 -actually correct ft_mapi, it doesn't work ;-; it's the "void" type, I don't mean norhing but wathever. it'as annoying
 
--Coorect ft_split, it need to have a \0 at the end of each str wich he don't have
+-Coorect ft_split, it need to have a \0 at the end of each str wich he don't have. (=-= this is false ?? I mean I'll verify but it doesn't seem right)
 
 -Make all the void function into int return to make test. And secure each case (if the args used are incorecte)
 
@@ -29,5 +29,26 @@ To_do;
 	->like having libft_str and libft_lst and libft_memory and merge the 3 in a libft
 	->So having 3 makes different. make str, make lst, and make meme.
 
+
+lmao I let that here it's funny. and add shit to help with subtree
+==========
 "THIS IS JUSTE A TEST FOR THE GIT SUBTREE"
 "and another one"
+==========
+
+subtree commands : 
+	git subtree pull --prefix libft/ git@github.com:vlaward/libft.git main --squash
+	git subtree push --prefix libft/ git@github.com:vlaward/libft.git main
+
+git branchs : (not sure about that. Modifie stv, je coco pas nn plus)
+branchs list normalement :
+    ->main   ;   Nahla    ;   Maya
+  command :
+    git branch <name> == ajoute une branche
+    git checkout <name> == tu passe sur la branche 'name'
+    git branch --list == self explenatory
+    git merge <branch> == merge la branche "branch" dans la branche actuel (souvent main du coup)
+     	
+
+notes :
+-> cat Makefile > txt ; cat txt = le prompt n'est pas a la ligne
