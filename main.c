@@ -39,23 +39,26 @@ int     execute_cmd(char **args)
 	return (0);
 }
 
-char	*redirects(char *itterand, char *start_cmd, t_stof *stofs)
+char	*redirects(char **itterand, char *start_cmd, t_stof *stofs)
 {
 	int	i;
+	int	offest;
 
 	i = 0;
-	while (itterand[i] == *itterand)
+	while ((*itterand)[i] == **itterand)
 		if (i++ >= 2)
 			return (fprintf(stderr, "error ya 3 fois le meme signe frero\n"), free(start_cmd), free(stofs), NULL);//a savoir dans quel sens je met les free (que je double free pas dans la fonction appellante)
 	while (stofs->str)
 	{
-		if (!ft_strncmp(stofs->str, itterand, i))
+		if (!ft_strncmp(stofs->str, *itterand, i))
 			break;
 		stofs++;
 	}
-	printf("wii uze ze fukchion : %s\n", stofs->str);
+	offest = *itterand - start_cmd - 1;
+	fprintf(stderr, "wii uze ze fukchion : %s\n", stofs->str);
 	if (stofs->func != NULL)
-		start_cmd = stofs->func(itterand, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
+		start_cmd = stofs->func(*itterand, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
+	*itterand = start_cmd + offest;
 	return (start_cmd);//pas besoin de gerer une erreur dans func, si il y en a une func renverras NULL. Donc c'est gerer auto
 }
 
@@ -122,7 +125,7 @@ char	**pars_command(char *cmd)
 			cmd = &cmd[i];
 		}
 		if (*cmd == '>' || *cmd == '<')
-			start_cmd = redirects(cmd, start_cmd, stofs);
+			start_cmd = redirects(&cmd, start_cmd, stofs);
 		if (start_cmd == NULL)
 			return (NULL);
 		cmd++;
