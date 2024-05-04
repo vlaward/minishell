@@ -14,7 +14,6 @@ int     execute_cmd(char **args)
 	char	**paths;
 	char	*tmp;
 	int		i;
-	int		status;
 
 	if (!args || *args == NULL)
 		exit(0);
@@ -127,7 +126,7 @@ char	**pars_command(char *cmd)
 		if (*cmd == '>' || *cmd == '<')
 			start_cmd = redirects(&cmd, start_cmd, stofs);
 		if (start_cmd == NULL)
-			return (NULL);
+			return (free(stofs), NULL);
 		cmd++;
 	}
 	free(stofs);

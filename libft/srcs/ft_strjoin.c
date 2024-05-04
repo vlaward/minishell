@@ -18,18 +18,18 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*ret;
 	int		n;
 
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
 	n = ft_strlen((char *)s1) + ft_strlen((char *)s2) + 1;
 	ret = malloc(n * sizeof(char));
 	if (!ret)
 		return (NULL);
 	n = 0;
-	while (*s1 != '\0')
+	while (s1 != NULL && *s1 != '\0')
 		ret[n++] = *s1++;
-	while (*s2 != '\0')
+	while (s2 != NULL && *s2 != '\0')
 		ret[n++] = *s2++;
 	ret[n] = '\0';
+	if (n == 0)
+		return (free(ret), NULL);
 	return (ret);
 }
 
