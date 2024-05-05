@@ -17,7 +17,7 @@ int     execute_cmd(char **args)
 
 	if (!args || *args == NULL)
 		exit(0);
-	if (!ft_strncmp(args[0], "./", 2))//gerer aussi le /bin/moncul : relativ path
+	if (!ft_strncmp(args[0], "./", 2))
 		return (execve(args[0], args, NULL), 127);
 	paths = ft_split(getenv("PATH"), ':');
 	tmp = ft_strjoin("/", args[0]);
@@ -53,8 +53,14 @@ char	*redirects(char **itterand, char *start_cmd, t_stof *stofs)
 			break;
 		stofs++;
 	}
-	offest = *itterand - start_cmd - 1;
 	fprintf(stderr, "wii uze ze fukchion : %s\n", stofs->str);
+	if (!ft_strcmp(stofs->str, "<<"))
+	{
+		fprintf(stderr, "bah pourtant ca vas la ?\n");
+		*itterand += 2;
+		return (start_cmd);
+	}
+	offest = *itterand - start_cmd - 1;
 	if (stofs->func != NULL)
 		start_cmd = stofs->func(*itterand, start_cmd);//comme ca il enleve d lui meme la partie qu'il aime pas
 	*itterand = start_cmd + offest;
@@ -129,6 +135,7 @@ char	**pars_command(char *cmd)
 			return (free(stofs), NULL);
 		cmd++;
 	}
+	start_cmd = limit_handler(start_cmd, start_cmd);
 	free(stofs);
 	return (ft_minisplit(env_handler(start_cmd)));
 }
@@ -171,7 +178,7 @@ int	parser(char *line, int flag)
 	if (*line == '\0')
 		return (free(line), 0);
 	status = 0;
-	start_cmd = line;
+	start_cmd = ft_strdup(line);
 	if (flag == FIRST_COMMAND)
 	{
 		chpid = fork();

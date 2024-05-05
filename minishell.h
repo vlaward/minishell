@@ -14,6 +14,7 @@
 # include <errno.h>
 # include "libft/libft.h"
 # include <errno.h>
+# include <signal.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
 # endif
@@ -31,3 +32,5 @@ char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
 char	*get_next_line(int fd);
 t_stof	*str_to_func();
+char	*limit_handler(char *itterand, char *start_cmd);
+char	*file_name_trim(char **str);

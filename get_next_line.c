@@ -78,8 +78,6 @@ char	*p2(char *buff, char *ret, int fd, int *d)
 			return (NULL);
 		cont = lelen(ret, 1, 0);
 	}
-	if (buff[i] == '\n')
-		ret[cont++] = '\n';
 	ret[cont] = '\0';
 	i += 1;
 	*d = i;

@@ -58,10 +58,11 @@ char	**ft_minisplit(char	*str)
 	if (!will_be_ret)
 		return (free(str), NULL);
 	ret = ft_calloc(ft_lstsize(will_be_ret) + 1, sizeof(char *));
-	i = 0;
-	while (ft_lstnodi(&will_be_ret, i))
-		ret[i++] = ft_lstnodi(&will_be_ret, i)->content;
+	i = -1;
+	while (ft_lstnodi(&will_be_ret, ++i))
+		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
 	ft_lstclear(&will_be_ret, NULL);
 	fprintf(stderr, "voici line : %s\n", str);
+	free(str);
 	return (ret);//normalement y'as un fdree str
 }

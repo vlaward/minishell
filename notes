@@ -1,7 +1,29 @@
-faut que je close les fd !!
-ca vas partir dans la struct hein ;-; je crois que j'ai plus trop le choix que de faire une struct
+ALORS :
+
+legende :
+[ ] = A faire
+[~] = En cours
+[X] = Fait
+
+Ce qu il reste a faire !
+-les built-in 		(check : [ ])
+-les signaux 		(check : [ ])
+-le $?				(check : [ ])
+-verifer les free	(check : [~])
 
 
-c'est con, apres execve y'as pas bvesoin de les close ;-;
-et y'as pas de raison que je l'open dans le minishel principale. seulemet dans ses enfants
-remplacer certains fprintf oar des writes
+====================================
+
+subtree commands : (ex : [libft])
+	git subtree pull --prefix libft/ git@github.com:vlaward/libft.git main --squash
+	git subtree push --prefix libft/ git@github.com:vlaward/libft.git main
+
+git branchs : (not sure about that. Modifie stv, je coco pas nn plus)
+branchs list normalement :
+    ->main   ;   Nahla    ;   Maya
+  command :
+    git branch <name> == ajoute une branche
+    git checkout <name> == tu passe sur la branche 'name'
+    git branch --list == self explenatory
+    git merge <branch> == merge la branche "branch" dans la branche actuel (souvent main du coup)
+     	
