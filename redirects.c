@@ -90,7 +90,7 @@ t_stof	*str_to_func()
 	ret[1].str = ">";
 	ret[1].func = &out_handler;
 	ret[2].str = "<<";
-	ret[2].func = NULL;
+	ret[2].func = &limit_handler;
 	ret[3].str = ">>";
 	ret[3].func = &append_handler;
 	ret[4].str = NULL;

@@ -9,6 +9,8 @@ Lists :
 -In ft_strncmp, added ft_strcmp. To compare without needing the length.
 -Added "ft_isin_table" to test if a value is in a table (may change it to isin mem with void pointer instead of int).
 -Added "ft_lstnodi" to find the node at a certain index (usefull sometimes).
+-added "ft_strjoin_n_free" that free both part of the join
+-Added "strndup", stdup avec une size
 
 Others :
 

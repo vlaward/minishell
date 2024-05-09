@@ -50,7 +50,7 @@ char	**ft_minisplit(char	*str)
 	char	**ret;
 
 	if (!str)
-		return (free(str), NULL);
+		return (NULL);
 	itterand = str;
 	will_be_ret = NULL;
 	while (*itterand != '\0')
@@ -63,6 +63,6 @@ char	**ft_minisplit(char	*str)
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
 	ft_lstclear(&will_be_ret, NULL);
 	fprintf(stderr, "voici line : %s\n", str);
-	free(str);
+	//  free(str);
 	return (ret);//normalement y'as un fdree str
 }

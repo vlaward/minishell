@@ -36,6 +36,8 @@ char	*ft_strndup(const char *s, size_t size)
 	char	*s2;
 	int		i;
 
+	if (size <= 0)
+		return (NULL);
 	s2 = malloc(sizeof(char) * (size + 1));
 	if (!s2)
 		return (NULL);

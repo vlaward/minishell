@@ -1,18 +1,26 @@
-NAME  = minishell
-MAIN  = main.c
-LIBS = -lreadline libft/libft.a
-SRCS = parser.o redirects.o ft_minisplit.o Les_Guillemets_UwU.o \
-		get_next_line.o limitter.o
-FLAGS = -g3 -Werror -Wextra -Wall
-
-%.o: %.c
-	@gcc $(FLAGS) -c $< -o $@
-
-all : libs $(SRCS)
-	@gcc $(MAIN) -o $(NAME) $(SRCS) $(LIBS) $(FLAGS)
-	@echo "\033[1;33mCompil complete !\033[m"
-
-
-libs :
-	@echo "\033[1;33mBoup Bip Bip !\033[m \033[1;35m\nCompiling libs :\033[m"
-	@make -s --no-print-directory -C libft
+Les_Guillemets_UwU.c
+Les_Guillemets_UwU.o
+Makefile
+README
+a.out
+ah
+ft_minisplit.c
+ft_minisplit.o
+get_next_line.c
+get_next_line.o
+libft
+main.c
+minishell
+minishell.h
+notes
+objs
+parser.c
+parser.o
+redirects.c
+redirects.o
+srcs
+test
+test.c
+test.sh
+txt
+ok nan mais je comrepnds

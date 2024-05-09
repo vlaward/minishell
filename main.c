@@ -93,6 +93,8 @@ char	*env_handler(char *start_cmd)
 	char	*itterand;
 	int		i;
 
+	if (!start_cmd)
+		return (NULL);
 	itterand = start_cmd;
 	while (*itterand != '\0')
 	{
@@ -156,7 +158,8 @@ int	fork_thing(char *line, char *start_cmd)
 		dup2(pipette[0], STDIN_FILENO);
 		close(pipette[0]);
 		close(pipette[1]);
-		waitpid(pid, &status, 0);
+		while(waitpid(pid, &status, WNOHANG) == 0)
+			continue;
 		return (parser(line + 1, NOT_FIRST_COMMAND));
 	}
 	else
@@ -178,18 +181,19 @@ int	parser(char *line, int flag)
 	if (*line == '\0')
 		return (free(line), 0);
 	status = 0;
-	start_cmd = ft_strdup(line);
 	if (flag == FIRST_COMMAND)
 	{
 		chpid = fork();
 		if (chpid)
 		{
-			waitpid(chpid, &status, 0);
+			while(waitpid(chpid, &status, WNOHANG) == 0)
+				continue;
 			status = WEXITSTATUS(status);
 			free(line);
 			return (0);//mettre status dans $?
 		}
 	}
+	start_cmd = ft_strdup(line);
 	while (*line != '|' && *line != '\0')
 		line++;
 	if (*line && *line == '|')
