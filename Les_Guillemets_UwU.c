@@ -41,6 +41,8 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	voyage = str;
 	while (*voyage)
 	{
+		if (!verif_tokken(str))
+			return (free(str), NULL);
 		pipe_good = et_le_pipe(str, voyage);
 		if (pipe_good != str)
 			return (pipe_good);

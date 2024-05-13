@@ -1,99 +1,104 @@
 #include "minishell.h"
 
-char	*file_name_trim(char **str)
-{
-	char	*ret;
-
-	while (**str == ' ')
-		(*str)++;
-	ret = *str;
-	while (**str && !ft_isin_table(**str, ">< "))
-		(*str)++;
-	if (*str == ret)
-		return (NULL);
-	return (ft_strndup(ret, *str - ret));
-}
-
-char	*out_handler(char *itterand, char *start_cmd)
+int	in_handler(char **start_cmd, int *index, int flag)
 {
 	int		fd;
 	char	*file;
+	char	*tmp;
 
-
-	*itterand++ = '\0';
-	file = file_name_trim(&itterand);
-	while (file != NULL)
-	{
-		fprintf(stderr, "this is the name : %s\n", file);
-		if (file == NULL)
-			return (fprintf(stderr, "there aint no file bud ;-;\n"), NULL);
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
-		free(file);
-		if (fd == -1)
-			return(printf("wait a minute... something aint right\n"), NULL);
-		else if (dup2(fd, STDOUT_FILENO) == -1)
-			return (NULL);
-		close(fd);
-		file = file_name_trim(&itterand);
-	}
-	return (ft_strjoin_n_free(start_cmd, ft_strdup(itterand)));
-}
-
-char	*in_handler(char *itterand, char *start_cmd)
-{
-	int		fd;
-	char	*file;
-
-
-	*itterand++ = '\0';
-	file = file_name_trim(&itterand);
+	file = file_name_trim(start_cmd, index);
 	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
-		return (fprintf(stderr, "there aint no file bud ;-;\n"), NULL);
-	fd = open(file, O_RDONLY);
-	free(file);
+	{
+		if (*index != ' ')
+			fprintf(stderr, "there aint no file bud ;-;\n");
+		return (0);
+	}
+	fd = open(file, O_RDONLY);//si line too longue on peu mettre un define/cree un mod_t 00644
 	if (fd == -1)
-		return(printf("wait a minute... something aint right\n"), NULL);
-	else if (dup2(fd, STDIN_FILENO) == -1)
-		return (NULL);
+		return(perror("minishell"), 0);
+	else if (flag == REDIRECT)
+		if (dup2(fd, STDIN_FILENO) == -1)
+			return (0);
 	close(fd);
-	return (ft_strjoin_n_free(start_cmd, ft_strdup(itterand)));
+	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
+	*index -= ft_strlen(file) + 2;
+	(free(*start_cmd), free(file));
+	*start_cmd = tmp;
+	return (1);
 }
 
-char	*append_handler(char *itterand, char *start_cmd)
+int	append_handler(char **start_cmd, int *index, int flag)
 {
 	int		fd;
-	char	*file;//je pense que ca fait bcp de malloc pour rien. On pourrai avancer jusqu'au dernier mot, free apres le dernier mot, mettre l'iterand en option et free la itterand. bref
+	char	*file;
+	char	*tmp;
 
-
-	*itterand = '\0';
-	itterand += 2;
-	file = file_name_trim(&itterand);
+	file = file_name_trim(start_cmd, index);
+	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
-		return (fprintf(stderr, "there aint no file bud ;-;\n"), NULL);
-	fd = open(file, O_RDWR| O_APPEND | O_CREAT, S_IRWXO);
+	{
+		if (*index != ' ')
+			fprintf(stderr, "there aint no file bud ;-;\n");
+		return (0);
+	}
+	fd = open(file, O_RDWR| O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
 	if (fd == -1)
-		return(printf("wait a minute... something aint right\n"), NULL);
-	else if (dup2(fd, STDOUT_FILENO) == -1)//a voir si il faut pas utiliser STDOUT_FILENO en miniscule j'en suis presque sur
-		return (NULL);
+		return(perror("minishell"), 0);
+	else if (flag == REDIRECT)
+		if (dup2(fd, STDOUT_FILENO) == -1)
+			return (perror("minishell"), 0);
 	close(fd);
-	return (ft_strjoin_n_free(start_cmd, ft_strdup(itterand)));
+	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
+	*index -= ft_strlen(file) + 2;
+	(free(*start_cmd), free(file));
+	*start_cmd = tmp;
+	return (1);
 }
 
-t_stof	*str_to_func()
+int	out_handler(char **start_cmd, int *index, int flag)
 {
-	t_stof	*ret;
+	int		fd;
+	char	*file;
+	char	*tmp;
 
-	ret = malloc(sizeof(t_stof) * 6);
-	ret[0].str = "<";
-	ret[0].func = &in_handler;
-	ret[1].str = ">";
-	ret[1].func = &out_handler;
-	ret[2].str = "<<";
-	ret[2].func = &limit_handler;
-	ret[3].str = ">>";
-	ret[3].func = &append_handler;
-	ret[4].str = NULL;
-	ret[4].func = NULL;
-	return (ret);
+	file = file_name_trim(start_cmd, index);
+	fprintf(stderr, "this is the name : %s\n", file);
+	if (file == NULL)
+	{
+		if (*index != ' ')
+			fprintf(stderr, "there aint no file bud ;-;\n");
+		return (0);
+	}
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
+	if (fd == -1)
+		return(perror("minishell"), 0);
+	else if (flag == REDIRECT)
+		if (dup2(fd, STDOUT_FILENO) == -1)
+			return (0);
+	close(fd);
+	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
+	*index -= ft_strlen(file) + 2;
+	(free(*start_cmd), free(file));
+	*start_cmd = tmp;
+	return (1);
+}
+
+
+int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
+{
+	int	i;
+
+	i = 1 + ((*start_cmd)[*index] == (*start_cmd)[*index + 1]);
+	while (stofs->str)
+	{
+		if (!ft_strncmp(stofs->str, &((*start_cmd)[*index]), i))
+			break;
+		stofs++;
+	}
+	fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
+	if (stofs->func != NULL)
+		if (!stofs->func(start_cmd, index, flag))
+			return (0);
+	return (1);
 }

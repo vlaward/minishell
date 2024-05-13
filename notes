@@ -11,7 +11,7 @@ Ce qu il reste a faire !
 -le $?				(check : [ ])
 -verifer les free	(check : [~])<= surtout sur les erreures.
 -handle {";';$}
-	in filesname	(check : [ ])
+	in filesname	(check : [~])
 
 ====================================
 
@@ -28,3 +28,6 @@ branchs list normalement :
     git branch --list == self explenatory
     git merge <branch> == merge la branche "branch" dans la branche actuel (souvent main du coup)
      	
+notes :
+-les getenv, pas besoin de les free pars ce que ca pointe vers un endroit dans la memoire deja
+-perrror regle beaucoup de probleme 

@@ -36,9 +36,12 @@ char	*ft_strndup(const char *s, size_t size)
 	char	*s2;
 	int		i;
 
-	if (size <= 0)
+	if (size <= 0 || !s)
 		return (NULL);
-	s2 = malloc(sizeof(char) * (size + 1));
+	if (size <= ft_strlen(s))
+		s2 = malloc(sizeof(char) * (size + 1));
+	else
+		s2 = malloc(sizeof(char) * (ft_strlen(s) + 1));
 	if (!s2)
 		return (NULL);
 	i = 0;
