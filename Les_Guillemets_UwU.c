@@ -20,11 +20,11 @@ char	*et_le_pipe(char *str, char *itterand)
 	if (*itterand != '|')
 		return (str);
 	itterand++;
-	while (*itterand && *itterand == ' ')
+	while (*itterand && (*itterand == ' ' || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
 		return(bah_ferme_les(str));
-	if (ft_isin_table(*itterand, "|<>;|"))//maybe more
+	if (ft_isin_table(*itterand, "|<>;"))//maybe more
 	{
 		add_history(str);
 		return(fprintf(stderr, "syntax error near unexpected token \'%c\'\n", *str), free(str), NULL);

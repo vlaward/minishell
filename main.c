@@ -68,7 +68,6 @@ int	fork_thing(char *line, char *start_cmd)
 	int		pipette[2];
 
 	pipe(pipette);
-	fprintf(stderr, "genre ca vas pas la\n");
 	*line = '\0';
 	pid = fork();
 	if (pid == -1)
@@ -114,6 +113,7 @@ int	parser(char *line, int flag)
 		}
 	}
 	start_cmd = ft_strdup(line);
+	line = start_cmd;
 	while (*line != '|' && *line != '\0')
 		line++;
 	if (*line && *line == '|')
