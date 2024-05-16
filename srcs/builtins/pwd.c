@@ -1,10 +1,8 @@
 #include "minishell.h"
 
-void	__pwd(t_env *env)
+void	ft_pwd(void)
 {
-	char	s[100];
+	char	s[100]; //create buffer to store return value of getcwd
 
-	(void)env;
 	printf("%s\n", getcwd(s, 100));
-	g_ret = 0;
 }

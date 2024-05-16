@@ -1,5 +1,14 @@
+#include "minishell.h"
+
+// typedef struct s_env
+// {
+// 	char *key;
+// 	char *value;
+// 	struct s_env *next;
+// } t_env;
+
 // sort before print
-static void	__export_print(t_env *lst)
+static void	fr_export_print(t_env *lst)
 {
 	while (lst)
 	{
@@ -11,46 +20,44 @@ static void	__export_print(t_env *lst)
 	}
 }
 
-static void	__export_set(char *str, t_env *lst)
+static void	ft_export_set(char *str, t_env *lst)
 {
 	t_env	*tmp;
 
 	tmp = lst;
-	while (lst && __strcmp_key(lst->key, __get_key(str)))
+	while (lst && ft_strcmp_key(lst->key, ft_get_key(str)))
 		lst = lst->next;
 	if (lst)
 	{
-		if (__strcmp_key(str, __get_key(str)))
+		if (ft_strcmp_key(str, ft_get_key(str)))
 		{
 			free(lst->value);
-			lst->value = __get_value(str);
+			lst->value = ft_get_value(str);
 		}
 	}
 	else
 	{
 		lst = tmp;
-		__lstadd_back(&lst, __lstnew(str));
-		lst = __lstlast(lst);
+		ft_lstadd_back(&lst, ft_lstnew(str)); // does it init the value well ?
+		lst = ft_lstlast(lst);
 	}
-	g_ret = 0;
 }
 
-void	__export(char **av, t_env *lst)
+void	ft_export(char **av, t_env *lst)
 {
 	int		i;
 
-	if (!av[0])
-		__export_print(lst);
-	i = 0;
+	if (!av[1])
+		ft_export_print(lst);
+	i = 1;
 	while (av[i])
 	{
-		if (!__isvar(__get_key(av[i])))
+		if (!ft_isvar(ft_get_key(av[i]))) // is it freed ?
 		{
 			printf("export: \'%s\': not a valid identifier\n", av[i]);
-			g_ret = 1;
 		}
 		else
-			__export_set(av[i], lst);
+			ft_export_set(av[i], lst);
 		i++;
 	}
 }

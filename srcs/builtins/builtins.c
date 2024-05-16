@@ -6,12 +6,12 @@ int	ft_is_builtins(char *av)
 		return (1);
 	else if (!ft_strcmp(av, "env"))
 		return (1);
-	// else if (!ft_strcmp(av, "unset"))
-	// 	return (1);
-	// else if (!ft_strcmp(av, "export"))
-	// 	return (1);
-	// else if (!ft_strcmp(av, "pwd"))
-	// 	return (1);
+	else if (!ft_strcmp(av, "unset"))
+		return (1);
+	else if (!ft_strcmp(av, "export"))
+		return (1);
+	else if (!ft_strcmp(av, "pwd"))
+		return (1);
 	// else if (!ft_strcmp(av, "cd"))
 	// 	return (1);
 	// else if (!ft_strcmp(av, "exit"))
@@ -21,20 +21,22 @@ int	ft_is_builtins(char *av)
 }
 
 // add env to all of them
-void	ft_builtins(char **av)
+void	ft_builtins(char **av, char **env)
 {
+	// fct to change env to list
 	if (!ft_strcmp(av[0], "echo"))
 		ft_echo(av);
 	else if (!ft_strcmp(av[0], "env"))
-		ft_env(av); // need to add env instead of av
-	// else if (!ft_strcmp(av[0], "unset"))
-	// 	ft_unset(av);
-	// else if (!ft_strcmp(av[0], "export"))
-	// 	ft_export(av);
-	// else if (!ft_strcmp(av[0], "pwd"))
-	// 	ft_pwd(av);
+		ft_env(env_list);
+	else if (!ft_strcmp(av[0], "unset"))
+		ft_unset(av, env_list);
+	else if (!ft_strcmp(av[0], "export"))
+		ft_export(av);
+	else if (!ft_strcmp(av[0], "pwd"))
+		ft_pwd();
 	// else if (!ft_strcmp(av[0], "cd"))
 	// 	ft_cd(av);
 	// else if (!ft_strcmp(av[0], "exit"))
 	// 	ft_exit(av);
+	// fct to change env to tab
 }

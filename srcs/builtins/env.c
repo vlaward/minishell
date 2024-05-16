@@ -1,13 +1,15 @@
 #include "minishell.h"
 
 /*
+// a mettre dans .h
+////////////////////
 typedef struct s_env
 {
 	char *key;
 	char *value;
 	struct s_env *next;
 } t_env;
-
+////////////////////
 // if env en list
 void	ft_env(t_env *env)
 {
