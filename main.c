@@ -7,6 +7,8 @@
 #define NOT_FIRST_COMMAND 1
 #define REDIRECT 1
 
+extern int G_sig_catcher;
+
 int	parser(char *line, int flag);
 
 int     execute_cmd(char **args)
@@ -45,16 +47,19 @@ char	**pars_command(char *cmd)
 
 	stofs = str_to_func();
 	index = 0;
+	here_doc(&cmd);
 	while (cmd[index])
 	{
 		if (cmd[index] == '$')
 			env_handler(&cmd, &index);
-		if (cmd[index] == '\"' || cmd[index] == '\'' )
+		else if (cmd[index] == '\"' || cmd[index] == '\'' )
 			guille_handler(&cmd, &index, 0);
-		if (cmd[index] == '>' || cmd[index] == '<')
+		else if (cmd[index] == '>' || cmd[index] == '<')
+		{
 			if (!redirects(&cmd, &index, stofs, REDIRECT))
 				return (free(stofs), free(cmd), NULL);
-		if (cmd[index] != '\0')
+		}
+		else if (cmd[index] != '\0')
 			index++;  
 	}
 	free(stofs);
@@ -105,6 +110,8 @@ int	parser(char *line, int flag)
 		chpid = fork();
 		if (chpid)
 		{
+			if (!gere_sig(0))
+				return (0);
 			while(waitpid(chpid, &status, WNOHANG) == 0)
 				continue;
 			status = WEXITSTATUS(status);
@@ -112,6 +119,8 @@ int	parser(char *line, int flag)
 			return (0);//mettre status dans $?
 		}
 	}
+	if (!gere_sig(EXECUTING_CMD))
+		return (0);
 	start_cmd = ft_strdup(line);
 	line = start_cmd;
 	while (*line != '|' && *line != '\0')
@@ -132,6 +141,8 @@ int	main()
 	prompt = NULL;
 	while (1)// add signal global test
 	{
+		if (!gere_sig(READING_LINE))
+			return (0);
 		ft_bzero(cwd, sizeof(char) * PATH_MAX);
 		getcwd(cwd, PATH_MAX * sizeof(char));
 		if (ft_strncmp(cwd, prompt, ft_strlen(cwd)))
@@ -140,14 +151,14 @@ int	main()
 			prompt = ft_strjoin(cwd, "> ");
 		}
 		line = readline(prompt);
-		line = tatu_ferme_tes_guillemets(line);//est ce que reqdline plante ?
-		if (line)
-		{
-			add_history(line);
-			if (all_good(ft_strdup(line)))
-				parser(line, FIRST_COMMAND);
-		}
+		if (!line)
+			return (0);
+		line = tatu_ferme_tes_guillemets(line);
+		add_history(line);
+		if (all_good(ft_strdup(line)))
+			parser(line, FIRST_COMMAND);
 		rl_on_new_line();
+		G_sig_catcher = 0;
 	}
 	(free(cwd), free(prompt));
 	return (0);

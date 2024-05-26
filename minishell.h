@@ -19,6 +19,9 @@
 #  define BUFFER_SIZE 20
 # define REDIRECT 1
 # define F_NAME_TRIM 1
+# define H_DOC_TRIM 2
+# define READING_LINE 1
+# define EXECUTING_CMD 2
 # endif
 #endif
 
@@ -27,6 +30,8 @@ typedef struct s_stof
 	char	*str;
 	int		(*func)(char **, int *, int);
 }t_stof;
+
+extern int G_sig_catcher;
 
 t_list	*parse(char *line);
 int		executeur(t_list *list);
@@ -49,4 +54,9 @@ int		out_handler(char **start_cmd, int *index, int flag);
 int		append_handler(char **start_cmd, int *index, int flag);
 int		in_handler(char **start_cmd, int *index, int flag);
 char	*limit_handler(char *itterand, char *start_cmd);
-char	*file_name_trim(char **start_cmd, int *index);
+char	*trim(char **start_cmd, int *index, int flag);
+int		here_doc(char **start_cmd);
+
+//signals
+
+int		gere_sig(int flag);

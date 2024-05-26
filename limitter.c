@@ -29,11 +29,11 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 
 	i = ft_lstsize(towrite) - ft_lstsize(limitter);
 	if (i < 0)
-		return (NULL);
+		return (fprintf(stderr, "ceti lo ?\n"), NULL);
 	tmp = ft_lstnodi(&towrite, i);
 	while (tmp != NULL)
 	{
-		if (ft_strcmp(tmp->content, limitter->content))
+		if (ft_strcmp(tmp->content, limitter->content) != 0)
 			return (NULL);
 		tmp = tmp->next;
 		limitter = limitter->next;
@@ -46,49 +46,57 @@ void	limitter_redirect(pid_t in, pid_t pipette[2],  t_list *limitter)
 	t_list	*towrite;
 
 	towrite = NULL;
-	if (isatty(in))
-		ft_lstadd_front(&towrite, ft_lstnew(readline("> ")));
-	else
-		ft_lstadd_front(&towrite, ft_lstnew(get_next_line(in)));
+	if (!isatty(in))
+		return ;
+	ft_lstadd_front(&towrite, ft_lstnew(readline("> ")));
 	while (towrite != NULL)
 	{
 		do_we_write(&towrite, maybe_write_it(towrite, limitter), pipette);
 		if (towrite != NULL)
-		{
-			if (isatty(in))
 				ft_lstadd_front(&towrite, ft_lstnew(readline("> ")));
-			else
-				ft_lstadd_front(&towrite, ft_lstnew(get_next_line(in)));
-		}
 	}
 }
 
-char	*limit_handler(char *itterand, char *start_cmd)
+int	add_to_limitter(char **start_cmd, int *index, t_list **limitter)
+{
+	char	*toadd;
+	int		size_soustraire;
+
+	(*start_cmd)[*index] = '\0';
+	*index += 1; 
+	toadd = trim(start_cmd, index, H_DOC_TRIM);
+	size_soustraire = ft_strlen(toadd);
+	fprintf(stderr, "voici le limitter : \'%s\'\n", toadd);
+	if (toadd == NULL || *toadd == '\0')
+		return (fprintf(stderr, "syntax error my cul\n"), 0);
+	ft_lstadd_front(limitter, ft_lstnew(toadd));
+	toadd = *start_cmd;
+	*start_cmd = ft_strjoin(*start_cmd, &((*start_cmd)[*index]));
+	free(toadd);
+	*index -= size_soustraire;
+	return (1);
+}
+
+int	here_doc(char **start_cmd)
 {
 	t_list	*limitter;
-	char	*toadd;
 	pid_t	pipette[2];
+	int		index;
 
-	while (*itterand != '<')
-		if (*itterand++ == '\0')
-			return (start_cmd);
+	index = 0;
 	limitter = NULL;
-	fprintf(stderr, "la on a itterand %s \n", itterand);
-	while (*itterand && *itterand == '<')
+	while ((*start_cmd)[index])
 	{
-		*itterand = '\0';
-		itterand += 2; 
-		toadd = file_name_trim(&itterand);
-		if (toadd == NULL || *toadd == '\0')
-			return (fprintf(stderr, "there aint no limitter bud ;-;\n"), 	NULL);
-		ft_lstadd_front(&limitter, ft_lstnew(toadd));
-		while (*itterand == ' ')
-			itterand++;
+		if (ft_strncmp(&((*start_cmd)[index]), "<<", 2) == 0)
+			if (!add_to_limitter(start_cmd, &index, &limitter))
+				return (0);
+		if ((*start_cmd)[index])
+			index += 1;
 	}
 	if (limitter == NULL)
-		return (fprintf(stderr, "there aint no limitter bud ;-;\n"), NULL);
+		return (fprintf(stderr, "c'est pas une erreur y'as jsute pass de here doc\n"), 0);
 	pipe(pipette);
 	limitter_redirect(STDIN_FILENO, pipette, limitter);
 	free(limitter);
-	return (ft_strjoin_n_free(start_cmd, ft_strdup(itterand)));
+	return (1);
 }

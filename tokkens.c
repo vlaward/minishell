@@ -40,7 +40,7 @@ int		guille_handler(char **start_cmd, int *i, int flag)
 	j = *i + 1;
 	while ((*start_cmd)[j] && (*start_cmd)[j] != (*start_cmd)[*i])
 	{
-		if ((*start_cmd)[*i] == '\"' && (*start_cmd)[j] == '$')
+		if (flag != H_DOC_TRIM && (*start_cmd)[*i] == '\"' && (*start_cmd)[j] == '$')
 			if (env_handler(start_cmd, &j) == -1 && flag == F_NAME_TRIM)
 				return (-1);
 		if ((*start_cmd)[j] != '\0')
@@ -54,7 +54,7 @@ int		guille_handler(char **start_cmd, int *i, int flag)
 	return (j - 1);
 }
 
-char	*file_name_trim(char **start_cmd, int *index)
+char	*trim(char **start_cmd, int *index, int flag)
 {
 	int		start_index;
 	int		start_name_index;
@@ -67,10 +67,10 @@ char	*file_name_trim(char **start_cmd, int *index)
 	while ((*start_cmd)[*index] != '\0' && (*start_cmd)[*index] != ' ')
 	{
 		if ((*start_cmd)[*index] == '\'' || (*start_cmd)[*index] == '\"')
-			*index = guille_handler(start_cmd, index, F_NAME_TRIM);
+			*index = guille_handler(start_cmd, index, flag);
 		else if (ft_isin_table((*start_cmd)[*index], "<>|"))
 			break;
-		else if ((*start_cmd)[*index] == '$')
+		else if (flag != H_DOC_TRIM && (*start_cmd)[*index] == '$')
 			*index = env_handler(start_cmd, index);
 		else//if ((*start_cmd)[*index] && (*start_cmd)[*index] != ' ') <== je suis pas sure de pouvoir l'enlever mais je crois bien
 			*index += 1;
@@ -93,11 +93,9 @@ t_stof	*str_to_func()
 	ret[1].func = &out_handler;
 	ret[2].str = ">>";
 	ret[2].func = &append_handler;
-	ret[3].str = NULL;
+	ret[3].str = "<<";
 	ret[3].func = NULL;
-	// ret[2].str = "<<";
-	// ret[2].func = &limit_handler;
-	// ret[4].str = NULL;
-	// ret[4].func = NULL;
+	ret[4].str = NULL;
+	ret[4].func = NULL;
 	return (ret);
 }

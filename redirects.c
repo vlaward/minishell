@@ -6,7 +6,7 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	char	*file;
 	char	*tmp;
 
-	file = file_name_trim(start_cmd, index);
+	file = trim(start_cmd, index, F_NAME_TRIM);
 	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
@@ -34,7 +34,9 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	char	*file;
 	char	*tmp;
 
-	file = file_name_trim(start_cmd, index);
+	(*start_cmd)[*index] = '\0';
+	*index += 1;
+	file = trim(start_cmd, index, F_NAME_TRIM);
 	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
@@ -62,7 +64,7 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	char	*file;
 	char	*tmp;
 
-	file = file_name_trim(start_cmd, index);
+	file = trim(start_cmd, index, F_NAME_TRIM);
 	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
@@ -95,6 +97,11 @@ int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 		if (!ft_strncmp(stofs->str, &((*start_cmd)[*index]), i))
 			break;
 		stofs++;
+	}
+	if (ft_strncmp(stofs->str, "<<", 2) == 0)
+	{
+		*index += 1;
+		return (fprintf(stderr, "je ne comprends pas\n"), 1);
 	}
 	fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
 	if (stofs->func != NULL)

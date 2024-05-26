@@ -38,6 +38,8 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	char	this_one;
 	char	*pipe_good;
 
+	// if (!str)
+	//  	return (NULL);
 	voyage = str;
 	while (*voyage)
 	{
