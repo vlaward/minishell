@@ -16,7 +16,7 @@
 int	ft_isin_table(int value, char *table)
 {
 	char	*tmp;
-	
+
 	if (!table)
 		return (-1);
 	tmp = table;

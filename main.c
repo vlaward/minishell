@@ -153,10 +153,13 @@ int	main()
 		line = readline(prompt);
 		if (!line)
 			return (0);
-		line = tatu_ferme_tes_guillemets(line);
-		add_history(line);
-		if (all_good(ft_strdup(line)))
-			parser(line, FIRST_COMMAND);
+		if (line)
+		{
+			line = tatu_ferme_tes_guillemets(line);
+			add_history(line);
+			if (all_good(ft_strdup(line)))
+				parser(line, FIRST_COMMAND);
+		}
 		rl_on_new_line();
 		G_sig_catcher = 0;
 	}

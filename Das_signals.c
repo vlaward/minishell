@@ -31,7 +31,7 @@ int	gere_sig(int flag)
 
 	sa_c.sa_handler	 = sa_c_waiting_handler;
 	if (flag == EXECUTING_CMD)
-		sa_c.sa_handler	 = sa_exit_handler;
+		sa_d.sa_handler	 = sa_exit_handler;
 	if (flag == READING_LINE)
 		sa_c.sa_handler	 = sa_c_handler;
 	sa_d.sa_handler = sa_exit_handler;
