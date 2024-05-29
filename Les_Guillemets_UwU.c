@@ -9,6 +9,8 @@ char	*bah_ferme_les(char *str)
 	char	*and_another_one;
 
 	one = readline("> ");
+	if (!one)
+		return (NULL);
 	another_one = ft_strjoin(str, "\n");
 	and_another_one = ft_strjoin(another_one, one);
 	(free(one), free(another_one), free(str));
@@ -38,13 +40,13 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	char	this_one;
 	char	*pipe_good;
 
-	// if (!str)
-	//  	return (NULL);
+	if (!str)
+	  	return (NULL);
 	voyage = str;
 	while (*voyage)
 	{
-		if (!verif_tokken(str))
-			return (free(str), NULL);
+		// if (!verif_tokken(str))
+		// 	return (free(str), NULL);
 		pipe_good = et_le_pipe(str, voyage);
 		if (pipe_good != str)
 			return (pipe_good);
@@ -54,7 +56,11 @@ char	*tatu_ferme_tes_guillemets(char *str)
 			while (*voyage && *voyage != this_one)
 				voyage++;
 			if (*voyage == '\0')
-				return (bah_ferme_les(str));
+			{
+				voyage = bah_ferme_les(str);
+				if (voyage == NULL)
+					return (fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\n syntax error unexpected end of file\n"), NULL);
+			}
 		}
 		voyage++;
 	}

@@ -41,20 +41,30 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 	return(ft_lstnodi(&towrite, i));
 }
 
-void	limitter_redirect(pid_t in, pid_t pipette[2],  t_list *limitter)
+int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 {
 	t_list	*towrite;
+	char	*content;
 
 	towrite = NULL;
-	if (!isatty(in))
-		return ;
-	ft_lstadd_front(&towrite, ft_lstnew(readline("> ")));
+	// if (!isatty(in))
+	// 	return (0);
+	content= readline("> ");
+	if (!content)
+		return (fprintf(stderr, "error mon cul at liogne %d :", tputs("\033[6n", 1, putchar)), fprintf(stderr, "\n"), 0);
+	ft_lstadd_front(&towrite, ft_lstnew(content));
 	while (towrite != NULL)
 	{
 		do_we_write(&towrite, maybe_write_it(towrite, limitter), pipette);
 		if (towrite != NULL)
-				ft_lstadd_front(&towrite, ft_lstnew(readline("> ")));
+		{
+			content= readline("> ");
+			if (!content)
+				return (fprintf(stderr, "error mon cul at liogne :\n"), 0);
+			ft_lstadd_front(&towrite, ft_lstnew(content));
+		}
 	}
+	return (1);
 }
 
 int	add_to_limitter(char **start_cmd, int *index, t_list **limitter)
@@ -94,9 +104,10 @@ int	here_doc(char **start_cmd)
 			index += 1;
 	}
 	if (limitter == NULL)
-		return (fprintf(stderr, "c'est pas une erreur y'as jsute pass de here doc\n"), 0);
+		return (fprintf(stderr, "c'est pas une erreur y'as jsute pass de here doc\n"), 1);
 	pipe(pipette);
-	limitter_redirect(STDIN_FILENO, pipette, limitter);
+	if (!limitter_redirect(pipette, limitter))
+		return (ft_lstclear(&limitter, &free), free(limitter), 0);
 	free(limitter);
 	return (1);
 }

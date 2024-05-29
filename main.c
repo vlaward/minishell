@@ -7,8 +7,6 @@
 #define NOT_FIRST_COMMAND 1
 #define REDIRECT 1
 
-extern int G_sig_catcher;
-
 int	parser(char *line, int flag);
 
 int     execute_cmd(char **args)
@@ -47,7 +45,8 @@ char	**pars_command(char *cmd)
 
 	stofs = str_to_func();
 	index = 0;
-	here_doc(&cmd);
+	if (!here_doc(&cmd))
+		return (free(cmd), NULL);
 	while (cmd[index])
 	{
 		if (cmd[index] == '$')
@@ -151,17 +150,19 @@ int	main()
 			prompt = ft_strjoin(cwd, "> ");
 		}
 		line = readline(prompt);
+		fprintf(stderr, "1 === pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (!line)
-			return (0);
+			return (127);
+		line = tatu_ferme_tes_guillemets(line);
+		fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (line)
 		{
-			line = tatu_ferme_tes_guillemets(line);
 			add_history(line);
+			// fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 			if (all_good(ft_strdup(line)))
 				parser(line, FIRST_COMMAND);
+			rl_on_new_line();
 		}
-		rl_on_new_line();
-		G_sig_catcher = 0;
 	}
 	(free(cwd), free(prompt));
 	return (0);

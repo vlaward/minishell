@@ -14,12 +14,12 @@ int	verif_tokken(char *line)
 			tokkened = ft_isin_table(*line, "<>|");
 		if (tokkened)
 			tokkened = (int)*line;
-		if (*(line + 1) == *line && (*line == '>' || *line =='<'))
+		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
 			line++;
 		line++;
 	}
 	if (tokkened && tokkened != '|')
-		return (fprintf(stderr, "minishell: errror near unexpected tokken 'newline'\n"), 0);
+		return (fprintf(stderr, "minishell: errror nnn near unexpected tokken 'newline'\n"), 0);
 	return (1);
 }
 
@@ -38,7 +38,7 @@ int	all_good(char *line)
 			if (!redirects(&line, &index, stofs, 0))
 				return (free(stofs), free(line), 0);
 		if (line[index] != '\0')
-			index++;  
+			index++;
 	}
 	(free(stofs), free(line));
 	return (1);

@@ -3,7 +3,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
-# include <sys/ioctl.h>
 # include <unistd.h>
 # include <limits.h>
 # include <readline/readline.h>
@@ -11,7 +10,9 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <errno.h>
+#include <termios.h>
+#include <termcap.h>
+#include <sys/ioctl.h>
 # include "libft/libft.h"
 # include <errno.h>
 # include <signal.h>
