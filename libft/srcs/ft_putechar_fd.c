@@ -13,6 +13,9 @@
 #include <unistd.h>
 #include "../libft.h"
 
+int	ft_putechar(int ch) {
+	return write(1, &ch, 1);
+}
 void	ft_putechar_fd(char c, int fd)
 {
 	write(fd, &c, 1);

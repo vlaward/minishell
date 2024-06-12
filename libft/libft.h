@@ -46,6 +46,7 @@ char		*ft_itoa(int n);
 char		*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char		**ft_split(const char *str, char sep);
 int			ft_bzero(void *s, size_t n);
+int			ft_putechar(int c);
 void		ft_putechar_fd(char c, int fb);
 void		ft_putendl_fd(char *s, int fd);
 void		ft_putenbr_fd(int nb, int fd);

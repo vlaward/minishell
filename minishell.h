@@ -10,10 +10,11 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-#include <termios.h>
-#include <termcap.h>
-#include <sys/ioctl.h>
+# include <termios.h>
+# include <termcap.h>
+# include <sys/ioctl.h>
 # include "libft/libft.h"
+# include <linux/uinput.h>
 # include <errno.h>
 # include <signal.h>
 # ifndef BUFFER_SIZE
@@ -23,6 +24,7 @@
 # define H_DOC_TRIM 2
 # define READING_LINE 1
 # define EXECUTING_CMD 2
+# define GUILLEMETS 3
 # endif
 #endif
 

@@ -8,9 +8,14 @@ char	*bah_ferme_les(char *str)
 	char	*another_one;
 	char	*and_another_one;
 
+	if (!gere_sig(GUILLEMETS))
+		return (NULL);//code d'erreur ? Peut etre deja gere pars l'aut. free peuit etre aussi ?
+	fprintf(stderr, "mhhh I see I see\n");
 	one = readline("> ");
 	if (!one)
-		return (NULL);
+		return (add_history(str), fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\n syntax error unexpected end of file\n"), NULL);
+	if (!gere_sig(READING_LINE))
+		return (0);
 	another_one = ft_strjoin(str, "\n");
 	and_another_one = ft_strjoin(another_one, one);
 	(free(one), free(another_one), free(str));
@@ -45,24 +50,20 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	voyage = str;
 	while (*voyage)
 	{
-		// if (!verif_tokken(str))
-		// 	return (free(str), NULL);
 		pipe_good = et_le_pipe(str, voyage);
 		if (pipe_good != str)
 			return (pipe_good);
 		if (*voyage == '\"' || *voyage == '\'')
 		{
+			//printf("voici la ligne awawawaw : %s  : %s\n", str, voyage);
 			this_one = *voyage++;
-			while (*voyage && *voyage != this_one)
+			while (*(voyage + 1) && *voyage != this_one)
 				voyage++;
-			if (*voyage == '\0')
-			{
-				voyage = bah_ferme_les(str);
-				if (voyage == NULL)
-					return (fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\n syntax error unexpected end of file\n"), NULL);
-			}
+			if (*voyage != this_one)
+				return (bah_ferme_les(str));
 		}
 		voyage++;
 	}
+	add_history(str);
 	return (str);
 }

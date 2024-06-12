@@ -150,15 +150,14 @@ int	main()
 			prompt = ft_strjoin(cwd, "> ");
 		}
 		line = readline(prompt);
-		fprintf(stderr, "1 === pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (!line)
 			return (127);
 		line = tatu_ferme_tes_guillemets(line);
 		fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (line)
 		{
-			add_history(line);
-			// fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
+			//add_history(line);
+			fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 			if (all_good(ft_strdup(line)))
 				parser(line, FIRST_COMMAND);
 			rl_on_new_line();

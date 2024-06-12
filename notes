@@ -9,7 +9,7 @@ Ce qu il reste a faire !
 -les built-in 		(check : [ ])
 -les signaux 		(check : [ ])
 -le $?				(check : [ ])
--verifer les free	(check : [~])<= surtout sur les erreures.
+-verifer les free	(check : [~])<= surtout sur les erreures. "free avec rl_clear_history ?"
 -handle {";';$}
 	in filesname	(check : [~])
 
