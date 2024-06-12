@@ -151,7 +151,7 @@ int	main()
 		}
 		line = readline(prompt);
 		if (!line)
-			return (127);
+			break ; //127
 		line = tatu_ferme_tes_guillemets(line);
 		fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (line)
@@ -163,6 +163,7 @@ int	main()
 			rl_on_new_line();
 		}
 	}
+	rl_clear_history();
 	(free(cwd), free(prompt));
 	return (0);
 }

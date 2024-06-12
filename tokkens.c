@@ -75,7 +75,7 @@ char	*trim(char **start_cmd, int *index, int flag)
 		else//if ((*start_cmd)[*index] && (*start_cmd)[*index] != ' ') <== je suis pas sure de pouvoir l'enlever mais je crois bien
 			*index += 1;
 		if (*index == -1)
-			return (fprintf(stderr, "Ambiguous redirects\n"), NULL);
+			return (ft_putestr_fd("Ambiguous redirects\n", errno), NULL);
 	}
 	(*start_cmd)[start_index++] = '\0';
 	fprintf(stderr, "purtant ca donne ca: %d\n", *index - start_name_index);

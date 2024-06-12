@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 16:50:30 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/02/06 17:20:55 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/06/12 07:39:24 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef struct s_list
 }	t_list;
 
 int			ft_isalpha(int c);
+int			ft_getc(FILE *file);
 int			ft_isdigit(int c);
 int			ft_isalnum(int c);
 int			ft_isascii(int c);

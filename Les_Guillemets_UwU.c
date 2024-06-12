@@ -9,9 +9,11 @@ char	*bah_ferme_les(char *str)
 	char	*and_another_one;
 
 	if (!gere_sig(GUILLEMETS))
-		return (NULL);//code d'erreur ? Peut etre deja gere pars l'aut. free peuit etre aussi ?
+		return (NULL);//free peuit etre aussi ?
 	fprintf(stderr, "mhhh I see I see\n");
+	rl_getc_function = getc;
 	one = readline("> ");
+	rl_getc_function = rl_getc;
 	if (!one)
 		return (add_history(str), fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\n syntax error unexpected end of file\n"), NULL);
 	if (!gere_sig(READING_LINE))
@@ -30,7 +32,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	while (*itterand && (*itterand == ' ' || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
-		return(bah_ferme_les(str));
+		return (bah_ferme_les(str));
 	if (ft_isin_table(*itterand, "|<>;"))//maybe more
 	{
 		add_history(str);
@@ -57,7 +59,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 		{
 			//printf("voici la ligne awawawaw : %s  : %s\n", str, voyage);
 			this_one = *voyage++;
-			while (*(voyage + 1) && *voyage != this_one)
+			while (*(voyage + 1) != '\0' && *voyage != this_one)
 				voyage++;
 			if (*voyage != this_one)
 				return (bah_ferme_les(str));

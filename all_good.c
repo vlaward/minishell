@@ -19,7 +19,7 @@ int	verif_tokken(char *line)
 		line++;
 	}
 	if (tokkened && tokkened != '|')
-		return (fprintf(stderr, "minishell: errror nnn near unexpected tokken 'newline'\n"), 0);
+		return (fprintf(stderr, "minishell: errror near unexpected tokken 'newline'\n"),  0);
 	return (1);
 }
 

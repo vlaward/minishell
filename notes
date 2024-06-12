@@ -7,11 +7,10 @@ legende :
 
 Ce qu il reste a faire !
 -les built-in 		(check : [ ])
--les signaux 		(check : [ ])
--le $?				(check : [ ])
--verifer les free	(check : [~])<= surtout sur les erreures. "free avec rl_clear_history ?"
--handle {";';$}
-	in filesname	(check : [~])
+-les signaux 		(check : [x])<= a verifier mais tout a l'air bon
+-le $?				(check : [ ])<= utiliser notre export ? et
+									mettre l'env '?' a WEXITEDSTATUS
+-verifer les free	(check : [~])
 
 ====================================
 
@@ -31,3 +30,6 @@ branchs list normalement :
 notes :
 -les getenv, pas besoin de les free pars ce que ca pointe vers un endroit dans la memoire deja
 -perrror regle beaucoup de probleme 
+
+
+REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier le retour de trim et la facon dont c'est gere.

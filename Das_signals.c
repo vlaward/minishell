@@ -19,46 +19,7 @@ void	sa_c_waiting_handler(int sig)
 
 void	sa_c_guillemets_handler(int sig)
 {
-	struct input_event	ev;
-	int fd;
-
-    fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
-    if (fd < 0) {
-        perror("Failed to open /dev/uinput");
-        return ;
-    }
-
-	ev.type = EV_KEY;
-	ev.code = KEY_LEFTCTRL;
-	ev.value = 1; // Press Left Control key
-	write(fd, &ev, sizeof(struct input_event));
-
-	ev.type = EV_KEY;
-	ev.code = KEY_D;
-	ev.value = 1; // Press letter D
-	write(fd, &ev, sizeof(struct input_event));
-
-	ev.type = EV_SYN;
-	ev.code = SYN_REPORT;
-	ev.value = 0;
-	write(fd, &ev, sizeof(struct input_event));
-
-	ev.type = EV_KEY;
-	ev.code = KEY_D;
-	ev.value = 0; // Release letter D
-	write(fd, &ev, sizeof(struct input_event));
-
-	ev.type = EV_KEY;
-	ev.code = KEY_LEFTCTRL;
-	ev.value = 0; // Release Left Control key
-	write(fd, &ev, sizeof(struct input_event));
-
-	ev.type = EV_SYN;
-	ev.code = SYN_REPORT;
-	ev.value = 0;
 	(void)sig;
-	// c = EOF;
-	// ioctl(ttyslot(), TIOCSTI, &c);
 }
 
 void	sa_exit_handler(int sig)
