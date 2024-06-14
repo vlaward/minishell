@@ -65,7 +65,8 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 				return (add_history(history_fill), fprintf(stderr, "error mon cul at liogne :\n"), 0);
 			join_tmp = ft_strjoin(history_fill, "\n");
 			free(history_fill);
-			history_fill = ft_strjoin_n_free(join_tmp, content);
+			history_fill = ft_strjoin(join_tmp, content);
+			free(join_tmp);
 			ft_lstadd_front(&towrite, ft_lstnew(content));
 		}
 	}
