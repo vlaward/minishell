@@ -66,6 +66,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 		}
 		voyage++;
 	}
-	add_history(str);
+	add_history(str);//Ca pourrais etre bien de faire en sorte que les lignes vides et les lignes remplis que de uspace ne soit pas mis dans l'historique.
+	//ca prends pas le here doc en compte.... ca fait chier un peu....
 	return (str);
 }

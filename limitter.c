@@ -33,6 +33,7 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 	tmp = ft_lstnodi(&towrite, i);
 	while (tmp != NULL)
 	{
+		fprintf(stderr, "voici les deux content : %s : %s \n", (char*)tmp->content, (char*)limitter->content);//<<====ici les probleme est
 		if (ft_strcmp(tmp->content, limitter->content) != 0)
 			return (NULL);
 		tmp = tmp->next;
@@ -45,10 +46,11 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 {
 	t_list	*towrite;
 	char	*content;
+	char	*history_fill;
+	char	*join_tmp;
 
 	towrite = NULL;
-	// if (!isatty(in))
-	// 	return (0);
+	history_fill = NULL;
 	content= readline("> ");
 	if (!content)
 		return (fprintf(stderr, "error mon cul at liogne %d :", tputs("\033[6n", 1, putchar)), fprintf(stderr, "\n"), 0);
@@ -58,24 +60,27 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 		do_we_write(&towrite, maybe_write_it(towrite, limitter), pipette);
 		if (towrite != NULL)
 		{
-			content= readline("> ");
+			content = readline("> ");
 			if (!content)
-				return (fprintf(stderr, "error mon cul at liogne :\n"), 0);
+				return (add_history(history_fill), fprintf(stderr, "error mon cul at liogne :\n"), 0);
+			join_tmp = ft_strjoin(history_fill, "\n");
+			free(history_fill);
+			history_fill = ft_strjoin_n_free(join_tmp, content);
 			ft_lstadd_front(&towrite, ft_lstnew(content));
 		}
 	}
-	return (1);
+	return (add_history(history_fill), 1);
 }
 
 int	add_to_limitter(char **start_cmd, int *index, t_list **limitter)
 {
 	char	*toadd;
-	int		size_soustraire;
+	int		start_index;
 
 	(*start_cmd)[*index] = '\0';
+	start_index = *index;
 	*index += 1; 
 	toadd = trim(start_cmd, index, H_DOC_TRIM);
-	size_soustraire = ft_strlen(toadd);
 	fprintf(stderr, "voici le limitter : \'%s\'\n", toadd);
 	if (toadd == NULL || *toadd == '\0')
 		return (fprintf(stderr, "syntax error my cul\n"), 0);
@@ -83,7 +88,7 @@ int	add_to_limitter(char **start_cmd, int *index, t_list **limitter)
 	toadd = *start_cmd;
 	*start_cmd = ft_strjoin(*start_cmd, &((*start_cmd)[*index]));
 	free(toadd);
-	*index -= size_soustraire;
+	*index = start_index;
 	return (1);
 }
 
@@ -100,7 +105,8 @@ int	here_doc(char **start_cmd)
 		if (ft_strncmp(&((*start_cmd)[index]), "<<", 2) == 0)
 			if (!add_to_limitter(start_cmd, &index, &limitter))
 				return (0);
-		if ((*start_cmd)[index])
+		fprintf(stderr, "rither\n");
+		if ((*start_cmd)[index] != '\0')
 			index += 1;
 	}
 	if (limitter == NULL)

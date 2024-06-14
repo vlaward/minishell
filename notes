@@ -33,3 +33,4 @@ notes :
 
 
 REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier le retour de trim et la facon dont c'est gere.
+	->"cat << EOF" apres deux itteration ca plante. (see valgrind) (limiter.c:36) (hisotique pars ce qu'on est pas des putes !!!)

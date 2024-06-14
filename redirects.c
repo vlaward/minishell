@@ -13,7 +13,7 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	if (file == NULL)
 	{
 		if (*index != ' ')
-			ft_putestr_fd("there aint no file bud ;-;\n", stderr);
+			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
 	fd = open(file, O_RDONLY);
@@ -45,7 +45,7 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	if (file == NULL)
 	{
 		if (*index != ' ')
-			ft_putestr_fd("there aint no file bud ;-;\n", stderr);
+			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
 	fd = open(file, O_RDWR| O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
@@ -75,7 +75,7 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	if (file == NULL)
 	{
 		if (*index != ' ')
-			ft_putestr_fd("there aint no file bud ;-;\n", stderr);
+			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644

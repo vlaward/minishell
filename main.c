@@ -43,6 +43,8 @@ char	**pars_command(char *cmd)
 	t_stof	*stofs;
 	int		index;
 
+	if (!gere_sig(EXECUTING_CMD))
+		return (NULL);
 	stofs = str_to_func();
 	index = 0;
 	if (!here_doc(&cmd))
@@ -65,68 +67,58 @@ char	**pars_command(char *cmd)
 	return (ft_minisplit(cmd));
 }
 
-int	fork_thing(char *line, char *start_cmd)
+int	fork_thing(char *line, int start, int itt)
 {
-	int		status;
 	int		pid;
 	int		pipette[2];
 
 	pipe(pipette);
-	*line = '\0';
+	line[itt] = '\0';
 	pid = fork();
 	if (pid == -1)
 		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
 	if (pid)
 	{
+		close(pipette[1]);
 		dup2(pipette[0], STDIN_FILENO);
 		close(pipette[0]);
-		close(pipette[1]);
-		while(waitpid(pid, &status, WNOHANG) == 0)
-			continue;
-		return (parser(line + 1, NOT_FIRST_COMMAND));
+		printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
+		return (parser(line, itt + 1));
 	}
 	else
 	{
-	 	dup2(pipette[1], STDOUT_FILENO);
-		close(pipette[0]);
+	 	close(pipette[0]);
+		dup2(pipette[1], STDOUT_FILENO);
 		close(pipette[1]);
 		
 	}
-	return (execute_cmd(pars_command(start_cmd)));
+	exit(execute_cmd(pars_command(ft_strdup(&(line[start])))));
 }
 
-int	parser(char *line, int flag)
+int	parser(char *line, int start)
 {//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
-	char	*start_cmd;
 	int		status;
-	int		chpid;
+	int		itt;
 
 	if (*line == '\0')
-		return (free(line), 0);
+	 	return (free(line), 0);
 	status = 0;
-	if (flag == FIRST_COMMAND)
+	itt = start;
+	while (line[itt] != '|' && line[itt] != '\0')
+		itt++;
+	if (line[itt] && line[itt] == '|')
+		return (fork_thing(line, start, itt));
+	if (fork())// a securiser mais vas y ntm
 	{
-		chpid = fork();
-		if (chpid)
-		{
-			if (!gere_sig(0))
-				return (0);
-			while(waitpid(chpid, &status, WNOHANG) == 0)
-				continue;
-			status = WEXITSTATUS(status);
-			free(line);
-			return (0);//mettre status dans $?
-		}
+		if (!gere_sig(0))
+			return (0);
+		close(STDIN_FILENO);
+		while(wait(&status) != -1);
+		status = WEXITSTATUS(status);
+		free(line);
+		return (0);//mettre status dans $?
 	}
-	if (!gere_sig(EXECUTING_CMD))
-		return (0);
-	start_cmd = ft_strdup(line);
-	line = start_cmd;
-	while (*line != '|' && *line != '\0')
-		line++;
-	if (*line && *line == '|')
-		return (fork_thing(line, start_cmd));
-	return (execute_cmd(pars_command(start_cmd)));
+	exit(execute_cmd(pars_command(ft_strdup(&(line[start])))));
 }
 
 int	main()
@@ -134,6 +126,7 @@ int	main()
 	char	*line;
 	char	*prompt;
 	char	*cwd;
+	int		tmp_sdin;
 
 	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
@@ -153,13 +146,14 @@ int	main()
 		if (!line)
 			break ; //127
 		line = tatu_ferme_tes_guillemets(line);
-		fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
 		if (line)
 		{
-			//add_history(line);
-			fprintf(stderr, "pourtant voici la ligne qui viens d'etre copie dans l'hisdtorique... : %s :/\n", line);
+			tmp_sdin = dup(STDIN_FILENO);
+			//add_history(line); <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
 			if (all_good(ft_strdup(line)))
-				parser(line, FIRST_COMMAND);
+				if (parser(line, 0) != 0)
+					return (1);
+			dup2(tmp_sdin, STDIN_FILENO);
 			rl_on_new_line();
 		}
 	}

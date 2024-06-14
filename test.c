@@ -1,74 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <termios.h>
-#include <termcap.h>
-#include <sys/ioctl.h>
-#include <errno.h>
-#include <signal.h>
-#include "minishell.h"
+#include <sys/wait.h>
 
+void run_pipe(char *cmd1[], char *cmd2[]) {
+    int pipefd[2]; // Array to hold the two ends of the pipe
+    pid_t pid1;//, pid2;
 
-#define MAXTERM 1024
+    // Create the pipe
+    if (pipe(pipefd) == -1) {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
 
-int	get_ctrl_d(int pipette[2], int id)
-{
-	struct termios term;
-	char c;
+    // Fork the first child to run cmd1
+    if ((pid1 = fork()) == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
 
-	c = 0;
-    tcgetattr(STDIN_FILENO, &term);
-    term.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
-	while (read(STDIN_FILENO, &c, 1) != -1)
-	{
-		if (c == 4)
-		{
-			if (kill(id, SIGINT) == -1)
-				return (perror("kill :"), errno);
-			exit(0);
-		}
-		if (write(pipette[1], &c, 1) == -1)
-			return(perror("write :"), errno);
-	}
-	if (errno)
-		perror("read :");
-	if (close (pipette[1]) == 1)
-		return (perror("dup2"), errno);
-	if (close (pipette[0]) == 1)
-		return (perror("dup2"), errno);
-	return (0);
+    if (pid1 == 0) {
+        // Child process 1 (cmd1)
+        close(pipefd[0]); // Close unused read end
+        dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe
+        close(pipefd[1]); // Close write end of pipe after duplicating
+        execve(cmd1[0], cmd1, NULL); // Execute the command
+        perror("execve"); // If execve fails
+        exit(EXIT_FAILURE); // Exit the child process
+    }
+	// Child process 2 (cmd2)
+	close(pipefd[1]); // Close unused write end
+	dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe
+	close(pipefd[0]); // Close read end of pipe after duplicating
+	execve(cmd2[0], cmd2, NULL); // Execute the command
+	perror("execve"); // If execve fails
+	exit(EXIT_FAILURE); // Exit the child process
+
+    // Parent process
+//     close(pipefd[0]); // Close read end of pipe in parent
+//     close(pipefd[1]); // Close write end of pipe in parent
+
+//     // Wait for both child processes to finish
+//     waitpid(pid1, NULL, 0);
+//     waitpid(pid2, NULL, 0);
 }
 
-int	ctrl_d_fork()
-{
-	int	pipette[2];
-	int	id;
+int main() {
+    // Example commands
+    char *cmd1[] = {"/bin/cat", NULL};
+    char *cmd2[] = {"/bin/ls", NULL};
 
-	 if (pipe(pipette) == -1)
-	 	return (perror("pipe :"), errno);
-	id = fork();
-	if (id < 0)
-		return (perror("fork :"), errno);
-	if (id)
-		return (get_ctrl_d(pipette, id));
-	if (dup2(pipette[0], STDIN_FILENO) == -1)
-		return (perror("dup2"), errno);
-	if (close (pipette[1]) == 1)
-		return (perror("dup2"), errno);
-	if (close (pipette[0]) == 1)
-		return (perror("dup2"), errno);
-	return (0);
-}
+    run_pipe(cmd1, cmd2);
 
-
-int main()
-{
-	char *c;
-
-	if (!ctrl_d_fork())
-		return (errno);\
-	while ((c = readline(">")) && c != NULL)
-		write(STDOUT_FILENO, c, ft_strlen(c));
     return 0;
 }
