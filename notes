@@ -12,6 +12,8 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 -remplacer les "== ' '" pars des "is_whitespace" et pareil pour certains tokkens 
+-update les define, mettre un define pour les flags de open
+-gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
 ====================================
 
 subtree commands : (exemple[libft])
