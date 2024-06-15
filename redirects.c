@@ -28,7 +28,7 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	if (!tmp && errno != 0)
 		return (perror("malloc"), 0);
 	*index -= ft_strlen(file) + 2;
-	*start_cmd = tmp;
+	*start_cmd = tmp;// ici il faut free s_c avant. sinon c pas logique
 	return (free(*start_cmd), free(file), tmp != NULL);
 }
 
