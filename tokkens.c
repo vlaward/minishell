@@ -94,7 +94,7 @@ t_stof	*str_to_func()
 	ret[2].str = ">>";
 	ret[2].func = &append_handler;
 	ret[3].str = "<<";
-	ret[3].func = NULL;
+	ret[3].func = &here_doc;
 	ret[4].str = NULL;
 	ret[4].func = NULL;
 	return (ret);

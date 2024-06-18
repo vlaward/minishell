@@ -14,6 +14,11 @@ Ce qu il reste a faire !
 -remplacer les "== ' '" pars des "is_whitespace" et pareil pour certains tokkens 
 -update les define, mettre un define pour les flags de open
 -gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
+-le here doc, je me suis bieeeen foire.
+Regarder : "cat Makefile | cat << EOF" et "cat << a << b" et "cat << a << b | ls | dfgdfg | cat << c <<d"
+-l;es vartaibl;es d'environements dan s le here doc mais pas les guillemets. Verifier ce qui en decoule dans env_handler
+-c'est pas dans bash mais zch
+-<< a gerer en meme temps que les autres redisrects. remettre le tty en entree standart entre chaqeus redirects
 ====================================
 
 subtree commands : (exemple[libft])
@@ -36,3 +41,4 @@ notes :
 
 REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier le retour de trim et la facon dont c'est gere.
 	->"cat << EOF" apres deux itteration ca plante. (see valgrind) (limiter.c:36) (hisotique pars ce qu'on est pas des putes !!!)
+	franchement s'ut ete plus simple de faire des putains de structures mais bon... alright

@@ -1,8 +1,9 @@
 NAME  = minishell
 MAIN  = main.c
 LIBS = -lreadline -ltermcap libft/libft.a
-SRCS = parser.o redirects.o ft_minisplit.o Les_Guillemets_UwU.o \
-		get_next_line.o limitter.o all_good.o tokkens.o Das_signals.o
+SRCS = 	parser.o redirects.o ft_minisplit.o Les_Guillemets_UwU.o      \
+		get_next_line.o all_good.o tokkens.o Das_signals.o here_doc.o \
+
 FLAGS = -g3 -Werror -Wextra -Wall
 
 %.o: %.c

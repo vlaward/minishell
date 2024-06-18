@@ -1,56 +1,106 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/wait.h>
+#include <string.h>
 
-void run_pipe(char *cmd1[], char *cmd2[]) {
-    int pipefd[2]; // Array to hold the two ends of the pipe
-    pid_t pid1;//, pid2;
+#define READ_END 0
+#define WRITE_END 1
 
-    // Create the pipe
-    if (pipe(pipefd) == -1) {
+void write_here_doc_content(int fd) {
+    const char *here_doc = "Here document content\n";
+    write(fd, here_doc, strlen(here_doc));
+}
+
+int main() {
+    int pipe_ls[2];
+    int pipe_combined[2];
+    pid_t pid_ls, pid_cat, pid_combine;
+
+    // Create pipes
+    if (pipe(pipe_ls) == -1 || pipe(pipe_combined) == -1) {
         perror("pipe");
         exit(EXIT_FAILURE);
     }
 
-    // Fork the first child to run cmd1
-    if ((pid1 = fork()) == -1) {
+    // Fork the first child to execute 'ls'
+    pid_ls = fork();
+    if (pid_ls == -1) {
         perror("fork");
         exit(EXIT_FAILURE);
     }
 
-    if (pid1 == 0) {
-        // Child process 1 (cmd1)
-        close(pipefd[0]); // Close unused read end
-        dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe
-        close(pipefd[1]); // Close write end of pipe after duplicating
-        execve(cmd1[0], cmd1, NULL); // Execute the command
-        perror("execve"); // If execve fails
-        exit(EXIT_FAILURE); // Exit the child process
+    if (pid_ls == 0) {
+        // Child 1: 'ls'
+        close(pipe_ls[READ_END]); // Close the read end of the ls pipe
+        dup2(pipe_ls[WRITE_END], STDOUT_FILENO); // Redirect stdout to the write end of the ls pipe
+        close(pipe_ls[WRITE_END]);
+        close(pipe_combined[READ_END]);
+        close(pipe_combined[WRITE_END]);
+
+        execlp("./test.sh", "./test.sh", NULL); // Execute 'ls'
+        perror("execlp");
+        exit(EXIT_FAILURE);
     }
-	// Child process 2 (cmd2)
-	close(pipefd[1]); // Close unused write end
-	dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe
-	close(pipefd[0]); // Close read end of pipe after duplicating
-	execve(cmd2[0], cmd2, NULL); // Execute the command
-	perror("execve"); // If execve fails
-	exit(EXIT_FAILURE); // Exit the child process
+
+    // Fork a second child to combine the output of 'ls' and the here-doc content
+    pid_combine = fork();
+    if (pid_combine == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid_combine == 0) {
+        // Child 2: combine
+        close(pipe_ls[WRITE_END]); // Close the write end of the ls pipe
+        close(pipe_combined[READ_END]); // Close the read end of the combined pipe
+
+        // Read from ls pipe and write to combined pipe
+        char buffer[1024];
+        ssize_t bytes_read;
+        while ((bytes_read = read(pipe_ls[READ_END], buffer, sizeof(buffer))) > 0) {
+            write(pipe_combined[WRITE_END], buffer, bytes_read);
+        }
+
+        // Write the here-doc content to the combined pipe
+        write_here_doc_content(pipe_combined[WRITE_END]);
+
+        close(pipe_ls[READ_END]);
+        close(pipe_combined[WRITE_END]);
+        exit(EXIT_SUCCESS);
+    }
+
+    // Fork the third child to execute 'cat'
+    pid_cat = fork();
+    if (pid_cat == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid_cat == 0) {
+        // Child 3: 'cat'
+        close(pipe_combined[WRITE_END]); // Close the write end of the combined pipe
+        dup2(pipe_combined[READ_END], STDIN_FILENO); // Redirect stdin to the read end of the combined pipe
+        close(pipe_combined[READ_END]);
+        close(pipe_ls[READ_END]);
+        close(pipe_ls[WRITE_END]);
+
+        execlp("cat", "cat", NULL); // Execute 'cat'
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    }
 
     // Parent process
-//     close(pipefd[0]); // Close read end of pipe in parent
-//     close(pipefd[1]); // Close write end of pipe in parent
+    close(pipe_ls[READ_END]);
+    close(pipe_ls[WRITE_END]);
+    close(pipe_combined[READ_END]);
+    close(pipe_combined[WRITE_END]);
 
-//     // Wait for both child processes to finish
-//     waitpid(pid1, NULL, 0);
-//     waitpid(pid2, NULL, 0);
-}
-
-int main() {
-    // Example commands
-    char *cmd1[] = {"/bin/cat", NULL};
-    char *cmd2[] = {"/bin/ls", NULL};
-
-    run_pipe(cmd1, cmd2);
+    // Wait for all children to complete
+    waitpid(pid_ls, NULL, 0);
+    waitpid(pid_combine, NULL, 0);
+    waitpid(pid_cat, NULL, 0);
 
     return 0;
 }

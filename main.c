@@ -15,6 +15,7 @@ int     execute_cmd(char **args)
 	char	*tmp;
 	int		i;
 
+	close(TTY_SAVED_FD);
 	if (!args || *args == NULL)
 		exit(0);
 	if (!ft_strncmp(args[0], "./", 2))
@@ -47,8 +48,6 @@ char	**pars_command(char *cmd)
 		return (NULL);
 	stofs = str_to_func();
 	index = 0;
-	if (!here_doc(&cmd))
-		return (free(cmd), NULL);
 	while (cmd[index])
 	{
 		if (cmd[index] == '$')
@@ -129,8 +128,11 @@ int	main()
 	int		tmp_sdin;
 
 	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
+	if (!cwd)
+		return (perror("calloc"), 0);
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
 	prompt = NULL;
+	dup(STDIN_FILENO);//pour garder le tty en tant que fd 3 for latter use
 	while (1)// add signal global test
 	{
 		if (!gere_sig(READING_LINE))

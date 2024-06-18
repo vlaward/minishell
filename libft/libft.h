@@ -6,13 +6,15 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 16:50:30 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/06/12 07:39:24 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:02:54 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # include <stddef.h>
+# include <stdlib.h>
+# include <stdio.h>
 
 typedef struct s_list
 {

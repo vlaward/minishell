@@ -29,7 +29,7 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 
 	i = ft_lstsize(towrite) - ft_lstsize(limitter);
 	if (i < 0)
-		return (fprintf(stderr, "ceti lo ?\n"), NULL);
+		return (NULL);//that's impossible logically
 	tmp = ft_lstnodi(&towrite, i);
 	while (tmp != NULL)
 	{
@@ -51,6 +51,8 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 
 	towrite = NULL;
 	history_fill = NULL;
+	close(STDIN_FILENO);
+	dup(TTY_SAVED_FD);
 	content= readline("> ");
 	if (!content)
 		return (fprintf(stderr, "error mon cul at liogne %d :", tputs("\033[6n", 1, putchar)), fprintf(stderr, "\n"), 0);
@@ -63,7 +65,10 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 			content = readline("> ");
 			if (!content)
 				return (add_history(history_fill), fprintf(stderr, "error mon cul at liogne :\n"), 0);
-			join_tmp = ft_strjoin(history_fill, "\n");
+			if (history_fill == NULL)
+				join_tmp = ft_strjoin(history_fill, "\n");
+			else
+				join_tmp = ft_strdup(history_fill);	
 			free(history_fill);
 			history_fill = ft_strjoin(join_tmp, content);
 			free(join_tmp);
@@ -106,7 +111,6 @@ int	here_doc(char **start_cmd)
 		if (ft_strncmp(&((*start_cmd)[index]), "<<", 2) == 0)
 			if (!add_to_limitter(start_cmd, &index, &limitter))
 				return (0);
-		fprintf(stderr, "rither\n");
 		if ((*start_cmd)[index] != '\0')
 			index += 1;
 	}

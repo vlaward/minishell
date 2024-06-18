@@ -25,6 +25,7 @@
 # define READING_LINE 1
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
+# define TTY_SAVED_FD 3
 # endif
 #endif
 
@@ -58,7 +59,7 @@ int		append_handler(char **start_cmd, int *index, int flag);
 int		in_handler(char **start_cmd, int *index, int flag);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag);
-int		here_doc(char **start_cmd);
+int	here_doc(char **start_cmd, int *index, int flag);
 
 //signals
 

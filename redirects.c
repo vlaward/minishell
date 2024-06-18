@@ -12,7 +12,7 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if (*index != ' ')
+		if ((*start_cmd)[*index] != ' ')
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
@@ -28,8 +28,9 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	if (!tmp && errno != 0)
 		return (perror("malloc"), 0);
 	*index -= ft_strlen(file) + 2;
+	free(*start_cmd);
 	*start_cmd = tmp;// ici il faut free s_c avant. sinon c pas logique
-	return (free(*start_cmd), free(file), tmp != NULL);
+	return (free(file), tmp != NULL);
 }
 
 int	append_handler(char **start_cmd, int *index, int flag)
@@ -44,7 +45,7 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if (*index != ' ')
+		if ((*start_cmd)[*index] != ' ')
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
@@ -60,8 +61,9 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	if (!tmp && errno != 0)
 		return (perror("malloc"), 0);
 	*index -= ft_strlen(file) + 2;
+	free(*start_cmd);
 	*start_cmd = tmp;
-	return (free(*start_cmd), free(file), tmp != NULL);
+	return (free(file), tmp != NULL);
 }
 
 int	out_handler(char **start_cmd, int *index, int flag)
@@ -74,7 +76,7 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if (*index != ' ')
+		if ((*start_cmd)[*index] != ' ')
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
@@ -90,8 +92,9 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	if (!tmp && errno != 0)
 		return (perror("malloc"), 0);
 	*index -= ft_strlen(file) + 2;
+	free(*start_cmd);
 	*start_cmd = tmp;
-	return (free(*start_cmd), free(file), tmp != NULL);
+	return (free(file), tmp != NULL);
 }
 
 
@@ -105,11 +108,6 @@ int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 		if (!ft_strncmp(stofs->str, &((*start_cmd)[*index]), i))
 			break ;
 		stofs++;
-	}
-	if (ft_strncmp(stofs->str, "<<", 2) == 0)
-	{
-		*index += 1;
-		return (1);//fprintf(stderr, "je ne comprends pas\n"), 1);
 	}
 	fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
 	if (stofs->func != NULL)
