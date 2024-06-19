@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "locking screen in 0.5 seconds"
-sleep 0.5
-lockscreen="dm-tool lock"
-echo "screen locked" 
-$lockscreen

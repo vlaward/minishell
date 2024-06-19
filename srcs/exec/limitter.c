@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 int	do_we_write(t_list **towrite, t_list *limitter, pid_t pipette[0])
 {

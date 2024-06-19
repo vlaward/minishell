@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 
 int		env_handler(char **start_cmd, int *i)

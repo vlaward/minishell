@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 char	*tatu_ferme_tes_guillemets(char *str);
 

@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 13:15:36 by ncrombez          #+#    #+#             */
-/*   Updated: 2023/05/22 12:33:30 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:37:53 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 int	lelen(char *str, int arg, int place)
 {

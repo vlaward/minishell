@@ -2,7 +2,7 @@
 	"files.associations": {
 		"libft.h": "c",
 		"types.h": "c",
-		"minishell.h": "c",
+		"../../includes/minishell.h": "c",
 		"errno.h": "c",
 		"wait.h": "c",
 		"readline.h": "c",

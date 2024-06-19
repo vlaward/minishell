@@ -13,7 +13,7 @@
 # include <termios.h>
 # include <termcap.h>
 # include <sys/ioctl.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <linux/uinput.h>
 # include <errno.h>
 # include <signal.h>
@@ -64,3 +64,7 @@ int	here_doc(char **start_cmd, int *index, int flag);
 //signals
 
 int		gere_sig(int flag);
+
+//builtins
+void	ft_echo(char **av);
+void	ft_env(char **env);
