@@ -18,7 +18,7 @@ int     execute_cmd(char **args)
 	close(TTY_SAVED_FD);
 	if (!args || *args == NULL)
 		exit(0);
-	if (!ft_strncmp(args[0], "./", 2))
+	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
 		return (execve(args[0], args, NULL), 127);
 	paths = ft_split(getenv("PATH"), ':');
 	tmp = ft_strjoin("/", args[0]);
@@ -115,6 +115,7 @@ int	parser(char *line, int start)
 		while(wait(&status) != -1);
 		status = WEXITSTATUS(status);
 		free(line);
+		dup(TTY_SAVED_FD);
 		return (0);//mettre status dans $?
 	}
 	exit(execute_cmd(pars_command(ft_strdup(&(line[start])))));
@@ -132,7 +133,7 @@ int	main()
 		return (perror("calloc"), 0);
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
 	prompt = NULL;
-	dup(STDIN_FILENO);//pour garder le tty en tant que fd 3 for latter use
+	fprintf(stderr, "vboici le fd enregistre : %d\n", dup(STDIN_FILENO));//pour garder le tty en tant que fd 3 for latter use
 	while (1)// add signal global test
 	{
 		if (!gere_sig(READING_LINE))

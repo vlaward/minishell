@@ -12,13 +12,13 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if ((*start_cmd)[*index] != ' ')
+		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		return (perror("open"), 0);
+		return (perror(file),  0);
 	else if (flag == REDIRECT)
 		if (dup2(fd, STDIN_FILENO) == -1)
 			return (perror("dup2"), 0);
@@ -45,7 +45,7 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if ((*start_cmd)[*index] != ' ')
+		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}
@@ -76,7 +76,7 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
-		if ((*start_cmd)[*index] != ' ')
+		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
 		return (0);
 	}

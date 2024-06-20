@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 16:50:30 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/06/18 17:02:54 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/06/20 06:54:08 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int			ft_isdigit(int c);
 int			ft_isalnum(int c);
 int			ft_isascii(int c);
 int			ft_isprint(int c);
+int			ft_iswhitespace(char c);
 int			ft_isin_table(int value, char *table);
 int			ft_toupper(int c);
 int			ft_tolower(int c);

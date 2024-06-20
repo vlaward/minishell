@@ -37,8 +37,6 @@ typedef struct s_stof
 
 extern int G_sig_catcher;
 
-t_list	*parse(char *line);
-int		executeur(t_list *list);
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
 char	*get_next_line(int fd);
@@ -66,5 +64,8 @@ int	here_doc(char **start_cmd, int *index, int flag);
 int		gere_sig(int flag);
 
 //builtins
-void	ft_echo(char **av);
 void	ft_env(char **env);
+void	ft_echo(char **av);
+void	ft_builtins(char **av);
+
+int	ft_is_builtins(char *av);

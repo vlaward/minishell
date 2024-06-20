@@ -16,6 +16,25 @@ int	write_here(char *towrite)
 	return (1);
 }
 
+int	here_doc_env(char **red)
+{
+	int	i;
+
+	if (!(*red))
+		return (0);
+	i = 0;
+	while ((*red)[i] != '\0')
+	{
+		if ((*red)[i] == '$')
+			i = env_handler(red, &i);
+		else
+			i++;
+		if (i < 0)		
+			return (0);
+	}
+	return (1);
+}
+
 int	here_doc(char **start_cmd, int *index, int flag)
 {
 	char	*limitter;
@@ -23,28 +42,31 @@ int	here_doc(char **start_cmd, int *index, int flag)
 	char	*here_doc;
 	char	*tmp_cmd;
 	int		start_index;
+	int	i = 0;
 	
-	fprintf(stderr, "voici voila\n");
+	fprintf(stderr, "voici voila : %s\n", *start_cmd);
 	(*start_cmd)[*index] = '\0';
 	start_index = *index;
 	*index += 1;
 	limitter = trim(start_cmd, index, H_DOC_TRIM);
 	if (limitter == NULL)
 	{
-		if ((*start_cmd)[*index] != ' ')
+		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("syntax error near unexpecterd token \'newline\'", STDERR_FILENO);
+		fprintf(stderr, "soit c'est ca mais c'est pas logique\n");
 		return (0);
 	}
 	if (flag != REDIRECT)
-		return (1);//peut etre plus de choses a faire la
+		return (fprintf(stderr, "soit c'est ca... still pas logique\n"), free(limitter), 1);//peut etre plus de choses a faire la
 	red = NULL;
 	here_doc = NULL;
-	close(STDIN_FILENO);
+	close(STDIN_FILENO), close(STDOUT_FILENO);
+	dup(TTY_SAVED_FD);
 	dup(TTY_SAVED_FD);
 	while (1)
 	{
 		red = readline("here_doc >");
-		if (!red)
+		if (!here_doc_env(&red))
 			return (perror("readline"), free(here_doc), free(limitter), 0);
 		if (ft_strcmp(limitter, red) == 0)
 			break;

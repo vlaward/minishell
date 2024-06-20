@@ -14,7 +14,6 @@ void	sa_c_handler(int sig)
 void	sa_c_waiting_handler(int sig)
 {
 	(void)sig;
-	printf("\n");
 }
 
 void	sa_c_guillemets_handler(int sig)

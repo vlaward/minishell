@@ -29,7 +29,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	if (*itterand != '|')
 		return (str);
 	itterand++;
-	while (*itterand && (*itterand == ' ' || *itterand == '\n'))
+	while (*itterand && (ft_iswhitespace(*itterand) || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
 		return (bah_ferme_les(str));

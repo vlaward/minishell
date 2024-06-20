@@ -24,8 +24,8 @@ int		env_handler(char **start_cmd, int *i)
 		return(*i);
 	j = 0;
 	while (env_value[j])
-		if (env_value[j++] == ' ')
-			if (env_value[j] && env_value[j] != ' ')
+		if (ft_iswhitespace(env_value[j++]))
+			if (env_value[j] && !ft_iswhitespace(env_value[j]))
 				return (-1);
 	j += *i - 1;
 	*i += ft_strlen(env_value) - 1;
@@ -61,10 +61,10 @@ char	*trim(char **start_cmd, int *index, int flag)
 
 	start_index = *index;
 	*index += 1;
-	while ((*start_cmd)[*index] == ' ')
+	while (ft_iswhitespace((*start_cmd)[*index]))
 		*index += 1;
 	start_name_index = *index;
-	while ((*start_cmd)[*index] != '\0' && (*start_cmd)[*index] != ' ')
+	while ((*start_cmd)[*index] != '\0' && !ft_iswhitespace((*start_cmd)[*index]))
 	{
 		if ((*start_cmd)[*index] == '\'' || (*start_cmd)[*index] == '\"')
 			*index = guille_handler(start_cmd, index, flag);

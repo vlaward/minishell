@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:37:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/06/20 07:07:59 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ char	*add_to_list(char *itterand, t_list **liste)
 	char	chose_your_guillemet;
 	char	*content;
 
-	while (*itterand && (*itterand == ' ' || *itterand == '\n'))
+	while (*itterand && (ft_iswhitespace(*itterand) || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
 		return (itterand);
 	start_word = itterand;
-	while (*itterand && (*itterand != ' ' && *itterand != '\n'))
+	while (*itterand && (!ft_iswhitespace(*itterand) && *itterand != '\n'))
 	{
 		if (ft_isin_table(*itterand, "\'\""))
 		{
