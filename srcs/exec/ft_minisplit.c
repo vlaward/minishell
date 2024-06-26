@@ -62,7 +62,7 @@ char	**ft_minisplit(char	*str)
 	while (ft_lstnodi(&will_be_ret, ++i))
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
 	ft_lstclear(&will_be_ret, NULL);
-	fprintf(stderr, "voici line : %s\n", str);
+	//fprintf(stderr, "voici line : %s\n", str);
 	free(str);
 	return (ret);//normalement y'as un fdree str
 }

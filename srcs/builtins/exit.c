@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-static int	__ac(char **av)
+static int	ft_ac(char **av)
 {
 	int	i;
 
@@ -10,43 +10,41 @@ static int	__ac(char **av)
 	return (i);
 }
 
-static void	__freexit(t_mini *mini, int excode)
+static int	ft_alphastr(char *str)
 {
-	__free_lex(mini->lex);
-	__free_tabex(mini->tmp);
-	__free_lst(mini->lst);
-	__free_tab(mini->cmds_path);
-	free(mini->ret_tmp);
-	free(mini->pipes);
-	free(mini);
-	exit (excode);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isalpha(str[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-static void	__alpharg(t_mini *mini, char *str)
+static void	ft_alpharg(char *str)
 {
-	__putstr_fd("bash: exit: ", 2);
-	__putstr_fd(str, 2);
-	__putstr_fd(": numeric argument required\n", 2);
-	__freexit(mini, 2);
+	ft_putestr_fd("bash: exit: ", 2);
+	ft_putestr_fd(str, 2);
+	ft_putestr_fd(": numeric argument required\n", 2);
+	exit(2);
 }
 
-void	__exit(char **av, t_mini *mini)
+//exit not exiting, add close and free ?
+void	ft_exit(char **av)
 {
 	int	ac;
 
-	ac = __ac(av);
-	if (mini->tab->exec[0] && !mini->tab->next)
-	{
-		close(mini->fd1);
-		close(mini->fd2);
-		close(mini->pipes->fd_tmp);
-	}
-	if (ac == 0)
-		__freexit(mini, g_ret);
-	if (__alphastr(av[0]))
-		__alpharg(mini, av[0]);
-	if (ac > 1)
-		__putstr_fd("bash: exit: too many arguments\n", 2);
+	ac = ft_ac(av);
+	//close pipes maybe ?
+	if (ac == 1)
+		exit(127);//changer avec valeur actuelle de retour
+	if (ft_alphastr(av[1]))
+		ft_alpharg(av[1]);
+	if (ac > 2)
+		ft_putestr_fd("bash: exit: too many arguments\n", 2);
 	else
-		__freexit(mini, __atoi(av[0]));
+		exit(ft_atoi(av[0]));
 }

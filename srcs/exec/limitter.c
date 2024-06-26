@@ -33,7 +33,7 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 	tmp = ft_lstnodi(&towrite, i);
 	while (tmp != NULL)
 	{
-		fprintf(stderr, "voici les deux content : %s : %s \n", (char*)tmp->content, (char*)limitter->content);//<<====ici les probleme est
+		//fprintf(stderr, "voici les deux content : %s : %s \n", (char*)tmp->content, (char*)limitter->content);//<<====ici les probleme est
 		if (ft_strcmp(tmp->content, limitter->content) != 0)
 			return (NULL);
 		tmp = tmp->next;

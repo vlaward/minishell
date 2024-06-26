@@ -29,6 +29,13 @@
 # endif
 #endif
 
+typedef struct s_env
+{
+	char *key;
+	char *value;
+	struct s_env *next;
+} t_env;
+
 typedef struct s_stof
 {
 	char	*str;
@@ -36,6 +43,8 @@ typedef struct s_stof
 }t_stof;
 
 extern int G_sig_catcher;
+
+extern char **G_env;
 
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
@@ -64,8 +73,10 @@ int	here_doc(char **start_cmd, int *index, int flag);
 int		gere_sig(int flag);
 
 //builtins
-void	ft_env(char **env);
+void	ft_env(void);
 void	ft_echo(char **av);
 void	ft_builtins(char **av);
+void	ft_pwd(void);
+void	ft_exit(char **av);
 
 int	ft_is_builtins(char *av);

@@ -15,9 +15,18 @@ int     execute_cmd(char **args)
 	char	*tmp;
 	int		i;
 
+	for (int i = 0; args[i]; i++)
+		printf("arg %d is %s\n", i, args[i]);
+
 	close(TTY_SAVED_FD);
 	if (!args || *args == NULL)
 		exit(0);
+	if (ft_is_builtins(args[0]))
+	{
+		printf("is builtins\n");
+		ft_builtins(args);
+		return (0);
+	}
 	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
 		return (execve(args[0], args, NULL), 127);
 	paths = ft_split(getenv("PATH"), ':');
@@ -81,7 +90,7 @@ int	fork_thing(char *line, int start, int itt)
 		close(pipette[1]);
 		dup2(pipette[0], STDIN_FILENO);
 		close(pipette[0]);
-		printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
+		//printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
 		return (parser(line, itt + 1));
 	}
 	else
@@ -121,19 +130,48 @@ int	parser(char *line, int start)
 	exit(execute_cmd(pars_command(ft_strdup(&(line[start])))));
 }
 
-int	main()
+char **G_env = NULL;
+int	main(int ac, char **av, char **env)
 {
 	char	*line;
 	char	*prompt;
 	char	*cwd;
 	int		tmp_sdin;
 
+//////////////////////////////////////////
+//new env malloced, don't forget to free//
+	(void)ac;
+	(void)av;
+
+	int i = 0;
+	int env_len = 0;
+
+	while (env[env_len])
+		env_len++;
+	G_env = (char **)malloc(sizeof(char *) * (env_len + 1));
+	if (!G_env)
+		return (perror("malloc"), 0);
+	while (env[i])
+	{
+		G_env[i] = strdup(env[i]);
+		if (!G_env[i])
+		{
+			while (i > 0)
+				free(G_env[--i]);
+			free(G_env);
+			return (perror("strdup"), 0);
+		}
+		i++;
+	}
+	G_env[i] = NULL;
+///////////////////////////////////////////
+
 	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
 	if (!cwd)
 		return (perror("calloc"), 0);
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
 	prompt = NULL;
-	fprintf(stderr, "vboici le fd enregistre : %d\n", dup(STDIN_FILENO));//pour garder le tty en tant que fd 3 for latter use
+	//fprintf(stderr, "vboici le fd enregistre : %d\n", dup(STDIN_FILENO));//pour garder le tty en tant que fd 3 for latter use
 	while (1)// add signal global test
 	{
 		if (!gere_sig(READING_LINE))

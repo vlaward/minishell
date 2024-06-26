@@ -109,7 +109,7 @@ int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 			break ;
 		stofs++;
 	}
-	fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
+	//fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
 	if (stofs->func != NULL)
 		if (!stofs->func(start_cmd, index, flag))
 			return (0);

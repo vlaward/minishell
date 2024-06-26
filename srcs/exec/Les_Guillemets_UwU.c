@@ -10,7 +10,7 @@ char	*bah_ferme_les(char *str)
 
 	if (!gere_sig(GUILLEMETS))
 		return (NULL);//free peuit etre aussi ?
-	fprintf(stderr, "mhhh I see I see\n");
+	//fprintf(stderr, "mhhh I see I see\n");
 	rl_getc_function = getc;
 	one = readline("> ");
 	rl_getc_function = rl_getc;

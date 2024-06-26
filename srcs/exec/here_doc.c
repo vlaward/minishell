@@ -44,7 +44,7 @@ int	here_doc(char **start_cmd, int *index, int flag)
 	int		start_index;
 	int	i = 0;
 	
-	fprintf(stderr, "voici voila : %s\n", *start_cmd);
+	//fprintf(stderr, "voici voila : %s\n", *start_cmd);
 	(*start_cmd)[*index] = '\0';
 	start_index = *index;
 	*index += 1;
@@ -53,7 +53,7 @@ int	here_doc(char **start_cmd, int *index, int flag)
 	{
 		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("syntax error near unexpecterd token \'newline\'", STDERR_FILENO);
-		fprintf(stderr, "soit c'est ca mais c'est pas logique\n");
+		//fprintf(stderr, "soit c'est ca mais c'est pas logique\n");
 		return (0);
 	}
 	if (flag != REDIRECT)
