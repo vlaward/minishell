@@ -78,5 +78,6 @@ void	ft_echo(char **av);
 void	ft_builtins(char **av);
 void	ft_pwd(void);
 void	ft_exit(char **av);
+void	ft_export(char **av);
 
 int	ft_is_builtins(char *av);

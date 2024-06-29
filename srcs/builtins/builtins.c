@@ -32,9 +32,9 @@ void	ft_builtins(char **av)
 	else if (!ft_strcmp(av[0], "env"))
 		ft_env();
 	// else if (!ft_strcmp(av[0], "unset"))
-	// 	ft_unset(av, env);
-	// else if (!ft_strcmp(av[0], "export"))
-	// 	ft_export(av);
+	// 	ft_unset(av);
+	else if (!ft_strcmp(av[0], "export"))
+		ft_export(av);
 	else if (!ft_strcmp(av[0], "pwd"))
 		ft_pwd();
 	// else if (!ft_strcmp(av[0], "cd"))

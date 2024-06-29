@@ -3,7 +3,7 @@ include Colors.mk
 # Names 
 NAME		= minishell
 MAIN		= srcs/exec/main.c
-F_BUILT		= echo.c builtins.c pwd.c env.c exit.c #cd.c error.c export.c
+F_BUILT		= echo.c builtins.c pwd.c env.c exit.c export.c#cd.c error.c
 FILES		+= $(addprefix builtins/, $(F_BUILT))
 F_EXEC		= redirects.c ft_minisplit.c Les_Guillemets_UwU.c      \
 				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c
