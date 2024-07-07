@@ -81,3 +81,12 @@ void	ft_exit(char **av);
 void	ft_export(char **av);
 
 int	ft_is_builtins(char *av);
+
+//list
+
+t_env	*__lstnew(void *content);
+void	__lstadd_back(t_env **lst, t_env *new);
+t_env	*__lstlast(t_env *lst);
+char	*ft_get_value(char *str);
+char	*ft_get_key(char *str);
+t_env	*__tab_lst(char **env);

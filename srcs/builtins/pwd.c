@@ -1,5 +1,6 @@
 #include "../../includes/minishell.h"
 
+//une fois cd fait a changer ?
 void	ft_pwd(void)
 {
 	char	s[100]; //create buffer to store return value of getcwd

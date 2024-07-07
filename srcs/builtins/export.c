@@ -20,55 +20,7 @@ static void	ft_export_print(t_env *lst)
 	}
 }
 
-char	*ft_get_value(char *str)
-{
-	char	*res;
-	int		i;
-	int		j;
 
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	if (!str[i])
-		return (0);
-	res = malloc(sizeof(char) * (ft_strlen(str + i)));
-	if (!res)
-		return (NULL);
-	i++;
-	j = 0;
-	while (str[i])
-	{
-		res[j] = str[i];
-		i++;
-		j++;
-	}
-	res[j] = 0;
-	return (res);
-}
-
-char	*ft_get_key(char *str)
-{
-	char	*res;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	res = malloc(sizeof(char) * (i + 1));
-	if (!res)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (str[i] && str[i] != '=')
-	{
-		res[j] = str[i];
-		i++;
-		j++;
-	}
-	res[j] = 0;
-	return (res);
-}
 
 int	ft_strcmp_key(char *s1, char *s2)
 {
@@ -85,32 +37,8 @@ int	ft_strcmp_key(char *s1, char *s2)
 
 t_env	*__lstnew(void *content);
 
-t_env	*__lstlast(t_env *lst)
-{
-	while (lst)
-	{
-		if (!lst->next)
-			return (lst);
-		lst = lst->next;
-	}
-	return (lst);
-}
 
-void	__lstadd_back(t_env **lst, t_env *new)
-{
-	t_env	*last;
 
-	if (lst)
-	{
-		if (*lst)
-		{
-			last = __lstlast(*lst);
-			last->next = new;
-		}
-		else
-			*lst = new;
-	}
-}
 
 static void	ft_export_set(char *str, t_env *lst)
 {
@@ -224,33 +152,8 @@ char	**__lst_tab(t_env *env)
 	return (tab);
 }
 
-t_env	*__lstnew(void *content)
-{
-	t_env	*elem;
 
-	elem = malloc(sizeof(t_env));
-	if (!elem)
-		return (NULL);
-	elem->key = ft_get_key(content);
-	elem->value = ft_get_value(content);
-	elem->next = NULL;
-	return (elem);
-}
 
-t_env	*__tab_lst(char **env)
-{
-	int		i;
-	t_env	*lst;
-
-	i = 0;
-	lst = __lstnew(env[i]);
-	while (env[i])
-	{
-		__lstadd_back(&lst, __lstnew(env[i]));
-		i++;
-	}
-	return (lst);
-}
 
 t_env	*__init(char **tab)
 {

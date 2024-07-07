@@ -130,6 +130,7 @@ int	parser(char *line, int start)
 	exit(execute_cmd(pars_command(ft_strdup(&(line[start])))));
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
 char **G_env = NULL;
 int	main(int ac, char **av, char **env)
 {
@@ -153,7 +154,7 @@ int	main(int ac, char **av, char **env)
 		return (perror("malloc"), 0);
 	while (env[i])
 	{
-		G_env[i] = strdup(env[i]);
+		G_env[i] = ft_strdup(env[i]);
 		if (!G_env[i])
 		{
 			while (i > 0)
