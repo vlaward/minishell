@@ -12,6 +12,11 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 -update les define, mettre un define pour les flags de open
+
+-"env -i ./minishell" regarder avec bash. Il y a un environement minimum au lancement.
+-PASSER L'ENV PARTOUT ET FIRE UYN GETENV PARTICULIER !!!!!
+-si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec
+
 -gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
 -REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif
 -incrementer $SHLVL

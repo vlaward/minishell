@@ -86,7 +86,7 @@ char	*__join(char *s1, char *s2)
 	}
 	while (s2[i - ft_strlen(s1)])
 	{
-		array[i] = s2[i - ft_strlen(s1)];
+alarm		array[i] = s2[i - ft_strlen(s1)];
 		i++;
 	}
 	array[i] = '\0';

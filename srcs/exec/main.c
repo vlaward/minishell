@@ -1,7 +1,4 @@
 #include "../../includes/minishell.h"
-#ifndef PATH_MAX
-# define PATH_MAX 4096
-# endif
 
 #define FIRST_COMMAND 0
 #define NOT_FIRST_COMMAND 1
@@ -143,29 +140,9 @@ int	main(int ac, char **av, char **env)
 //new env malloced, don't forget to free//
 	(void)ac;
 	(void)av;
+	G_env = init_env(env);
 
-	int i = 0;
-	int env_len = 0;
-
-	while (env[env_len])
-		env_len++;
-	G_env = (char **)malloc(sizeof(char *) * (env_len + 1));
-	if (!G_env)
-		return (perror("malloc"), 0);
-	while (env[i])
-	{
-		G_env[i] = ft_strdup(env[i]);
-		if (!G_env[i])
-		{
-			while (i > 0)
-				free(G_env[--i]);
-			free(G_env);
-			return (perror("strdup"), 0);
-		}
-		i++;
-	}
-	G_env[i] = NULL;
-///////////////////////////////////////////
+//////////////////////////////////////////////
 
 	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
 	if (!cwd)

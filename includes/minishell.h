@@ -19,6 +19,10 @@
 # include <signal.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
+# endif
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
 # define REDIRECT 1
 # define F_NAME_TRIM 1
 # define H_DOC_TRIM 2
@@ -26,7 +30,6 @@
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
 # define TTY_SAVED_FD 3
-# endif
 #endif
 
 typedef struct s_env
@@ -46,6 +49,7 @@ extern int G_sig_catcher;
 
 extern char **G_env;
 
+char	**init_env(char	**env);
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
 char	*get_next_line(int fd);
@@ -66,7 +70,7 @@ int		append_handler(char **start_cmd, int *index, int flag);
 int		in_handler(char **start_cmd, int *index, int flag);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag);
-int	here_doc(char **start_cmd, int *index, int flag);
+int		here_doc(char **start_cmd, int *index, int flag);
 
 //signals
 
