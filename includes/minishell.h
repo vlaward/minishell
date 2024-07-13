@@ -19,6 +19,13 @@
 # include <signal.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
+# endif
+#ifndef PATH_MAX
+# define PATH_MAX 4096
+# endif
+#define FIRST_COMMAND 0
+#define NOT_FIRST_COMMAND 1
+#define REDIRECT 1
 # define REDIRECT 1
 # define F_NAME_TRIM 1
 # define H_DOC_TRIM 2
@@ -26,7 +33,6 @@
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
 # define TTY_SAVED_FD 3
-# endif
 #endif
 
 typedef struct s_env

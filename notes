@@ -11,6 +11,12 @@ Ce qu il reste a faire !
 -le $?				(check : [ ])<= utiliser notre export ? et
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
+
+-GERER LA CREATION DE L'ENIRONEMENT. CLONER L'EXISTANT OU CHYERCHER LES INFOS : "env -i bash" pui "env" et voir ce qui est recup
+-Ca serais vrasiment bien de mettre dans la libft un "clear table" et un "table_ssize". Encore mieux si ca pouvais etre util  avec n'importe quel type de donne.... 
+		-> Deux possibilites, soit je fait attention a tout le temp faire les init dans le bon sens et je check pour ==NULL. Soit je met un "size". soit je fait les deux en meme temp :D soit je fait deux fonction separeess... (je vais en faire trois, dont une qui fait le deux en meme temps mdr)
+-est-ce que en utilisant calloc qui memset a 0 on peu ignorer d'init les poiteur a null pour indiquer la fin du tablea. Ca me parrait pas si propre mais je pense que c'est un peut inutil de les initialiser si ca le fait deja
+
 -update les define, mettre un define pour les flags de open
 -gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
 -REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif

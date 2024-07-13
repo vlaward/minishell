@@ -6,7 +6,8 @@ MAIN		= srcs/exec/main.c
 F_BUILT		= echo.c builtins.c pwd.c env.c exit.c export.c list.c#cd.c error.c
 FILES		+= $(addprefix builtins/, $(F_BUILT))
 F_EXEC		= redirects.c ft_minisplit.c Les_Guillemets_UwU.c      \
-				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c
+				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c \
+				init_env.c
 FILES		+= $(addprefix exec/, $(F_EXEC))
 
 # Paths
@@ -37,6 +38,10 @@ ${NAME}:	libs ${OBJS}
 			@$(CC) $(CFLAGS) $(MAIN) -o $(NAME) $(OBJS) $(INCS) libft/libft.a
 			@echo "${MSG_BUILD}${NAME}${MSG_FINISH}"
 			@echo "${FINISH}"
+
+test:	libs
+			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(INCS) libft/libft.a
+
 
 libs :
 	@echo "\033[1;33mBoup Bip Bip !\033[m \033[1;35m\nCompiling libs :\033[m"

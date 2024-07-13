@@ -155,7 +155,7 @@ char	**__lst_tab(t_env *env)
 
 
 
-t_env	*__init(char **tab)
+t_env	*__init(char **tab)//c'est une ligne, donc pas util
 {
 	t_env	*lst;
 
@@ -163,14 +163,14 @@ t_env	*__init(char **tab)
 	return (lst);
 }
 
-int	__isalpha(int c)
+int	__isalpha(int c)//existe deja et c'est une ligne, donc pas util
 {
 	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 		return (1);
 	return (0);
 }
 
-int	__isalnum(int c)
+int	__isalnum(int c)//existe deja et c'est une ligne, donc pas util
 {
 	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 		return (1);
@@ -210,7 +210,7 @@ void	ft_export(char **av)
 	int		i;
 	t_env	*env;
 
-	env = __init(G_env);
+	env = __init(G_env);//sinon juste : lst = __tab_lst(tab);
 	if (!av[1])
 		ft_export_print(env);
 	i = 1;

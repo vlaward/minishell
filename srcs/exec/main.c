@@ -1,11 +1,4 @@
 #include "../../includes/minishell.h"
-#ifndef PATH_MAX
-# define PATH_MAX 4096
-# endif
-
-#define FIRST_COMMAND 0
-#define NOT_FIRST_COMMAND 1
-#define REDIRECT 1
 
 int	parser(char *line, int flag);
 

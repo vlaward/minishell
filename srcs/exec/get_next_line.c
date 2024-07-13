@@ -60,7 +60,7 @@ char	*putret(char buff[], char *ret, int fd, int *p)
 	return (ret2);
 }
 
-char	*p2(char *buff, char *ret, int fd, int *d)
+char	*partie2(char *buff, char *ret, int fd, int *d)
 {
 	int	i;
 	int	cont;
@@ -103,5 +103,5 @@ char	*get_next_line(int fd)
 	ret = malloc(lelen(buff, 2, i) + 1);
 	if (!ret)
 		return (NULL);
-	return (p2(buff, ret, fd, &i));
+	return (partie2(buff, ret, fd, &i));
 }
