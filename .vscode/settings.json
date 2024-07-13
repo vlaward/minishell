@@ -11,6 +11,9 @@
 		"ioctl.h": "c",
 		"termcap.h": "c",
 		"termios.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"minishell.h": "c",
+		"fcntl.h": "c",
+		"stdlib.h": "c"
 	}
 }

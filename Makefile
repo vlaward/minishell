@@ -39,10 +39,16 @@ ${NAME}:	libs ${OBJS}
 			@echo "${MSG_BUILD}${NAME}${MSG_FINISH}"
 			@echo "${FINISH}"
 
+<<<<<<< HEAD
 test:	libs
 			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(INCS) libft/libft.a
 
 
+=======
+test:
+			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(INCS) libft/libft.a
+
+>>>>>>> 7716263962f668dbf40f63ba3bd9fb6f6b7ac505
 libs :
 	@echo "\033[1;33mBoup Bip Bip !\033[m \033[1;35m\nCompiling libs :\033[m"
 	@make -s --no-print-directory -C libft

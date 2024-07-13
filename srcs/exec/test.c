@@ -8,6 +8,7 @@
 
 #define READ_END 0
 #define WRITE_END 1
+<<<<<<< HEAD
 #define MIN_ENV_SIZE 3
 
 char	**env_from_scratch()//Changer les free pars les nouvelles fonctrionsa de la libft que je vais rajkouter. rajouter les perror
@@ -74,7 +75,6 @@ char **init_env(char **env)//changer le compteur de "size" du tableau pour une f
 	*ret = NULL;//don';t know if it's uselfull knowing full ass I used calloc that init evrything at 0. Still think it's usefull
 	return (tmp);
 }
-
 int	main(int ac, char **av, char **env)
 {
 	char	**newenv;
@@ -187,3 +187,6 @@ int	main(int ac, char **av, char **env)
 
 //     return 0;
 // }
+=======
+*/
+>>>>>>> 7716263962f668dbf40f63ba3bd9fb6f6b7ac505
