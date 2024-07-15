@@ -66,13 +66,13 @@ int		guille_handler(char **start_cmd, int *i, int flag, t_list *env);
 
 //redirects
 
-int		redirects(char **start_cmd, int *index, int flag, t_list *env);
-int		out_handler(char **start_cmd, int *index, int flag, t_list *env);
-int		append_handler(char **start_cmd, int *index, int flag, t_list *env);
-int		in_handler(char **start_cmd, int *index, int flag, t_list *env);
+int		redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag, t_list *env);
-int		here_doc(char **start_cmd, int *index, int flag, t_list *env);
+int		here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 
 //signals
 

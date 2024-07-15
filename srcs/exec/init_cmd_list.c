@@ -79,7 +79,7 @@ t_list	*init_cmd(char *line, t_list *env)
 	while (line[index])
 	{
 		if (line[index] == '>' || line[index] == '<')
-			if (!outest_handler(&line, &index, &tmp, env))
+			if (!redirects(&line, &index, &tmp, env))
 				return (free(line), printf("c'est donc ici que le probleme est\n"), NULL);
 		if (line[index] == '|')
 		{

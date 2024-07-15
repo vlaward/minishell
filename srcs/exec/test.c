@@ -61,8 +61,7 @@ char	**pars_command(char *cmd, t_list *env)
 			guille_handler(&cmd, &index, 0, env);
 		else if (cmd[index] == '>' || cmd[index] == '<')
 		{
-			if (!redirects(&cmd, &index, REDIRECT, env))
-				return (free(cmd), NULL);
+			return (free(cmd), NULL);
 		}
 		else if (cmd[index] != '\0')
 			index++;  
@@ -132,18 +131,6 @@ void	free_cmd(void *afree)
 	free(afree);
 }
 
-void	free_env(void *afree)
-{
-	if (!afree)
-		return ;
-	if ((((t_env *)afree)->key))
-		free(((t_env *)afree)->key);
-	if ((((t_env *)afree)->value))
-		free(((t_env *)afree)->value);
-	free(afree);
-}
-
-
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
@@ -194,7 +181,7 @@ int	main(int ac, char **av, char **env)
 			rl_on_new_line();
 		}
 	}
-	ft_lstclear(&new_env, free_env);
+	ft_lstclear(&new_env, free);
 	rl_clear_history();
 	(free(cwd), free(prompt));
 	return (0);

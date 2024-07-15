@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
 
 int	write_here(char *towrite)
@@ -35,15 +35,14 @@ int	here_doc_env(char **red, t_list *env)
 	return (1);
 }
 
-int	here_doc(char **start_cmd, int *index, int flag, t_list *env)
+int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 {
 	char	*limitter;
 	char	*red;
 	char	*here_doc;
 	char	*tmp_cmd;
 	int		start_index;
-	int	i = 0;
-	
+
 	//fprintf(stderr, "voici voila : %s\n", *start_cmd);
 	(*start_cmd)[*index] = '\0';
 	start_index = *index;
@@ -56,8 +55,6 @@ int	here_doc(char **start_cmd, int *index, int flag, t_list *env)
 		//fprintf(stderr, "soit c'est ca mais c'est pas logique\n");
 		return (0);
 	}
-	if (flag != REDIRECT)
-		return (fprintf(stderr, "soit c'est ca... still pas logique\n"), free(limitter), 1);//peut etre plus de choses a faire la
 	red = NULL;
 	here_doc = NULL;
 	close(STDIN_FILENO), close(STDOUT_FILENO);
