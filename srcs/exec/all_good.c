@@ -12,8 +12,6 @@ int	verif_tokken(char *line)
 				return (fprintf(stderr, "minishell: errror near unexpected tokken \'%c\'\n", *line), 0);
 		if (!ft_iswhitespace(*line))
 			tokkened = ft_isin_table(*line, "<>|");
-		if (tokkened)
-			tokkened = (int)*line;
 		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
 			line++;
 		line++;

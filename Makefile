@@ -7,7 +7,7 @@ MAIN		= srcs/exec/main.c
 #FILES		+= $(addprefix builtins/, $(F_BUILT))
 F_EXEC		= redirects.c ft_minisplit.c Les_Guillemets_UwU.c      \
 				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c \
-				init_env.c
+				init_env.c init_cmd_list.c
 FILES		+= $(addprefix exec/, $(F_EXEC))
 
 # Paths
@@ -39,8 +39,8 @@ ${NAME}:	libs ${OBJS}
 			@echo "${MSG_BUILD}${NAME}${MSG_FINISH}"
 			@echo "${FINISH}"
 
-test:		libs
-			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(INCS) libft/libft.a
+test:		libs ${OBJS}
+			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(OBJS) $(INCS) libft/libft.a
 
 
 libs :

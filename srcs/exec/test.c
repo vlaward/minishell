@@ -1,217 +1,201 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <string.h>
+#include "../../includes/minitest.h"
 
-#define READ_END 0
-#define WRITE_END 1
-#define MIN_ENV_SIZE 3
-#include "../../includes/minishell.h"
+int	parser(char *line, int flag, t_list *env);
 
-char	*ft_getenv(const char *name, t_list *env)
+int     execute_cmd(char **args, t_list *env) 
 {
-	int		size;
-
-	size = ft_strlen(name);
-	if (!name || !env)
-		return (NULL);
-	while (env)
-	{
-		if (ft_strncmp(name, env->content, size) == 0)
-		{
-			if (*((char *)env->content + size) == '=')
-		 		return (env->content + size + 1);
-		}
-		env = env->next;
-	}
-	return (NULL);
-
-}
-
-t_list	*env_from_scratch()
-{
-	t_list	*ret;
-	char	*cwd;
+	char	**paths;
 	char	*tmp;
+	int		i;
 
-	cwd = (char *)ft_calloc(PATH_MAX, sizeof(char ));
-	if (!getcwd(cwd, PATH_MAX))
-		return (NULL);
-	if (!ft_lstadd_front(&ret, ft_lstnew(ft_strjoin("PWD=", cwd)))
-		|| !ft_lstlast(ret)->content)
-		 return (ft_lstclear(&ret, free), perror("malloc"), NULL);
-	if (!ft_lstadd_front(&ret, ft_lstnew(ft_strdup("SHLVL=1")))
-		|| !ft_lstlast(ret)->content)
-		return (ft_lstclear(&ret, free), perror("malloc"), NULL);
-	tmp = ft_strjoin("_=", cwd);
-	if (!tmp)
-		return (ft_lstclear(&ret, free), perror("malloc"), NULL);
-	if (!ft_lstadd_front(&ret, ft_lstnew(ft_strjoin(tmp, "/./minishell")))
-		|| !ft_lstlast(ret)->content)
-		return (ft_lstclear(&ret, free), free(tmp), perror("malloc"), NULL);
-	return (ret);
-	}
+	for (int i = 0; args[i]; i++)
+		printf("arg %d is %s\n", i, args[i]);
 
-char	*shlvl_increment(char	*env)
-{
-	char	*nbr;
-	char	*ret;
-
-	nbr = ft_itoa(ft_atoi(env + 6) + 1);
-	if (!nbr)
-		return (NULL);
-	ret = ft_strjoin("SHLVL=", nbr);
-	return (free(nbr), ret);
-}
-
-
-t_list	*init_env(char **env)
-{
-	t_list	*ret;
-
-	if (!env || !*env)
-		return (env_from_scratch());
-	while (*env)
+	close(TTY_SAVED_FD);
+	if (!args || *args == NULL)
+		exit(0);
+	/*if (ft_is_builtins(args[0]))
 	{
-		if (ft_strncmp(*env, "SHLVL=", 5) == 0)
-			ft_lstadd_front(&ret, ft_lstnew(shlvl_increment(*(env++))));
-		else
-			ft_lstadd_front(&ret, ft_lstnew(ft_strdup(*(env++))));
-		if (!ft_lstlast(ret)->content)
-			return (ft_lstclear(&ret, free), perror("malloc"), NULL);//<===============================FREE THE FUCKING TABLE DON'T YOU FORGET U SUCKER (of course use ret 'caus you ain't dumb)
-	}
-	return (ret);
-}
-
-int	main()
-{
-	char *str = "sale pute";
-
-	switch (str)
+		printf("is builtins\n");
+		ft_builtins(args);
+		return (0);
+	}*/
+	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
+		return (execve(args[0], args, NULL), 127);
+	paths = ft_split(ft_getenv("PATH", env), ':');//si on est pas trop con on fait ca avec le nouvel env
+	if (!paths)
 	{
-		case ft_strcmp("sale pute", str) == 0:
-			printf("AHA\n");
-		default:
-			printf("aaaaww.....\n");
+		exit(fprintf(stderr, "%s : command not found\n", args[0]));
 	}
+	tmp = ft_strjoin("/", args[0]);
+	i = 0;
+	while (paths[i] != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
+	{
+		free(args[0]);
+		args[0] = ft_strjoin(paths[i], tmp);
+		execve(args[0], args, NULL);
+		free(paths[i++]);
+	}
+	i = 0; 
+	fprintf(stderr, "%s : command not found\n", args[0]);
+	while (args[i])
+		free(args[i++]);
+	(free(args), free(paths), free(tmp));
+	exit(127);
 	return (0);
 }
 
-// int	main(int ac, char **av, char **env)
-// {
-// 	t_list	*newenv;
-// 	t_list	*tmp;
+char	**pars_command(char *cmd, t_list *env)
+{//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
+	int		index;
 
-// 	newenv = init_env(env);
-// 	if (!newenv)
-// 		return (printf("je m'en doute,  reste a savoir pourquoi\n"), 1);
-// 	printf("voici :\"SHLVL\" qui est egal a \"%s\"\n", ft_getenv("SHLVL", newenv));
-// 	while (newenv != NULL)
-// 	{
-// 		tmp = newenv->next;
-// 		printf("%s\n", (char *)newenv->content);
-// 		ft_lstdelone(newenv, &free);
-// 		newenv = tmp;
-// 	}
-// 	return (0);
-// }
+	fprintf(stderr, "ah bah ca passe au moins la\n");
+	if (!gere_sig(EXECUTING_CMD))
+		return (NULL);
+	index = 0;
+	while (cmd[index])
+	{
+		if (cmd[index] == '$')
+			env_handler(&cmd, &index, env);
+		else if (cmd[index] == '\"' || cmd[index] == '\'' )
+			guille_handler(&cmd, &index, 0, env);
+		else if (cmd[index] == '>' || cmd[index] == '<')
+		{
+			if (!redirects(&cmd, &index, REDIRECT, env))
+				return (free(cmd), NULL);
+		}
+		else if (cmd[index] != '\0')
+			index++;  
+	}
+	return (ft_minisplit(cmd));
+}
+
+int	fork_thing(char *line, int start, int itt, t_list *env)
+{
+	int		pid;
+	int		pipette[2];
+
+	pipe(pipette);
+	line[itt] = '\0';
+	//	splat = pars commande
+	//le redirecte = parser la commande
+	pid = fork();
+	if (pid == -1)
+		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
+	if (pid)
+	{
+		//	dup what's savec of the tty 
+		dup2(pipette[0], STDIN_FILENO);
+		(close(pipette[1]), close(pipette[0]));
+		//printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
+		return (parser(line, itt + 1, env));
+	}
+	//dup2 le redirecte 
+	//si pas d'autre redirecte
+		dup2(pipette[1], STDOUT_FILENO);
+	(close(pipette[1]), close(pipette[0]));
+	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
+}
+
+int	parser(char *line, int start, t_list *env)
+{//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
+	int		status;
+	int		itt;
+
+	if (*line == '\0')
+	 	return (free(line), 0);
+	status = 0;
+	itt = start;
+	while (line[itt] != '|' && line[itt] != '\0')
+		itt++;
+	if (line[itt] && line[itt] == '|')
+		return (fork_thing(line, start, itt, env));
+	if (fork())// a securiser mais vas y ntm
+	{
+		if (!gere_sig(0))
+			return (0);
+		close(STDIN_FILENO);
+		while(wait(&status) != -1);
+		status = WEXITSTATUS(status);
+		free(line);
+		dup(TTY_SAVED_FD);
+		return (0);//mettre status dans $?
+	}
+	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
+}
+
+void	free_cmd(void *afree)
+{
+	if (!afree)
+		return ;
+	free(((t_cmd *)afree)->cmd);
+	free(afree);
+}
+
+void	free_env(void *afree)
+{
+	if (!afree)
+		return ;
+	if ((((t_env *)afree)->key))
+		free(((t_env *)afree)->key);
+	if ((((t_env *)afree)->value))
+		free(((t_env *)afree)->value);
+	free(afree);
+}
 
 
-// void write_here_doc_content(int fd) {
-//     const char *here_doc = "Here document content\n";
-//     write(fd, here_doc, strlen(here_doc));
-// }
+int	main(int ac, char **av, char **env)
+{
+	char	*line;
+	char	*prompt;
+	char	*cwd;
+	t_list	*new_env;
+	t_list	*cmd;
 
-// int main() {
-//     int pipe_ls[2];
-//     int pipe_combined[2];
-//     pid_t pid_ls, pid_cat, pid_combine;
-
-//     // Create pipes
-//     if (pipe(pipe_ls) == -1 || pipe(pipe_combined) == -1) {
-//         perror("pipe");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     // Fork the first child to execute 'ls'
-//     pid_ls = fork();
-//     if (pid_ls == -1) {
-//         perror("fork");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     if (pid_ls == 0) {
-//         // Child 1: 'ls'
-//         close(pipe_ls[READ_END]); // Close the read end of the ls pipe
-//         dup2(pipe_ls[WRITE_END], STDOUT_FILENO); // Redirect stdout to the write end of the ls pipe
-//         close(pipe_ls[WRITE_END]);
-//         close(pipe_combined[READ_END]);
-//         close(pipe_combined[WRITE_END]);
-
-//         execlp("./test.sh", "./test.sh", NULL); // Execute 'ls'
-//         perror("execlp");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     // Fork a second child to combine the output of 'ls' and the here-doc content
-//     pid_combine = fork();
-//     if (pid_combine == -1) {
-//         perror("fork");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     if (pid_combine == 0) {
-//         // Child 2: combine
-//         close(pipe_ls[WRITE_END]); // Close the write end of the ls pipe
-//         close(pipe_combined[READ_END]); // Close the read end of the combined pipe
-
-//         // Read from ls pipe and write to combined pipe
-//         char buffer[1024];
-//         ssize_t bytes_read;
-//         while ((bytes_read = read(pipe_ls[READ_END], buffer, sizeof(buffer))) > 0) {
-//             write(pipe_combined[WRITE_END], buffer, bytes_read);
-//         }
-
-//         // Write the here-doc content to the combined pipe
-//         write_here_doc_content(pipe_combined[WRITE_END]);
-
-//         close(pipe_ls[READ_END]);
-//         close(pipe_combined[WRITE_END]);
-//         exit(EXIT_SUCCESS);
-//     }
-
-//     // Fork the third child to execute 'cat'
-//     pid_cat = fork();
-//     if (pid_cat == -1) {
-//         perror("fork");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     if (pid_cat == 0) {
-//         // Child 3: 'cat'
-//         close(pipe_combined[WRITE_END]); // Close the write end of the combined pipe
-//         dup2(pipe_combined[READ_END], STDIN_FILENO); // Redirect stdin to the read end of the combined pipe
-//         close(pipe_combined[READ_END]);
-//         close(pipe_ls[READ_END]);
-//         close(pipe_ls[WRITE_END]);
-
-//         execlp("cat", "cat", NULL); // Execute 'cat'
-//         perror("execlp");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     // Parent process
-//     close(pipe_ls[READ_END]);
-//     close(pipe_ls[WRITE_END]);
-//     close(pipe_combined[READ_END]);
-//     close(pipe_combined[WRITE_END]);
-
-//     // Wait for all children to complete
-//     waitpid(pid_ls, NULL, 0);
-//     waitpid(pid_combine, NULL, 0);
-//     waitpid(pid_cat, NULL, 0);
-
-//     return 0;
-// }
+	(void)ac;
+	(void)av;
+	new_env = init_env(env);
+	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
+	if (!cwd)
+		return (perror("calloc"), 0);
+ 	line = NULL;
+	prompt = NULL;
+	while (1)
+	{
+		if (!gere_sig(READING_LINE))
+			return (0);
+		ft_bzero(cwd, sizeof(char) * PATH_MAX);
+		getcwd(cwd, PATH_MAX * sizeof(char));
+		if (ft_strncmp(cwd, prompt, ft_strlen(cwd)) != 0)
+		{
+			free(prompt);
+			prompt = ft_strjoin(cwd, "> ");
+		}
+		line = readline(prompt);
+		if (!line)
+			break ; //127
+		line = tatu_ferme_tes_guillemets(line);
+		if (line)
+		{
+			add_history(line);// <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
+			fprintf(stderr, "ah bah ca passe au moins la\n");
+			cmd = init_cmd(line, new_env);
+			t_list	*tmp = cmd;
+			while (tmp)
+			{
+				if (tmp->content)
+					printf("nous avons lacmd : %s\nensuite in : %d\net enfin in : %d\n", ((t_cmd *)(tmp->content))->cmd, ((t_cmd *)(tmp->content))->in, ((t_cmd *)(tmp->content))->out);
+				tmp = tmp->next;
+			}
+			
+			ft_lstclear(&cmd, free_cmd);
+			//	if (parser(line, 0, new_env) != 0)
+			//		return (1);
+			rl_on_new_line();
+		}
+	}
+	ft_lstclear(&new_env, free_env);
+	rl_clear_history();
+	(free(cwd), free(prompt));
+	return (0);
+}

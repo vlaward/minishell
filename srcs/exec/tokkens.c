@@ -1,7 +1,7 @@
 #include "../../includes/minishell.h"
 
 
-int		env_handler(char **start_cmd, int *i)
+int		env_handler(char **start_cmd, int *i, t_list *env)
 {
 	int		j;
 	char	*env_value;
@@ -16,7 +16,7 @@ int		env_handler(char **start_cmd, int *i)
 	}
 	(*start_cmd)[j - 1] = '\0';
 	//fprintf(stderr, "voici env key : %s\n", &(*start_cmd)[*i]);
-	env_value = getenv(&(*start_cmd)[*i]);
+	env_value = ft_getenv(&(*start_cmd)[*i], env);
 	(*start_cmd)[*i] = '\0';
 	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));
 	*start_cmd = ft_strjoin_n_free(*start_cmd, tmp);
@@ -32,7 +32,7 @@ int		env_handler(char **start_cmd, int *i)
 	return (j);
 }
 
-int		guille_handler(char **start_cmd, int *i, int flag)
+int		guille_handler(char **start_cmd, int *i, int flag, t_list *env)
 {
 	int		j;
 	char	*tmp;
@@ -41,7 +41,7 @@ int		guille_handler(char **start_cmd, int *i, int flag)
 	while ((*start_cmd)[j] && (*start_cmd)[j] != (*start_cmd)[*i])
 	{
 		if (flag != H_DOC_TRIM && (*start_cmd)[*i] == '\"' && (*start_cmd)[j] == '$')
-			if (env_handler(start_cmd, &j) == -1 && flag == F_NAME_TRIM)
+			if (env_handler(start_cmd, &j, env) == -1 && flag == F_NAME_TRIM)
 				return (-1);
 		if ((*start_cmd)[j] != '\0')
 			j++;
@@ -68,11 +68,11 @@ char	*trim(char **start_cmd, int *index, int flag, t_list *env)
 	while ((*start_cmd)[*index] != '\0' && !ft_iswhitespace((*start_cmd)[*index]))
 	{
 		if ((*start_cmd)[*index] == '\'' || (*start_cmd)[*index] == '\"')
-			*index = guille_handler(start_cmd, index, flag);
+			*index = guille_handler(start_cmd, index, flag, env);
 		else if (ft_isin_table((*start_cmd)[*index], "<>|"))
 			break;
 		else if (flag != H_DOC_TRIM && (*start_cmd)[*index] == '$')
-			*index = env_handler(start_cmd, index);
+			*index = env_handler(start_cmd, index, env);
 		else//if ((*start_cmd)[*index] && (*start_cmd)[*index] != ' ') <== je suis pas sure de pouvoir l'enlever mais je crois bien
 			*index += 1;
 		if (*index == -1)

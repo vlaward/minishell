@@ -22,7 +22,11 @@ int     execute_cmd(char **args, t_list *env)
 	}*/
 	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
 		return (execve(args[0], args, NULL), 127);
-	paths = ft_split(getenv("PATH"), ':');
+	paths = ft_split(ft_getenv("PATH", env), ':');//si on est pas trop con on fait ca avec le nouvel env
+	if (!paths)
+	{
+		exit(fprintf(stderr, "%s : command not found\n", args[0]));
+	}
 	tmp = ft_strjoin("/", args[0]);
 	i = 0;
 	while (paths[i] != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
@@ -32,8 +36,8 @@ int     execute_cmd(char **args, t_list *env)
 		execve(args[0], args, NULL);
 		free(paths[i++]);
 	}
-	i = 0;
-	printf("%s : command not found\n", tmp + 1);
+	i = 0; 
+	fprintf(stderr, "%s : command not found\n", args[0]);
 	while (args[i])
 		free(args[i++]);
 	(free(args), free(paths), free(tmp));
@@ -52,9 +56,9 @@ char	**pars_command(char *cmd, t_list *env)
 	while (cmd[index])
 	{
 		if (cmd[index] == '$')
-			env_handler(&cmd, &index);
+			env_handler(&cmd, &index, env);
 		else if (cmd[index] == '\"' || cmd[index] == '\'' )
-			guille_handler(&cmd, &index, 0);
+			guille_handler(&cmd, &index, 0, env);
 		else if (cmd[index] == '>' || cmd[index] == '<')
 		{
 			if (!redirects(&cmd, &index, REDIRECT, env))
@@ -73,24 +77,23 @@ int	fork_thing(char *line, int start, int itt, t_list *env)
 
 	pipe(pipette);
 	line[itt] = '\0';
+	//	splat = pars commande
+	//le redirecte = parser la commande
 	pid = fork();
 	if (pid == -1)
 		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
 	if (pid)
 	{
-		close(pipette[1]);
+		//	dup what's savec of the tty 
 		dup2(pipette[0], STDIN_FILENO);
-		close(pipette[0]);
+		(close(pipette[1]), close(pipette[0]));
 		//printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
 		return (parser(line, itt + 1, env));
 	}
-	else
-	{
-	 	close(pipette[0]);
+	//dup2 le redirecte 
+	//si pas d'autre redirecte
 		dup2(pipette[1], STDOUT_FILENO);
-		close(pipette[1]);
-		
-	}
+	(close(pipette[1]), close(pipette[0]));
 	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
 }
 

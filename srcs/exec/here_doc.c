@@ -16,7 +16,7 @@ int	write_here(char *towrite)
 	return (1);
 }
 
-int	here_doc_env(char **red)
+int	here_doc_env(char **red, t_list *env)
 {
 	int	i;
 
@@ -26,7 +26,7 @@ int	here_doc_env(char **red)
 	while ((*red)[i] != '\0')
 	{
 		if ((*red)[i] == '$')
-			i = env_handler(red, &i);
+			i = env_handler(red, &i, env);
 		else
 			i++;
 		if (i < 0)		
@@ -66,7 +66,7 @@ int	here_doc(char **start_cmd, int *index, int flag, t_list *env)
 	while (1)
 	{
 		red = readline("here_doc >");
-		if (!here_doc_env(&red))
+		if (!here_doc_env(&red, env))
 			return (perror("readline"), free(here_doc), free(limitter), 0);
 		if (ft_strcmp(limitter, red) == 0)
 			break;

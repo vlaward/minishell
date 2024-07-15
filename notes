@@ -12,20 +12,10 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 
--GERER LA CREATION DE L'ENIRONEMENT. CLONER L'EXISTANT OU CHYERCHER LES INFOS : "env -i bash" pui "env" et voir ce qui est recup
--Ca serais vrasiment bien de mettre dans la libft un "clear table" et un "table_ssize". Encore mieux si ca pouvais etre util  avec n'importe quel type de donne.... 
-		-> Deux possibilites, soit je fait attention a tout le temp faire les init dans le bon sens et je check pour ==NULL. Soit je met un "size". soit je fait les deux en meme temp :D soit je fait deux fonction separeess... (je vais en faire trois, dont une qui fait le deux en meme temps mdr)
--est-ce que en utilisant calloc qui memset a 0 on peu ignorer d'init les poiteur a null pour indiquer la fin du tablea. Ca me parrait pas si propre mais je pense que c'est un peut inutil de les initialiser si ca le fait deja
-
 -update les define, mettre un define pour les flags de open
-
--"env -i ./minishell" regarder avec bash. Il y a un environement minimum au lancement.
--PASSER L'ENV PARTOUT ET FIRE UYN GETENV PARTICULIER !!!!!
 -si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec
-
--gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
 -REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif
--incrementer $SHLVL
+-remplacer TOUT les printfs
 -si $ n'as rien derriere il n'est pas expend  (ex : "echo $" ; "$")\
 -verifier avec access avant de executer voir en bas laa
 -si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access
@@ -55,6 +45,9 @@ REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier 
 	franchement s'ut ete plus simple de faire des putains de structures mais bon... alright
 
 =======================================
+
+NAHLA (je fait chier de ouf) :
+-gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
 
 
 AXEL :
@@ -88,3 +81,7 @@ FAIT ???
 -l;es vartaibl;es d'environements dan s le here doc mais pas les guillemets. Verifier ce qui en decoule dans env_handler
 -<< a gerer en meme temps que les autres redisrects. remettre le tty en entree standart entre chaqeus redirects
 -tester le here doc sans rien
+-GERER LA CREATION DE L'ENIRONEMENT. CLONER L'EXISTANT OU CHYERCHER LES INFOS : "env -i bash" pui "env" et voir ce qui est recup
+-"env -i ./minishell" regarder avec bash. Il y a un environement minimum au lancement.
+-PASSER L'ENV PARTOUT ET FIRE UYN GETENV PARTICULIER !!!!!
+-incrementer $SHLVL
