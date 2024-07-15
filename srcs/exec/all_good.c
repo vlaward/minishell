@@ -23,23 +23,21 @@ int	verif_tokken(char *line)
 	return (1);
 }
 
-int	all_good(char *line)
+int	all_good(char *line, t_list *env)
 {
-	t_stof	*stofs;
 	int		index;
 
-	stofs = str_to_func();
 	index = 0;
 	if (!verif_tokken(line))
 		return (0);
 	while (line[index])
 	{
 		if (line[index] == '>' || line[index] == '<')
-			if (!redirects(&line, &index, stofs, 0))
-				return (free(stofs), free(line), 0);
+			if (!redirects(&line, &index, 0, env))
+				return (free(line), printf("c'est donc ici que le probleme est\n"), 0);
 		if (line[index] != '\0')
 			index++;
 	}
-	(free(stofs), free(line));
+	free(line);
 	return (1);
 }

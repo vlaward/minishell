@@ -2,13 +2,13 @@
 
 
 //verifier si errno est bien a 0 a la base
-int	in_handler(char **start_cmd, int *index, int flag)
+int	in_handler(char **start_cmd, int *index, int flag, t_list *env)
 {
 	int		fd;
 	char	*file;
 	char	*tmp;
 
-	file = trim(start_cmd, index, F_NAME_TRIM);
+	file = trim(start_cmd, index, F_NAME_TRIM, env);
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
@@ -33,7 +33,7 @@ int	in_handler(char **start_cmd, int *index, int flag)
 	return (free(file), tmp != NULL);
 }
 
-int	append_handler(char **start_cmd, int *index, int flag)
+int	append_handler(char **start_cmd, int *index, int flag, t_list *env)
 {
 	int		fd;
 	char	*file;
@@ -41,7 +41,7 @@ int	append_handler(char **start_cmd, int *index, int flag)
 
 	(*start_cmd)[*index] = '\0';
 	*index += 1;
-	file = trim(start_cmd, index, F_NAME_TRIM);
+	file = trim(start_cmd, index, F_NAME_TRIM, env);
 	//fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
@@ -66,19 +66,19 @@ int	append_handler(char **start_cmd, int *index, int flag)
 	return (free(file), tmp != NULL);
 }
 
-int	out_handler(char **start_cmd, int *index, int flag)
+int	out_handler(char **start_cmd, int *index, int flag, t_list *env)
 {
 	int		fd;
 	char	*file;
 	char	*tmp;
 
-	file = trim(start_cmd, index, F_NAME_TRIM);
-	//fprintf(stderr, "this is the name : %s\n", file);
+	file = trim(start_cmd, index, F_NAME_TRIM, env);
+	fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 	{
 		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
-		return (0);
+		return (fprintf(stderr, "donc clairement c'est ici\n"), 0);
 	}
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
 	if (fd == -1)
@@ -94,10 +94,23 @@ int	out_handler(char **start_cmd, int *index, int flag)
 	*index -= ft_strlen(file) + 2;
 	free(*start_cmd);
 	*start_cmd = tmp;
+	fprintf(stderr, "donc ici : %s\n", tmp);
 	return (free(file), tmp != NULL);
 }
 
-
+int	redirects(char **start_cmd, int *index, int flag, t_list *env)
+{
+	if ( ft_strncmp(&(*start_cmd)[*index], ">>", 2) == 0)
+		return(append_handler(start_cmd, index, flag, env));
+	if ( ft_strncmp(&(*start_cmd)[*index], "<<", 2) == 0)
+		return(here_doc(start_cmd, index, flag, env));
+	if ( ft_strncmp(&(*start_cmd)[*index], "<", 1) == 0)
+		return(in_handler(start_cmd, index, flag, env));
+	if ( ft_strncmp(&(*start_cmd)[*index], ">", 1) == 0)
+		return(out_handler(start_cmd, index, flag, env));
+	return (printf("LA ?????"), 0);
+}
+/*
 int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 {
 	int	i;
@@ -114,4 +127,4 @@ int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 		if (!stofs->func(start_cmd, index, flag))
 			return (0);
 	return (1);
-}
+}*/

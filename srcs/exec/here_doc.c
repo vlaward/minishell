@@ -35,7 +35,7 @@ int	here_doc_env(char **red)
 	return (1);
 }
 
-int	here_doc(char **start_cmd, int *index, int flag)
+int	here_doc(char **start_cmd, int *index, int flag, t_list *env)
 {
 	char	*limitter;
 	char	*red;
@@ -48,7 +48,7 @@ int	here_doc(char **start_cmd, int *index, int flag)
 	(*start_cmd)[*index] = '\0';
 	start_index = *index;
 	*index += 1;
-	limitter = trim(start_cmd, index, H_DOC_TRIM);
+	limitter = trim(start_cmd, index, H_DOC_TRIM, env);
 	if (limitter == NULL)
 	{
 		if (!ft_iswhitespace((*start_cmd)[*index]))

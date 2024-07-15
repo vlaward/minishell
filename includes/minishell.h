@@ -20,18 +20,12 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
 # endif
-<<<<<<< HEAD
 #ifndef PATH_MAX
 # define PATH_MAX 4096
 # endif
 #define FIRST_COMMAND 0
 #define NOT_FIRST_COMMAND 1
 #define REDIRECT 1
-=======
-# ifndef PATH_MAX
-#  define PATH_MAX 4096
-# endif
->>>>>>> 7716263962f668dbf40f63ba3bd9fb6f6b7ac505
 # define REDIRECT 1
 # define F_NAME_TRIM 1
 # define H_DOC_TRIM 2
@@ -48,38 +42,31 @@ typedef struct s_env
 	struct s_env *next;
 } t_env;
 
-typedef struct s_stof
-{
-	char	*str;
-	int		(*func)(char **, int *, int);
-}t_stof;
-
 extern int G_sig_catcher;
 
 extern char **G_env;
 
-char	**init_env(char	**env);
+t_list *init_env(char	**env);
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
 char	*get_next_line(int fd);
-int		all_good(char *line);
+int		all_good(char *line, t_list *env);
 int		verif_tokken(char *line);
 
 //verif_tokken
 
 int		env_handler(char **start_cmd, int *i);
 int		guille_handler(char **start_cmd, int *i, int flag);
-t_stof	*str_to_func();//on pourait mettre env et guille dedans. Ca serais elegant. redirects le fait deja il faut juste changer le nom
 
 //redirects
 
-int		redirects(char **start_cmd, int *index, t_stof *stofs, int flag);
-int		out_handler(char **start_cmd, int *index, int flag);
-int		append_handler(char **start_cmd, int *index, int flag);
-int		in_handler(char **start_cmd, int *index, int flag);
+int		redirects(char **start_cmd, int *index, int flag, t_list *env);
+int		out_handler(char **start_cmd, int *index, int flag, t_list *env);
+int		append_handler(char **start_cmd, int *index, int flag, t_list *env);
+int		in_handler(char **start_cmd, int *index, int flag, t_list *env);
 char	*limit_handler(char *itterand, char *start_cmd);
-char	*trim(char **start_cmd, int *index, int flag);
-int		here_doc(char **start_cmd, int *index, int flag);
+char	*trim(char **start_cmd, int *index, int flag, t_list *env);
+int		here_doc(char **start_cmd, int *index, int flag, t_list *env);
 
 //signals
 

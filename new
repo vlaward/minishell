@@ -1,3 +1,23 @@
+arg 0 is ls
+2004l
+Colors.mk
+Makefile
+NEW
+includes
+infile_big
+libft
+minishell
+minitest
+new
+notes
+objs
+oldMakefile
+oldtest
+srcs
+test
+test.sh
+arg 0 is cat
+arg 1 is Makefile
 include Colors.mk
 
 # Names 

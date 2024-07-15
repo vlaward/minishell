@@ -54,11 +54,12 @@ int		guille_handler(char **start_cmd, int *i, int flag)
 	return (j - 1);
 }
 
-char	*trim(char **start_cmd, int *index, int flag)
+char	*trim(char **start_cmd, int *index, int flag, t_list *env)
 {
 	int		start_index;
 	int		start_name_index;
 
+	printf("nous voici medames et messierus avec [%s]\n\t\t et [%s]\n", *start_cmd, (*start_cmd +*index));
 	start_index = *index;
 	*index += 1;
 	while (ft_iswhitespace((*start_cmd)[*index]))
@@ -80,22 +81,4 @@ char	*trim(char **start_cmd, int *index, int flag)
 	(*start_cmd)[start_index++] = '\0';
 	//fprintf(stderr, "purtant ca donne ca: %d\n", *index - start_name_index);
 	return (ft_strndup(&(*start_cmd)[start_name_index], *index - start_name_index));
-}
-
-t_stof	*str_to_func()
-{
-	t_stof	*ret;
-
-	ret = malloc(sizeof(t_stof) * 6);
-	ret[0].str = "<";
-	ret[0].func = &in_handler;
-	ret[1].str = ">";
-	ret[1].func = &out_handler;
-	ret[2].str = ">>";
-	ret[2].func = &append_handler;
-	ret[3].str = "<<";
-	ret[3].func = &here_doc;
-	ret[4].str = NULL;
-	ret[4].func = NULL;
-	return (ret);
 }

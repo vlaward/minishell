@@ -16,7 +16,7 @@ int	ft_lstadd_front(t_list **lst, t_list *new)
 {
 	t_list	*t;
 
-	if (!lst || ! new)
+	if (!lst || !new)
 		return (0);
 	if (*lst == NULL)
 		*lst = new;
