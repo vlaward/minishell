@@ -58,6 +58,7 @@ char	*get_next_line(int fd);
 char	*ft_getenv(const char *name, t_list *env);
 t_list	*init_cmd(char *line, t_list *env);
 int		verif_tokken(char *line);
+void	free_cmd(void *afree);
 
 //verif_tokken
 

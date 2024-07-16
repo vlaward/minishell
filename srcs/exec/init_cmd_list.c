@@ -62,6 +62,14 @@ t_cmd	*cmd_dup(t_cmd cmd)
 	return (ret);
 }
 
+void	free_cmd(void *afree)
+{
+	if (!afree)
+		return ;
+	free(((t_cmd *)afree)->cmd);
+	free(afree);
+}
+
 t_list	*init_cmd(char *line, t_list *env)
 {
 	int		index;
@@ -72,7 +80,7 @@ t_list	*init_cmd(char *line, t_list *env)
 	if (!verif_tokken(line))
 		return (0);
 	index = 0;
-	ret = ft_lstnew(NULL);
+	ret = NULL;
 	start_cmd = 0;
 	tmp.in = 0;
 	tmp.out = 0;
@@ -80,13 +88,14 @@ t_list	*init_cmd(char *line, t_list *env)
 	{
 		if (line[index] == '>' || line[index] == '<')
 			if (!redirects(&line, &index, &tmp, env))
-				return (free(line), printf("c'est donc ici que le probleme est\n"), NULL);
+				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
 		if (line[index] == '|')
 		{
 			line[index++] = '\0';
 			tmp.cmd = ft_strdup(&(line[start_cmd]));
 			start_cmd = index;
-			ft_lstadd_front(&ret, ft_lstnew(cmd_dup(tmp)));
+			if (!ft_lstadd_front(&ret, ft_lstnew(cmd_dup(tmp))))
+				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
 			tmp.in = 0;
 			tmp.out = 0;
 			

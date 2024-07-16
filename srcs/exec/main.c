@@ -169,6 +169,6 @@ int	main(int ac, char **av, char **env)
 		}
 	}
 	rl_clear_history();
-	(free(cwd), free(prompt));
+(free(cwd), free(prompt));
 	return (0);
 }

@@ -4,16 +4,18 @@
 int	write_here(char *towrite)
 {
 	int	pipette[2];
+	int	ret;
 
 	if (pipe(pipette) == -1)
 		return (free(towrite), perror("pipe"), 0);
-	if (dup2(pipette[0], STDIN_FILENO) == -1)
-		return (free(towrite), perror("dup2"), 0);
+	ret = dup(pipette[0]);
+	if (ret == -1)
+		return (free(towrite), perror("dup"), 0);
 	ft_putestr_fd(towrite, pipette[1]);
 	close(pipette[0]);
 	close(pipette[1]);
 	free(towrite);
-	return (1);
+	return (ret);
 }
 
 int	here_doc_env(char **red, t_list *env)
@@ -57,9 +59,6 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	}
 	red = NULL;
 	here_doc = NULL;
-	close(STDIN_FILENO), close(STDOUT_FILENO);
-	dup(TTY_SAVED_FD);
-	dup(TTY_SAVED_FD);
 	while (1)
 	{
 		red = readline("here_doc >");
@@ -72,7 +71,7 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 			return (ft_putestr_fd("don't know\n", STDERR_FILENO), 0);
 		free(red);
 	}
-	write_here(here_doc);
+	cmd->in = write_here(here_doc);
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	(free(red), free(limitter), free(*start_cmd));
 	*start_cmd = tmp_cmd;

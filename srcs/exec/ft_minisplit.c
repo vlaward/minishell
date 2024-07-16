@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/06/20 07:07:59 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/07/16 12:38:53 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
 char	*add_to_list(char *itterand, t_list **liste)
 {
