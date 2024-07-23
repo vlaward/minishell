@@ -31,6 +31,7 @@ int	gere_sig(int flag)
 {
 	struct sigaction	sa_c;
 
+	
 	sa_c.sa_handler = sa_c_waiting_handler;
 	if (flag == READING_LINE)
 		sa_c.sa_handler = sa_c_handler;

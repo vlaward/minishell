@@ -1,55 +1,11 @@
 #include "../../includes/minitest.h"
 
-int	outest_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
+void	fill_cmd(t_cmd *cmd, int in, int out, int childs_bool)
 {
-	int		fd;
-	char	*file;
-	char	*tmp;
-
-	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	fprintf(stderr, "this is the name : %s\n", file);
-	if (file == NULL)
-	{
-		if (!ft_iswhitespace((*start_cmd)[*index]))
-			ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
-		return (fprintf(stderr, "donc clairement c'est ici\n"), 0);
-	}
-	if (cmd->out != 0)
-		close(cmd->out);
-	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
-	if (fd == -1)
-		return(perror("open"), 0);
-	cmd->out = fd;//.je pense qu'il y a pas besoin de ca
-	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
-	if (!tmp && errno != 0)
-		return (perror("malloc"), 0);
-	*index -= ft_strlen(file) + 2;
-	free(*start_cmd);
-	*start_cmd = tmp;
-	return (free(file), tmp != NULL);
+	cmd->in = in;
+	cmd->out = out;
+	cmd->childs_bool = childs_bool;
 }
-
-
-/*int	verif_tokken(char *line)
-{
-	int	tokkened;
-
-	tokkened = 0;
-	while (*line)
-	{
-		if (tokkened)
-			if (ft_isin_table(*line, "<>|"))
-				return (fprintf(stderr, "minishell: errror near unexpected tokken \'%c\'\n", *line), 0);
-		if (!ft_iswhitespace(*line))
-			tokkened = ft_isin_table(*line, "<>|");
-		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
-			line++;
-		line++;
-	}
-	if (tokkened && tokkened != '|')
-		return (fprintf(stderr, "minishell: errror near unexpected tokken 'newline'\n"),  0);
-	return (1);
-}*/
 
 t_cmd	*cmd_dup(t_cmd cmd)
 {
@@ -70,6 +26,20 @@ void	free_cmd(void *afree)
 	free(afree);
 }
 
+t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
+{
+	t_cmd	tmp;
+
+	cmd->childs_bool = 1;
+	line[(*index)++] = '\0';
+	cmd->cmd = ft_strdup(&(line[(*start_cmd)]));
+	*start_cmd = *index;
+	tmp = *cmd;
+	cmd->in = 0;
+	cmd->out = 0;
+	return (ft_lstnew(cmd_dup(tmp)));
+}
+
 t_list	*init_cmd(char *line, t_list *env)
 {
 	int		index;
@@ -79,29 +49,18 @@ t_list	*init_cmd(char *line, t_list *env)
 
 	if (!verif_tokken(line))
 		return (0);
-	index = 0;
-	ret = NULL;
+	index = -1;
 	start_cmd = 0;
-	tmp.in = 0;
-	tmp.out = 0;
-	while (line[index])
+	ret = NULL;
+	fill_cmd(&tmp, 0 ,0 ,0);
+	while (line[++index])
 	{
 		if (line[index] == '>' || line[index] == '<')
 			if (!redirects(&line, &index, &tmp, env))
 				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
 		if (line[index] == '|')
-		{
-			line[index++] = '\0';
-			tmp.cmd = ft_strdup(&(line[start_cmd]));
-			start_cmd = index;
-			if (!ft_lstadd_front(&ret, ft_lstnew(cmd_dup(tmp))))
+			if (!ft_lstadd_front(&ret, piped_node(&tmp, line, &index, &start_cmd)))
 				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
-			tmp.in = 0;
-			tmp.out = 0;
-			
-		}
-		if (line[index] != '\0')
-			index++;
 	}
 	tmp.cmd = ft_strdup(&(line[start_cmd]));
 	start_cmd = index;

@@ -6,7 +6,9 @@ char	*ft_getenv(const char *name, t_list *env)
 	int		size;
 
 	size = ft_strlen(name);
-	if (!name || !env)
+	if (!name)
+		return("$");//ici c'est a faire 
+	if (!env)
 		return (NULL);
 	while (env)
 	{

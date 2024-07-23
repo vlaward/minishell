@@ -3,21 +3,21 @@
 //put a getenv in the beginning of minishell and change all the getenvs in builtins
 //also only builtin when final command ! not normal
 
-int	ft_is_builtins(char *av)
+void	*(*f)ft_is_builtins(char *av)
 {
-	if (!ft_strcmp(av, "echo"))
+	if (!ft_strncmp(av, "echo", 4))
 		return (1);
-	else if (!ft_strcmp(av, "env"))
+	else if (!ft_strncmp(av, "env", 3))
 		return (1);
-	else if (!ft_strcmp(av, "unset"))
+	else if (!ft_strncmp(av, "unset", 5))
 		return (1);
-	else if (!ft_strcmp(av, "export"))
+	else if (!ft_strncmp(av, "export", 6))
 		return (1);
-	else if (!ft_strcmp(av, "pwd"))
+	else if (!ft_strncmp(av, "pwd", 3))
 		return (1);
-	else if (!ft_strcmp(av, "cd"))
+	else if (!ft_strncmp(av, "cd", 2))
 		return (1);
-	else if (!ft_strcmp(av, "exit"))
+	else if (!ft_strncmp(av, "exit", 4))
 		return (1);
     else
         return (0);

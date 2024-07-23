@@ -2,10 +2,29 @@
 
 int	parser(t_list *cmd, t_list *env);
 
+char	**env_to_tabl(t_list *env)
+{
+	char	**ret;
+	char	**tmp;
+
+	ret = (char **)malloc(sizeof(char *) * (ft_lstsize(env) + 1));
+	if (!ret)
+		return (NULL);
+	tmp = ret;
+	while (env)
+	{
+		*(tmp++) = (char *)(env->content);
+		env = env->next;
+	}
+	*tmp = NULL;
+	return (ret);
+}
+
 int     execute_cmd(char **args, t_list *env) 
 {
 	char	**paths;
 	char	*tmp;
+	char	**tabl_env;
 	int		i;
 
 	if (!args)
@@ -21,8 +40,14 @@ int     execute_cmd(char **args, t_list *env)
 		ft_builtins(args);
 		return (0);
 	}*/
+	tabl_env = env_to_tabl(env);
+	if (!tabl_env)
+	{
+		perror("malloc");
+		exit(errno);
+	}
 	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
-		return (execve(args[0], args, NULL), 127);
+		return (execve(args[0], args, tabl_env), 127);
 	paths = ft_split(ft_getenv("PATH", env), ':');//si on est pas trop con on fait ca avec le nouvel env
 	if (!paths)
 	{
@@ -34,7 +59,7 @@ int     execute_cmd(char **args, t_list *env)
 	{
 		free(args[0]);
 		args[0] = ft_strjoin(paths[i], tmp);
-		execve(args[0], args, NULL);
+		execve(args[0], args, tabl_env);
 		free(paths[i++]);
 	}
 	i = 0; 
@@ -104,6 +129,8 @@ int	parser(t_list *cmd, t_list *env)
 
 	if (cmd->next)
 		return (fork_thing(cmd, env));
+	// if (is_builtin(cmd->content))//un ft_strcmp
+	// 	return(builtin(cmd));
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
 	{

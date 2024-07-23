@@ -44,6 +44,7 @@ typedef struct s_env
 typedef struct s_cmd{
 	int		in;
 	int		out;
+	int		childs_bool;
 	char	*cmd;
 }	t_cmd;
 

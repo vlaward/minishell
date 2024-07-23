@@ -1,0 +1,12 @@
+ewn gros sis jamais je fait une fonction qui return une node a mettre adans la lst cnd. Et que je prends le pointeur vers le temp cmd. Je p[eu erecucuperer juste ce qu'il faut c'est a dire : cmd, line, start et index. retrun la node a ajouter. Et comme on a la cmd en tant que poihnteur on peu changer les deux variablkes dedans. on ganges 9 ligneset c;'est plsuc claire pars ce que c;est jsute l;'acction de s';occup0er de la pipe.
+iil fautrajouter une variable dans le type cmd pour savoir si la liste edst avec une commande unique ou avec des enfants. 
+Je trouve ca giga moche uuuugh T^T. Mais on est oblige pars ce que cd marche pas meme si il est en premiere place ou en derniere dans un e commnade avec des pipe(ca serais interessant de savoir si a marcherais avvce des points viurgules ou des &&)
+
+On peu laisser les builtin dans la partie execve pars ce que dans tout lkes cas c'[est des enfants donc ca changer rien., genre ca risque pas de changer de pwdd  vus que c'est en ffork. 
+
+pour ce qui est du fait de faire les builtin en  premier. Il faut genre sortir un pointeur de fonction. utiliser se pointeur de fonction set voir ce que ca return. Si on utilise un poiinteur de fonction null ca return qualeu chose ou ca seg fault ????? 
+pars ce que sinon on fait un truc gner if (builtins(cmd)) -- >  return (builtins(cmd)(cmd, env))
+oh nan mis meme pas besoin du coup quel banger !! Mais apres ca rajoute une ligne... C;'est pas tresa grave en plus c'est lisible., Mais je sais pas je trouve pas ca beau... je suis sure que y'asd une autre facon de le faire..... 
+
+est ce qu'il fautque je free la commmande dansd les builtins ?? Bvus que je suis pas danms le if qui le free dans paarser.... Je pense pas que ca pouisse faire de mal autre pars mais ca ; m'aurais l'air  mal ranger.... Je sais pas ca me perturbe. 
+
