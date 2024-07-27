@@ -34,6 +34,7 @@
 # define GUILLEMETS 3
 # define TTY_SAVED_FD 3
 
+
 typedef struct s_env
 {
 	char *key;
@@ -44,9 +45,12 @@ typedef struct s_env
 typedef struct s_cmd{
 	int		in;
 	int		out;
-	int		childs_bool;
+	int		has_pipe;
 	char	*cmd;
 }	t_cmd;
+
+
+typedef int (*f_builtin)(t_cmd *, t_list *);
 
 extern int G_sig_catcher;
 
@@ -82,8 +86,8 @@ int		gere_sig(int flag);
 
 //builtins
 void	ft_env(void);
-void	ft_echo(char **av);
-void	ft_builtins(char **av);
+int	ft_echo(t_cmd *cmd, t_list *env);
+f_builtin	ft_builtins(t_cmd *cmd);
 void	ft_pwd(void);
 void	ft_exit(char **av);
 void	ft_export(char **av);

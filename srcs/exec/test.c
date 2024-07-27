@@ -129,8 +129,9 @@ int	parser(t_list *cmd, t_list *env)
 
 	if (cmd->next)
 		return (fork_thing(cmd, env));
-	// if (is_builtin(cmd->content))//un ft_strcmp
-	// 	return(builtin(cmd));
+	if(((t_cmd*)(cmd->content))->has_pipe)
+		if (ft_builtins(cmd->content))//un ft_strcmp
+			return(ft_builtins(cmd->content)(cmd->content, env));
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
 	{

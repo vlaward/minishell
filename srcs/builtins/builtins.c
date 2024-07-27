@@ -1,72 +1,88 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-//put a getenv in the beginning of minishell and change all the getenvs in builtins
+//put a getenv in the beginning of minishell and change all the vs in builtins
 //also only builtin when final command ! not normal
 
-void	*(*f)ft_is_builtins(char *av)
+int	ft_cmp_cmd_to_builtin(char *cmd, char *builtin)
 {
-	if (!ft_strncmp(av, "echo", 4))
-		return (1);
-	else if (!ft_strncmp(av, "env", 3))
-		return (1);
-	else if (!ft_strncmp(av, "unset", 5))
-		return (1);
-	else if (!ft_strncmp(av, "export", 6))
-		return (1);
-	else if (!ft_strncmp(av, "pwd", 3))
-		return (1);
-	else if (!ft_strncmp(av, "cd", 2))
-		return (1);
-	else if (!ft_strncmp(av, "exit", 4))
-		return (1);
-    else
-        return (0);
-}
-
-t_env	*__tab_lst(char **env)
-{
-	int		i;
-	t_env	*lst;
-
-	i = 0;
-	lst = __lstnew(env[i]);
-	while (env[i])
+	while (*builtin)
 	{
-		__lstadd_back(&lst, __lstnew(env[i]));
-		i++;
+		if (*builtin != *cmd)
+			return (0);
+		builtin++;
+		cmd++;
 	}
-	return (lst);
+	if (*cmd == ' ' || *cmd == '\0')
+		return (1);
+	return (0);
 }
 
-// add env to all of them
-void	ft_builtins(char **av)
+f_builtin	ft_builtins(t_cmd *cmd)
 {
-	// fct to change env to list
-	t_env	*lst;
+	char	*str;
 
-	if (!ft_strcmp(av[0], "echo"))
-		ft_echo(av);
-	else if (!ft_strcmp(av[0], "exit"))
-		ft_exit(av);
-	lst = __tab_lst(G_env);
-	if (!ft_strcmp(av[0], "env"))
-		ft_env();
-	// else if (!ft_strcmp(av[0], "unset"))
-	// 	ft_unset(av);
-	else if (!ft_strcmp(av[0], "export"))
-		ft_export(av);
-	else if (!ft_strcmp(av[0], "pwd"))
-		ft_pwd();
-	// else if (!ft_strcmp(av[0], "cd"))
-	// 	ft_cd(av);
-	// fct to change env to tab
-	t_env *tmp;
-	while (lst)
-	{
-		tmp = lst;
-		lst = lst->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
+	str = cmd->cmd;
+	if (!ft_cmp_cmd_to_builtin(str	, "echo"))
+		return (ft_echo);
+	if (!ft_cmp_cmd_to_builtin(str, "env"))
+		return (NULL);
+	if (!ft_cmp_cmd_to_builtin(str, "unset"))
+		return (NULL);
+	if (!ft_cmp_cmd_to_builtin(str, "export"))
+		return (NULL);
+	if (!ft_cmp_cmd_to_builtin(str, "pwd"))
+		return (NULL);
+	if (!ft_cmp_cmd_to_builtin(str, "cd"))
+		return (NULL);
+	if (!ft_cmp_cmd_to_builtin(str, "exit"))
+		return (NULL);
+	return (NULL);
 }
+
+// t_env	*__tab_lst(char **env)
+// {
+// 	int		i;
+// 	t_env	*lst;
+
+// 	i = 0;
+// 	lst = __lstnew(env[i]);
+// 	while (env[i])
+// 	{
+// 		__lstadd_back(&lst, __lstnew(env[i]));
+// 		i++;
+// 	}
+// 	return (lst);
+// }
+
+// // // add env to all of them
+// void	ft_builtins(char **av)
+// {
+// 	// fct to change env to list
+// 	t_env	*lst;
+
+// 	if (!ft_strcmp(av[0], "echo"))
+// 		ft_echo(av);
+// 	else if (!ft_strcmp(av[0], "exit"))
+// 		ft_exit(av);
+// 	lst = __tab_lst(G_env);
+// 	if (!ft_strcmp(av[0], "env"))
+// 		ft_env();
+// 	// else if (!ft_strcmp(av[0], "unset"))
+// 	// 	ft_unset(av);
+// 	else if (!ft_strcmp(av[0], "export"))
+// 		ft_export(av);
+// 	else if (!ft_strcmp(av[0], "pwd"))
+// 		ft_pwd();
+// 	// else if (!ft_strcmp(av[0], "cd"))
+// 	// 	ft_cd(av);
+// 	// fct to change env to tab
+// 	t_env *tmp;
+// 	while (lst)
+// 	{
+// 		tmp = lst;
+// 		lst = lst->next;
+// 		free(tmp->key);
+// 		free(tmp->value);
+// 		free(tmp);
+// 	}
+// }

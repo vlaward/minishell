@@ -1,37 +1,33 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-static int	ft_option(char *av)
+int	ft_option(char **str)
 {
 	int	i;
 
-	i = 1;
-	if (!av[0])
-		return (0);	
-	if (av[0] != '-')
-		return (0);
-	while (av[i] == 'n')
-		i++;
-	if (av[i] != 'n' && av[i] != '\0')
-		return (0);
-	if (av[1] == '\0')
-		return (0);
-	return (1);
+	i = 0;
+	while (!ft_iswhitespace(**str))
+		(*str)++;
+	while (ft_iswhitespace(**str))
+		(*str)++;
+	while (**str && !ft_strncmp(*str, "-n", 2))
+	{
+		i = 1;
+		if (ft_iswhitespace(*((*str) + 2)))
+			*str += 2;
+		while (ft_iswhitespace(**str))
+			(**str)++;
+	}
+	return (i);
 }
 
-void	ft_echo(char **av)
+int	ft_echo(t_cmd *cmd, t_list *env)
 {
-	int	i;
+	char	*str;
+	int		bkslsh_n;
 
-	i = 1;
-	while (av[i] && ft_option(av[i]))
-		i++;
-	while (av[i])
-	{
-		write(1, av[i], ft_strlen(av[i]));
-		i++;
-		if (av[i])
-			write(1, " ", 1);
-	}
-	if (!ft_option(av[1]))
-		write(1, "\n", 1);
+	str = cmd->cmd;
+	bkslsh_n = ft_option(&str);
+	ft_putestr_fd(str, cmd->out);
+		ft_putechar_fd('\n' * bkslsh_n, cmd->out);
+	return (1);
 }

@@ -1,10 +1,10 @@
 #include "../../includes/minitest.h"
 
-void	fill_cmd(t_cmd *cmd, int in, int out, int childs_bool)
+void	fill_cmd(t_cmd *cmd, int in, int out, int has_pipe)
 {
 	cmd->in = in;
 	cmd->out = out;
-	cmd->childs_bool = childs_bool;
+	cmd->has_pipe = has_pipe;
 }
 
 t_cmd	*cmd_dup(t_cmd cmd)
@@ -30,7 +30,7 @@ t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
 {
 	t_cmd	tmp;
 
-	cmd->childs_bool = 1;
+	cmd->has_pipe = 1;
 	line[(*index)++] = '\0';
 	cmd->cmd = ft_strdup(&(line[(*start_cmd)]));
 	*start_cmd = *index;
