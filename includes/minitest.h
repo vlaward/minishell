@@ -50,7 +50,7 @@ typedef struct s_cmd{
 }	t_cmd;
 
 
-typedef int (*f_builtin)(t_cmd *, t_list *);
+typedef int (*f_builtin)(t_cmd *, t_list *, char **);
 
 extern int G_sig_catcher;
 
@@ -86,8 +86,8 @@ int		gere_sig(int flag);
 
 //builtins
 void	ft_env(void);
-int	ft_echo(t_cmd *cmd, t_list *env);
-f_builtin	ft_builtins(t_cmd *cmd);
+int	ft_echo(t_cmd *cmd, t_list *env, char **);
+f_builtin	ft_builtins(char *str);
 void	ft_pwd(void);
 void	ft_exit(char **av);
 void	ft_export(char **av);

@@ -1,33 +1,24 @@
 #include "../../includes/minitest.h"
 
-int	ft_option(char **str)
+int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 {
-	int	i;
+	int	bkslsh_n;
+	char	**tmp;
+	int		isout;
 
-	i = 0;
-	while (!ft_iswhitespace(**str))
-		(*str)++;
-	while (ft_iswhitespace(**str))
-		(*str)++;
-	while (**str && !ft_strncmp(*str, "-n", 2))
-	{
-		i = 1;
-		if (ft_iswhitespace(*((*str) + 2)))
-			*str += 2;
-		while (ft_iswhitespace(**str))
-			(**str)++;
-	}
-	return (i);
-}
-
-int	ft_echo(t_cmd *cmd, t_list *env)
-{
-	char	*str;
-	int		bkslsh_n;
-
-	str = cmd->cmd;
-	bkslsh_n = ft_option(&str);
-	ft_putestr_fd(str, cmd->out);
-		ft_putechar_fd('\n' * bkslsh_n, cmd->out);
+	isout = STDOUT_FILENO;
+	if (redirect)
+		isout = redirect->out;
+	tmp = cmd;
+	bkslsh_n = 0;
+	while (++cmd && !ft_strcmp(*cmd, "-n"))
+		bkslsh_n = 1;
+	while (*cmd)
+		ft_putestr_fd(*(cmd++), isout);
+	ft_putechar_fd('\n' * bkslsh_n, isout);
+	cmd = tmp;
+	while (*cmd)
+		free(*(cmd++));
+	free(tmp);
 	return (1);
 }

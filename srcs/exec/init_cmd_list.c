@@ -15,6 +15,7 @@ t_cmd	*cmd_dup(t_cmd cmd)
 	ret->cmd = cmd.cmd;
 	ret->in = cmd.in;
 	ret->out = cmd.out;
+	ret->has_pipe = cmd.has_pipe;
 	return (ret);
 }
 

@@ -34,6 +34,9 @@ int     execute_cmd(char **args, t_list *env)
 	}
 	if (!args || *args == NULL)
 		exit(0);
+	if (ft_builtins(args[0]))//un ft_strcmp
+		exit(ft_builtins(args[0])(NULL, env, args));
+	
 	/*if (ft_is_builtins(args[0]))
 	{
 		printf("is builtins\n");
@@ -129,9 +132,9 @@ int	parser(t_list *cmd, t_list *env)
 
 	if (cmd->next)
 		return (fork_thing(cmd, env));
-	if(((t_cmd*)(cmd->content))->has_pipe)
-		if (ft_builtins(cmd->content))//un ft_strcmp
-			return(ft_builtins(cmd->content)(cmd->content, env));
+	if(!((t_cmd*)(cmd->content))->has_pipe)
+		if (ft_builtins(((t_cmd *)(cmd->content))->cmd))
+			return(ft_builtins(((t_cmd *)(cmd->content))->cmd)(cmd->content, env, pars_command(cmd, env)));
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
 	{
