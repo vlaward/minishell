@@ -1,27 +1,33 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-/*
-// if env en list
-void	ft_env(t_env *env)
+int	dowe_write_node(char *str)
 {
+	while (*str)
+		if (*str++ == '=')
+			return (1);
+	return (0);
+}
+
+int	ft_env(t_cmd *redirects, t_list *env, char **cmd)
+{
+	int	isout;
+
+	isout = STDOUT_FILENO;
+	if (redirects)
+		isout = redirects->out;
+	// if (++cmd)
+	// 	return (write(STDERR_FILENO, "env : args not handled\n", 23), 0);
 	while (env)
 	{
-		if (env->value)
-			printf("%s=%s\n", env->key, env->value);
+		if (dowe_write_node(env->content))
+		{
+			if (ft_putestr_fd(env->content, isout) == -1)
+				return (perror("write"), free_args(cmd), 0);
+			if (ft_putechar_fd('\n', isout) == -1)
+				return (perror("write"), free_args(cmd), 0);
+		}
 		env = env->next;
 	}
-}
-*/
-
-// if env en char **
-void	ft_env(void)
-{
-	int	i;
-
-	i = 0;
-	while (G_env[i])
-	{
-		printf("%s\n", G_env[i]);
-		i++;
-	}
+	free_args(cmd);
+	return (1);
 }

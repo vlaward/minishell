@@ -12,11 +12,9 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 
-"-si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec" pas sure de ce que je voulais dire donc bon
-
+-export peuy faire une variable sans valeur. r
 -modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 -update les define, mettre un define pour les flags de open
--REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif (a parrement c'est bon je crois  ?)
 -remplacer TOUT les printfs
 -verifier avec access avant de executer voir en bas laa
 -si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access
@@ -90,3 +88,5 @@ FAIT ???
 -si $ n'as rien derriere il n'est pas expend  (ex : "echo $" ; "$") c'est giga drole ?? XDD"
 -y'as encore un p[utain de probleme avec ce putain de :
 		- que "cat << a | ls " marche
+"-si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec" pas sure de ce que je voulais dire donc bon (maintenant je crois que je vois et c'est bon)
+-REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif (a parrement c'est bon je crois  ?) (En faite normalement y'as pas besoin de le faire c'est deja le cas)

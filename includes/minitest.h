@@ -54,8 +54,6 @@ typedef int (*f_builtin)(t_cmd *, t_list *, char **);
 
 extern int G_sig_catcher;
 
-extern char **G_env;
-
 t_list *init_env(char	**env);
 char	*tatu_ferme_tes_guillemets(char *str);
 char	**ft_minisplit(char	*str);
@@ -85,13 +83,14 @@ int		here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 int		gere_sig(int flag);
 
 //builtins
-void	ft_env(void);
+int	ft_env(t_cmd *redirects, t_list *env, char **cmd);
 int	ft_echo(t_cmd *cmd, t_list *env, char **);
-f_builtin	ft_builtins(char *str);
-void	ft_pwd(void);
-void	ft_exit(char **av);
+int	ft_pwd(t_cmd *redirects, t_list *env, char **cmd);
+int	ft_exit(t_cmd *cmd, t_list *env, char **av);
 void	ft_export(char **av);
+void	free_args(char **args);
 
+f_builtin	ft_builtins(char *str);
 int	ft_is_builtins(char *av);
 
 //list

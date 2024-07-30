@@ -10,15 +10,15 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 	if (redirect)
 		isout = redirect->out;
 	tmp = cmd;
-	bkslsh_n = 0;
+	bkslsh_n = 1;
 	while (++cmd && !ft_strcmp(*cmd, "-n"))
-		bkslsh_n = 1;
+		bkslsh_n = 0;
 	while (*cmd)
-		ft_putestr_fd(*(cmd++), isout);
-	ft_putechar_fd('\n' * bkslsh_n, isout);
+		if (ft_putestr_fd(*(cmd++), isout) == -1)
+			return (perror("write"), free_args(cmd), 0);
+	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
+		return (perror("write"), free_args(cmd), 0);
 	cmd = tmp;
-	while (*cmd)
-		free(*(cmd++));
-	free(tmp);
+	free_args(cmd);
 	return (1);
 }

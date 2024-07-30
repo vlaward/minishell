@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/07/16 12:38:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/07/29 19:39:54 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,5 @@ char	**ft_minisplit(char	*str)
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
 	ft_lstclear(&will_be_ret, NULL);
 	fprintf(stderr, "voici line : %s\n", str);
-	free(str);
 	return (ret);//normalement y'as un fdree str
 }

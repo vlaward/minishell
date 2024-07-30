@@ -5,11 +5,11 @@ char	*ft_getenv(const char *name, t_list *env)
 {
 	int		size;
 
-	size = ft_strlen(name);
 	if (!name)
-		return("$");//ici c'est a faire 
+		return("$");
 	if (!env)
 		return (NULL);
+	size = ft_strlen(name);
 	while (env)
 	{
 		if (ft_strncmp(name, env->content, size) == 0)

@@ -3,22 +3,44 @@
 //put a getenv in the beginning of minishell and change all the vs in builtins
 //also only builtin when final command ! not normal
 
+void	free_args(char **args)
+{
+	char	**tmp;
+
+	tmp = args;
+	while (*tmp)
+		free(*(tmp++));
+	free(args);
+}
+
+int	builtin_cmp(const char *str, const char *builtin)
+{
+	char tmp;
+
+	if (ft_strncmp(str, builtin, ft_strlen(builtin)))
+		return (0);
+	tmp = *(builtin + ft_strlen(builtin));
+	if (ft_iswhitespace(tmp) || !tmp)
+		return (1);
+	return (0);
+}
+
 f_builtin	ft_builtins(char *str)
 {
-	if (!ft_strcmp(str, "echo"))
+	if (builtin_cmp(str, "echo"))
 		return (ft_echo);
-	if (!ft_strcmp(str, "env"))
+	if (builtin_cmp(str, "env"))
+		return (ft_env);
+	if (builtin_cmp(str, "unset"))
 		return (NULL);
-	if (!ft_strcmp(str, "unset"))
+	if (builtin_cmp(str, "export"))
 		return (NULL);
-	if (!ft_strcmp(str, "export"))
+	if (builtin_cmp(str, "pwd"))
+		return (ft_pwd);
+	if (builtin_cmp(str, "cd"))
 		return (NULL);
-	if (!ft_strcmp(str, "pwd"))
-		return (NULL);
-	if (!ft_strcmp(str, "cd"))
-		return (NULL);
-	if (!ft_strcmp(str, "exit"))
-		return (NULL);
+	if (builtin_cmp(str, "exit"))
+		return (ft_exit);
 	return (NULL);
 }
 

@@ -1,206 +1,37 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-// typedef struct s_env
-// {
-// 	char *key;
-// 	char *value;
-// 	struct s_env *next;
-// } t_env;
-
-// sort before print
-static void	ft_export_print(t_env *lst)
+t_list	*get_env_node(t_list *env, char *str)
 {
-	while (lst)
-	{
-		if (lst->value)
-			printf("export %s=\"%s\"\n", lst->key, lst->value);
-		else
-			printf("export %s\n", lst->key);
-		lst = lst->next;
-	}
-}
+	int		size;
 
-
-
-int	ft_strcmp_key(char *s1, char *s2)
-{
-	int	i;
-	int	ret;
-
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		++i;
-	ret = (unsigned char)s1[i] - (unsigned char)s2[i];
-	free(s2);
-	return (ret);
-}
-
-t_env	*__lstnew(void *content);
-
-
-
-
-static void	ft_export_set(char *str, t_env *lst)
-{
-	t_env	*tmp;
-
-	tmp = lst;
-	while (lst && ft_strcmp_key(lst->key, ft_get_key(str)))
-		lst = lst->next;
-	if (lst)
-	{
-		if (ft_strcmp_key(str, ft_get_key(str)))
-		{
-			free(lst->value);
-			lst->value = ft_get_value(str);
-		}
-	}
-	else
-	{
-		lst = tmp;
-		__lstadd_back(&lst, __lstnew(str)); // does it init the value well ?
-		lst = __lstlast(lst);
-	}
-	for (t_env *tm = lst; tm; tm = tm->next)
-	{
-		printf("key: %s\n", tm->key);
-		printf("value: %s\n", tm->value);
-	}
-}
-
-char	*__join(char *s1, char *s2)
-{
-	int		i;
-	char	*array;
-
-	i = 0;
-	if (!s1 || !s2)
+	if (!env)
 		return (NULL);
-	array = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!array)
-		return (NULL);
-	while (s1[i])
-	{
-		array[i] = s1[i];
-		i++;
-	}
-	while (s2[i - ft_strlen(s1)])
-	{
-alarm		array[i] = s2[i - ft_strlen(s1)];
-		i++;
-	}
-	array[i] = '\0';
-	return (array);
-}
-
-static void	__strcpy(char *dst, char *src1, char *src2)
-{
-	while (*src1)
-		*dst++ = *src1++;
-	*dst++ = '=';
-	while (*src2)
-		*dst++ = *src2++;
-}
-
-char	*__strjoin(char *s1, char *s2)
-{
-	char	*res;
-	int		len;
-
-	if (!s1)
-	{
-		s1 = (char *)malloc(sizeof(char));
-		s1[0] = '\0';
-	}
-	if (!s1 || !s2)
-		return (NULL);
-	len = ft_strlen(s1) + ft_strlen(s2);
-	res = malloc(sizeof(char) * (len + 2));
-	if (!res)
-		return (NULL);
-	__strcpy(res, s1, s2);
-	res[len + 1] = '\0';
-	return (res);
-}
-
-char	**__lst_tab(t_env *env)
-{
-	char	**tab;
-	t_env	*tmp;
-	int		i;
-
-	i = 0;
-	
-	tmp = env;
+	size = ft_strlen(name);
 	while (env)
 	{
+		if (ft_strncmp(name, env->content, size) == 0)
+			if (*((char *)env->content + size) == '=')
+		 		return (env);
 		env = env->next;
-		i++;
 	}
-	tab = malloc(sizeof(char *) * (i + 1));
-	if (!tab)
-		return (NULL);
-	i = 0;
-	env = tmp;
-	while (env)
-	{
-		tab[i] = __strjoin(env->key, env->value);
-		env = env->next;
-		i++;
-	}
-	tab[i] = 0;
-	return (tab);
+	return (NULL);
 }
 
-
-
-
-t_env	*__init(char **tab)//c'est une ligne, donc pas util
+char	*get_node_key()
 {
-	t_env	*lst;
-
-	lst = __tab_lst(tab);
-	return (lst);
-}
-
-int	__isalpha(int c)//existe deja et c'est une ligne, donc pas util
-{
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
-
-int	__isalnum(int c)//existe deja et c'est une ligne, donc pas util
-{
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	else if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
+ 
 }
 
 int	ft_isvar(char *str)
 {
 	int		i;
 
-	if (str[0])
-	{
-		if (!__isalpha(str[0]))
-		{
-			free(str);
-			return (0);
-		}
-	}
-	i = 1;
+	if (!ft_isalpha(str[0]))
+		return (free(str), 0);
+	i = 0;
 	while (str[i])
-	{
-		if (!__isalnum(str[i]))
-		{
-			free(str);
-			return (0);
-		}
-		i++;
-	}
+		if (!ft_isalnum(str[i++]))
+			return (free(str), 0);
 	free(str);
 	return (1);
 }
@@ -208,29 +39,17 @@ int	ft_isvar(char *str)
 void	ft_export(char **av)
 {
 	int		i;
-	t_env	*env;
-
-	env = __init(G_env);//sinon juste : lst = __tab_lst(tab);
 	if (!av[1])
 		ft_export_print(env);
 	i = 1;
 	while (av[i])
 	{
 		if (!ft_isvar(ft_get_key(av[i]))) // is it freed ?
-		{
 			printf("export: \'%s\': not a valid identifier\n", av[i]);
-		}
 		else
 			ft_export_set(av[i], env);
 		i++;
 	}
-	i = 0;
-	while (G_env[i])
-	{
-		free(G_env[i]);
-		i++;
-	}
-	free(G_env);
-	G_env = __lst_tab(env);
+	free_args(av);
 }
 

@@ -133,8 +133,11 @@ int	parser(t_list *cmd, t_list *env)
 	if (cmd->next)
 		return (fork_thing(cmd, env));
 	if(!((t_cmd*)(cmd->content))->has_pipe)
-		if (ft_builtins(((t_cmd *)(cmd->content))->cmd))
+		if (ft_builtins(((t_cmd *)(cmd->content))->cmd) != NULL)
+		{
+			fprintf(stderr, "\n\nNUUGHUUUUUGH\n\n");
 			return(ft_builtins(((t_cmd *)(cmd->content))->cmd)(cmd->content, env, pars_command(cmd, env)));
+		}
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
 	{

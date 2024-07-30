@@ -1,50 +1,53 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-static int	ft_ac(char **av)
+int	ft_ac(char **av)
 {
-	int	i;
+	char	**tmp;
 
-	i = 0;
-	while (av[i])
-		i++;
-	return (i);
+	tmp = av;
+	while (*tmp)
+		tmp++;
+	return (tmp - av);
 }
 
-static int	ft_alphastr(char *str)
+int	ft_istr_num(char *str)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (ft_isalpha(str[i]))
-			return (1);
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
 		i++;
 	}
-	return (0);
+	return (1);
 }
 
-static void	ft_alpharg(char *str)
+void	ft_alpharg(char *str)
 {
-	ft_putestr_fd("bash: exit: ", 2);
-	ft_putestr_fd(str, 2);
-	ft_putestr_fd(": numeric argument required\n", 2);
+	ft_putestr_fd("bash: exit: ", STDERR_FILENO);
+	ft_putestr_fd(str, STDERR_FILENO);
+	ft_putestr_fd(": numeric argument required\n", STDERR_FILENO);
 	exit(2);
 }
 
 //exit not exiting, add close and free ?
-void	ft_exit(char **av)
+int	ft_exit(t_cmd *cmd, t_list *env, char **av)
 {
 	int	ac;
 
+	(void)cmd;
+	(void)env;
 	ac = ft_ac(av);
 	//close pipes maybe ?
 	if (ac == 1)
 		exit(127);//changer avec valeur actuelle de retour
-	if (ft_alphastr(av[1]))
+	if (!ft_istr_num(av[1]))
 		ft_alpharg(av[1]);
 	if (ac > 2)
-		ft_putestr_fd("bash: exit: too many arguments\n", 2);
+		ft_putestr_fd("bash: exit: too many arguments\n", STDERR_FILENO);
 	else
-		exit(ft_atoi(av[0]));
+		exit(ft_atoi(av[1]));
+	exit(1);
 }
