@@ -152,35 +152,39 @@ int	parser(t_list *cmd, t_list *env)
 	exit(execute_cmd(pars_command(cmd, env), env));
 }
 
+char	*read_prompt(t_list *env)
+{
+	static char	prompt[PATH_MAX];
+	char	*pwd;
+	int		i;
+
+	pwd = ft_getenv("PWD", env);
+	i = 0;
+	while (*pwd && i < PATH_MAX - 3)
+		prompt[i++] = *pwd++;
+	ft_memcpy(&(prompt[i]), ">\0", 2);
+	if (*pwd)
+		ft_memcpy(&(prompt[PATH_MAX - 5]), "...>\0", 5);
+	return (readline(prompt));
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
-	char	*prompt;
-	char	*cwd;
+
 	t_list	*new_env;
 	t_list	*cmd;
 
 	(void)ac;
 	(void)av;
 	new_env = init_env(env);
-	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
-	if (!cwd)
-		return (perror("calloc"), 0);
- 	line = NULL;
-	prompt = NULL;
+	line = NULL;
 	dup(STDIN_FILENO);
 	while (1)
 	{
 		if (!gere_sig(READING_LINE))
 			return (0);
-		ft_bzero(cwd, sizeof(char) * PATH_MAX);
-		getcwd(cwd, PATH_MAX * sizeof(char));
-		if (ft_strncmp(cwd, prompt, ft_strlen(cwd)) != 0)
-		{
-			free(prompt);
-			prompt = ft_strjoin(cwd, "> ");
-		}
-		line = readline(prompt);
+		line = read_prompt(new_env);
 		if (!line)
 			break ; //127
 		fprintf(stderr, "si ca se trouve ca passe meme pas par la\n");
@@ -209,6 +213,5 @@ int	main(int ac, char **av, char **env)
 	}
 	ft_lstclear(&new_env, free);
 	rl_clear_history();
-	(free(cwd), free(prompt));
 	return (0);
 }

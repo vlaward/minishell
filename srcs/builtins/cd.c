@@ -1,78 +1,49 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
-static int	__ac(char **av)
+static int	oldpwd_updater(t_list *env, t_list *PWD)
 {
-	int	i;
+	t_list	*OLDPWD;
+	char	*content;
 
-	i = 0;
-	while (av[i])
-		i++;
-	return (i);
+	OLDPWD = get_env_node(env, "OLDPWD");
+	if (!OLDPWD)
+		return (perror("malloc"), 0);
+	content = PWD->content + 3;
+	content = ft_strjoin("OLDPWD", content);
+	if (!content)
+		return (perror("malloc"), 0);
+	if (OLDPWD->content)
+		free(OLDPWD->content);
+	OLDPWD->content = content;
+	return (1);
 }
 
-static char	*__strdup(char *str)
-{
-	char	*dup;
-	int		i;
+static int change_pwd(t_list *env)
+{	
+	t_list	*PWD;
+	char	content[PATH_MAX];
+	char	*tmp;
 
-	dup = malloc(sizeof(char) * (__strlen(str) + 1));
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		dup[i] = str[i];
-		i++;
-	}
-	dup[i] = 0;
-	return (dup);
+	PWD = get_env_node(env, "PWD");
+	if (!oldpwd_updater(env, PWD))
+		return(0);
+	if (!getcwd(content, PATH_MAX))
+		return (perror("getcwd"), 0);
+	tmp = ft_strjoin("PWD=", content);
+	if (!tmp)
+		return (perror("malloc"), 0);
+	free(PWD->content);
+	PWD->content = tmp;
+	return (1);
 }
 
-static void	__change_pwd(t_env *lst)
+int	ft_cd(t_cmd *redirects, t_list *env, char **av)
 {
-	t_env	*tmp;
-	char	*new;
-	char	s[100];
-
-	tmp = lst;
-	while (lst)
-	{
-		if (!__strcmp("PWD", lst->key))
-		{
-			new = lst->value;
-			lst->value = __strdup(getcwd(s, 100));
-		}
-		lst = lst->next;
-	}
-	lst = tmp;
-	while (lst)
-	{
-		if (!__strcmp("OLDPWD", lst->key))
-		{
-			free(lst->value);
-			lst->value = new;
-		}
-		lst = lst->next;
-	}
-}
-
-void	__cd(char **av, t_env *lst)
-{
-	if (__ac(av) == 0)
-	{
-		__errorput("minishell: cd: too few arguments\n");
-		return ;
-	}	
-	if (__ac(av) > 1)
-	{
-		__errorput("minishell: cd: too many arguments\n");
-		return ;
-	}
-	if (chdir(av[0]) == -1)
-	{
-		__ret_perror("cd");
-		return ;
-	}
-	__change_pwd(lst);
-	g_ret = 0;
+	if (!av[1])
+		return (ft_putestr_fd("minishell: cd: too few arguments\n", STDERR_FILENO), 0);
+	if (av[2])
+		return (ft_putestr_fd("minishell: cd: too many arguments\n", STDERR_FILENO), 0);
+	if (chdir(av[1]) == -1)
+		return (perror("cd"), 0);
+	return (free_args(av), change_pwd(env));
 }

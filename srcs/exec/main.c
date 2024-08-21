@@ -124,35 +124,38 @@ int	parser(char *line, int start, t_list *env)
 	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
 }
 
+
+char	*read_prompt(t_list *env)
+{
+	static char	prompt[PATH_MAX];
+	char	*pwd;
+	int		i;
+
+	pwd = ft_getenv("PWD", env);
+	i = 0;
+	while (*pwd && i < PATH_MAX - 3)
+		prompt[i++] = *pwd++;
+	ft_memcpy(&(prompt[i], ">\0", 2));
+	if (*pwd)
+		ft_memcpy(&(prompt[PATH_MAX - 5], "...>\0", 5));
+	printf ("voici le prompt : %s\n", prompt)
+	return (readline(prompt))
+}
+
+
+
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
-	char	*prompt;
-	char	*cwd;
 	t_list	*new_env;
 	int		tmp_sdin;
 
-	(void)ac;
-	(void)av;
+	(void)ac, (void)av;
 	new_env = init_env(env);
-	cwd = ft_calloc(sizeof(char), PATH_MAX);//verifie si pathmax est overflow pars un unicode
-	if (!cwd)
-		return (perror("calloc"), 0);
 	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
-	prompt = NULL;
-	//fprintf(stderr, "vboici le fd enregistre : %d\n", dup(STDIN_FILENO));//pour garder le tty en tant que fd 3 for latter use
 	while (1)// add signal global test
 	{
-		if (!gere_sig(READING_LINE))
-			return (0);
-		ft_bzero(cwd, sizeof(char) * PATH_MAX);
-		getcwd(cwd, PATH_MAX * sizeof(char));
-		if (ft_strncmp(cwd, prompt, ft_strlen(cwd)) != 0)
-		{
-			free(prompt);
-			prompt = ft_strjoin(cwd, "> ");
-		}
-		line = readline(prompt);
+		line = read_prompt(new_env);
 		if (!line)
 			break ; //127
 		line = tatu_ferme_tes_guillemets(line);
@@ -169,6 +172,5 @@ int	main(int ac, char **av, char **env)
 		}
 	}
 	rl_clear_history();
-(free(cwd), free(prompt));
 	return (0);
 }

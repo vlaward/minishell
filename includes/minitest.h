@@ -87,9 +87,12 @@ int	ft_env(t_cmd *redirects, t_list *env, char **cmd);
 int	ft_echo(t_cmd *cmd, t_list *env, char **);
 int	ft_pwd(t_cmd *redirects, t_list *env, char **cmd);
 int	ft_exit(t_cmd *cmd, t_list *env, char **av);
-void	ft_export(char **av);
-void	free_args(char **args);
+int	ft_export(t_cmd *redirects, t_list *env, char **av);
+int	ft_unset(t_cmd *redirects, t_list *env, char **av);
+int	ft_cd(t_cmd *redirects, t_list *env, char **av);
 
+void	free_args(char **args);
+t_list	*get_env_node(t_list *env, char *str);
 f_builtin	ft_builtins(char *str);
 int	ft_is_builtins(char *av);
 

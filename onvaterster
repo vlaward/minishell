@@ -1,9 +1,32 @@
+/workspaces/minishell> ls
+2004l
+Colors.mk
+Makefile
+comprends
+enfin
+includes
+infile_big
+je
+libft
+mais
+minitest
+new
+notes
+objs
+oldMakefile
+oldtest
+onvaterster
+srcs
+test
+test.sh
+/workspaces/minishell> echo ok
+/workspaces/minishell> cat Makefile 
 include Colors.mk
 
 # Names 
 NAME		= minishell
 MAIN		= srcs/exec/main.c
-F_BUILT		= echo.c builtins.c env.c pwd.c exit.c export.c unset.c cd.c #list.c#cd.c error.c
+F_BUILT		= echo.c builtins.c env.c pwd.c exit.c #export.c list.c#cd.c error.c
 FILES		+= $(addprefix builtins/, $(F_BUILT))
 F_EXEC		= redirects.c ft_minisplit.c Les_Guillemets_UwU.c      \
 				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c \
@@ -79,4 +102,4 @@ cat:
 			@echo "${CAT}"
 
 
-.PHONY:		all clean fclean re
+.PHONY:		all clean fclean re/workspaces/minishell> 

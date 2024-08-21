@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "../../includes/minitest.h"
 
 // typedef struct s_env
 // {
@@ -7,29 +7,27 @@
 // 	struct s_env *next;
 // } t_env;
 
-void	__unset(char **av, t_env *lst)
+int	ft_unset(t_cmd *redirects, t_list *env, char **av)
 {
 	int		i;
-	t_env	*tmp;
+	t_list	*tmp;
+	t_list	*incr;
 
 	if (!av[1])
-		return ;
-	i = 1;
-	tmp = lst;
-	while (av[i])
+		return (0);
+	i = 0;
+	while (av[++i])
 	{
-		if (!__isvar(av[i])) // get the fcts // get_key removed ?
+		incr = env;
+		while (incr->next != NULL && ft_strncmp(av[i], incr->next->content, ft_strlen(av[i])))
+			incr = incr->next;
+		if (incr->next)
 		{
-			printf("unset: \'%s\': not a valid identifier\n", av[i]);
+			tmp = incr->next;
+			incr->next = tmp->next;
+			ft_lstdelone(tmp, free);
 		}
-		else
-		{
-			while (lst->next && __strcmp_key(lst->next->key, av[i]))
-				lst = lst->next;
-			if (lst->next)
-				__free_elem(lst); // free le maillon
-			lst = tmp;
-		}
-		i++;
 	}
+	free_args(av);
+	return (1);
 }

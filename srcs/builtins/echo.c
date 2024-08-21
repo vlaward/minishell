@@ -22,3 +22,6 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 	free_args(cmd);
 	return (1);
 }
+
+
+

@@ -2,6 +2,8 @@
 
 int	dowe_write_node(char *str)
 {
+	if (!str)
+		return (0);
 	while (*str)
 		if (*str++ == '=')
 			return (1);

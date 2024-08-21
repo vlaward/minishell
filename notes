@@ -12,6 +12,10 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 
+
+--TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
+		|--> faire des "inline" fonction ^^
+-mettre toutes l;es foncitons en static.
 -export peuy faire une variable sans valeur. r
 -modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 -update les define, mettre un define pour les flags de open

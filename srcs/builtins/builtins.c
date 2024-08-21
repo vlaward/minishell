@@ -32,13 +32,13 @@ f_builtin	ft_builtins(char *str)
 	if (builtin_cmp(str, "env"))
 		return (ft_env);
 	if (builtin_cmp(str, "unset"))
-		return (NULL);
+		return (ft_unset);
 	if (builtin_cmp(str, "export"))
-		return (NULL);
+		return (ft_export);
 	if (builtin_cmp(str, "pwd"))
 		return (ft_pwd);
 	if (builtin_cmp(str, "cd"))
-		return (NULL);
+		return (ft_cd);
 	if (builtin_cmp(str, "exit"))
 		return (ft_exit);
 	return (NULL);
