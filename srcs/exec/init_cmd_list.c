@@ -1,13 +1,13 @@
 #include "../../includes/minitest.h"
 
-void	fill_cmd(t_cmd *cmd, int in, int out, int has_pipe)
+static void	fill_cmd(t_cmd *cmd, int in, int out, int has_pipe)
 {
 	cmd->in = in;
 	cmd->out = out;
 	cmd->has_pipe = has_pipe;
 }
 
-t_cmd	*cmd_dup(t_cmd cmd)
+static t_cmd	*cmd_dup(t_cmd cmd)
 {
 	t_cmd	*ret;
 
@@ -27,7 +27,7 @@ void	free_cmd(void *afree)
 	free(afree);
 }
 
-t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
+static t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
 {
 	t_cmd	tmp;
 

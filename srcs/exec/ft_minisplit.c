@@ -6,63 +6,82 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/07/29 19:39:54 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/08/22 06:17:00 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minitest.h"
 
-char	*add_to_list(char *itterand, t_list **liste)
+static int	add_to_list(char **line, int *index, t_list *env, t_list **wbr)
 {
-	char	*start_word;
-	char	chose_your_guillemet;
-	char	*content;
+	int		i;
+	char	witch;
+	char 	*content;
+	char	*str;
 
-	while (*itterand && (ft_iswhitespace(*itterand) || *itterand == '\n'))
-		itterand++;
-	if (*itterand == '\0')
-		return (itterand);
-	start_word = itterand;
-	while (*itterand && (!ft_iswhitespace(*itterand) && *itterand != '\n'))
+	i = *index;
+	str = *line;
+	while (str[i] && !ft_iswhitespace(str[i]) && str[i] != '\n')
 	{
-		if (ft_isin_table(*itterand, "\'\""))
+		if (ft_isin_table(str[i], "\'\""))
 		{
-			chose_your_guillemet = *itterand;
-			ft_memcpy(itterand, itterand + 1, ft_strlen(itterand));
-			while (*itterand && *itterand != chose_your_guillemet)
-				itterand++;
-			ft_memcpy(itterand, itterand + 1, ft_strlen(itterand));
+			witch = str[i];
+			ft_memcpy(&str[i], &str[i + 1], ft_strlen(&str[i + 1]));
+			str[i + ft_strlen(&str[i]) - 1] = '\0';
+			while (str[i] && str[i] != witch)
+			{
+				if (str[i] != '$' || (str[i] == '$' && witch == '\''))
+					i++;
+				else
+					if (env_handler(&str, &i, env) == -1)
+						return (0);
+			}
+			if (str[i])
+				ft_memcpy(&str[i], &str[i + 1], ft_strlen(&str[i + 1]));
+			str[i + ft_strlen(&str[i]) - 1] = '\0';
 		}
+		else if (str[i] != '$')
+			i++;
 		else
-			itterand++;
+			if (env_handler(&str, &i, env) == -1)
+				return (0);
 	}
-	content = ft_calloc(itterand - start_word + 1, sizeof(char));
-	ft_strlcpy(content, start_word, itterand - start_word + 1);
-	ft_lstadd_front(liste, ft_lstnew(content));
-	return (itterand);
+	*line = str;
+	if (str[i])
+		str[i++] = '\0';
+	content = ft_strdup(&str[*index]);
+	if (!content)
+		return (0);
+	*index = i - 1;
+	return (ft_lstadd_front(wbr, ft_lstnew(content)));
 }
 
-char	**ft_minisplit(char	*str)
+char	**ft_minisplit(char	**str, t_list *env)
 {
 	t_list	*will_be_ret;
 	int		i;
-	char	*itterand;
 	char	**ret;
 
-	fprintf(stderr, "voici line : %s\n", str);
+	printf("voici line : %s\n", *str);
 	if (!str)
 		return (NULL);
-	itterand = str;
 	will_be_ret = NULL;
-	while (*itterand != '\0')
-		itterand = add_to_list(itterand, &will_be_ret);
+	i = -1;
+	while ((*str)[++i])
+		if (!ft_iswhitespace((*str)[i]) && (*str)[i] != '\n')
+			if (!add_to_list(str, &i, env, &will_be_ret))
+				return (perror("malloc"), NULL);
 	if (!will_be_ret)
-		return (free(str), NULL);
+		return (NULL);
 	ret = ft_calloc(ft_lstsize(will_be_ret) + 1, sizeof(char *));
+	if (!ret)
+		return (perror("malloc"), NULL);
 	i = -1;
 	while (ft_lstnodi(&will_be_ret, ++i))
+	{
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
+		printf("icit ret[%i] : %s\n", i, ret[i]);
+	}
 	ft_lstclear(&will_be_ret, NULL);
-	fprintf(stderr, "voici line : %s\n", str);
 	return (ret);//normalement y'as un fdree str
 }

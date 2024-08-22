@@ -14,12 +14,19 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 	while (++cmd && !ft_strcmp(*cmd, "-n"))
 		bkslsh_n = 0;
 	while (*cmd)
+	{
 		if (ft_putestr_fd(*(cmd++), isout) == -1)
 			return (perror("write"), free_args(cmd), 0);
+		if (cmd != tmp)
+			if (ft_putechar_fd(' ', isout) == -1)
+				return (perror("write"), free_args(cmd), 0);
+		
+	}
 	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
 		return (perror("write"), free_args(cmd), 0);
-	cmd = tmp;
-	free_args(cmd);
+	//cmd = tmp;
+	//free_args(cmd);
+	free_args(tmp);
 	return (1);
 }
 

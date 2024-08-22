@@ -76,22 +76,6 @@ int     execute_cmd(char **args, t_list *env)
 
 char	**pars_command(t_list *cmd, t_list *env)
 {//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
-	int		index;
-	char	**cmd_str;
-
-	if (!gere_sig(EXECUTING_CMD))
-		return (NULL);
-	index = 0;
-	cmd_str = &(((t_cmd *)(cmd->content))->cmd);
-	while ((*cmd_str)[index])
-	{
-		if ((*cmd_str)[index] == '$')
-			env_handler(cmd_str, &index, env);
-		else if ((*cmd_str)[index] == '\"' || (*cmd_str)[index] == '\'' )
-			guille_handler(cmd_str, &index, 0, env);
-		else if ((*cmd_str)[index] != '\0')
-			index++;  
-	}
 	if (((t_cmd *)(cmd->content))->in && dup2(((t_cmd *)(cmd->content))->in, STDIN_FILENO) == -1)
 			return (perror("dup2 "), NULL);
 	if (((t_cmd *)(cmd->content))->out && dup2(((t_cmd *)(cmd->content))->out, STDOUT_FILENO) == -1)
@@ -100,7 +84,7 @@ char	**pars_command(t_list *cmd, t_list *env)
 		close(((t_cmd *)(cmd->content))->in);
 	if (((t_cmd *)(cmd->content))->out)
 		close(((t_cmd *)(cmd->content))->out);
-	return (ft_minisplit(*cmd_str));
+	return (ft_minisplit(&(((t_cmd *)(cmd->content))->cmd), env	));
 }
 
 int	fork_thing(t_list *cmd, t_list *env)
@@ -192,22 +176,12 @@ int	main(int ac, char **av, char **env)
 		if (line)
 		{
 			add_history(line);// <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
-			fprintf(stderr, "ah bah ca passe au moins la\n");
 			cmd = init_cmd(line, new_env);
 			if (cmd)
 			{
 				parser(cmd, new_env);
 				ft_lstclear(&cmd, free_cmd);
-			}	
-			// t_list	*tmp = cmd;
-			// while (tmp)
-			// {
-			// 	if (tmp->content)
-			// 		printf("nous avons lacmd : %s\nensuite in : %d\net enfin in : %d\n", ((t_cmd *)(tmp->content))->cmd, ((t_cmd *)(tmp->content))->in, ((t_cmd *)(tmp->content))->out);
-			// 	tmp = tmp->next;
-			// }
-			//	if (parser(line, 0, new_env) != 0)
-			//		return (1);
+			}
 		}
 		rl_on_new_line();
 	}

@@ -7,17 +7,12 @@ int		env_handler(char **start_cmd, int *i, t_list *env)
 	char	*env_value;
 	char	*tmp;
 
-	j = *i + 1;
-	//fprintf(stderr, "voici env key : %s\n", &(*start_cmd)[*i]);
-	while ((*start_cmd)[j] && !ft_isin_table((*start_cmd)[j], " <>|$\'\""))//is ispace surtout
-	{
+	j = *i;
+	while ((*start_cmd)[++j] && !ft_isin_table((*start_cmd)[j], " <>|$\'\""))//is ispace surtout
 		(*start_cmd)[j - 1] = (*start_cmd)[j];
-		j++;//ca peut se mettre en ++j au debut de la boucle
-	}
-	if (j == ++(*i))
+	if (j == *i + 1)
 		return (j);
 	(*start_cmd)[j - 1] = '\0';
-	//fprintf(stderr, "voici env key : %s\n", &(*start_cmd)[*i]);
 	env_value = ft_getenv(&(*start_cmd)[*i], env);
 	(*start_cmd)[*i] = '\0';
 	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));
