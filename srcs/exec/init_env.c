@@ -9,6 +9,8 @@ char	*ft_getenv(const char *name, t_list *env)
 		return("$");
 	if (!env)
 		return (NULL);
+	if (*name == '?')
+		return (env->content);
 	size = ft_strlen(name);
 	while (env)
 	{
@@ -23,9 +25,8 @@ char	*ft_getenv(const char *name, t_list *env)
 
 }
 
-t_list	*env_from_scratch()
+t_list	*env_from_scratch(t_list *ret)
 {
-	t_list	*ret;
 	char	*cwd;
 	char	*tmp;
 
@@ -63,10 +64,16 @@ char	*shlvl_increment(char	*env)
 t_list	*init_env(char **env)
 {
 	t_list	*ret;
+	char	*content;
 
+	content = ft_strdup("0");
+	if (!content)
+		return (perror("malloc"), NULL);
+	ret = ft_lstnew(content);
+	if (!ret)
+		return (perror("malloc"), NULL);
 	if (!env || !*env)
-		return (env_from_scratch());
-	ret = NULL;
+		return (env_from_scratch(ret));
 	while (*env)
 	{
 		if (ft_strncmp(*env, "SHLVL=", 5) == 0)

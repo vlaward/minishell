@@ -155,7 +155,6 @@ char	*read_prompt(t_list *env)
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
-
 	t_list	*new_env;
 	t_list	*cmd;
 
@@ -175,7 +174,7 @@ int	main(int ac, char **av, char **env)
 		line = tatu_ferme_tes_guillemets(line);
 		if (line)
 		{
-			add_history(line);// <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
+			//add_history(line);// <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
 			cmd = init_cmd(line, new_env);
 			if (cmd)
 			{

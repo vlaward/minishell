@@ -12,7 +12,6 @@ Ce qu il reste a faire !
 									mettre l'env '?' a WEXITEDSTATUS
 -verifer les free	(check : [~])
 
-
 --TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
 		|--> faire des "inline" fonction ^^
 -mettre toutes l;es foncitons en static.
@@ -94,3 +93,4 @@ FAIT ???
 		- que "cat << a | ls " marche
 "-si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec" pas sure de ce que je voulais dire donc bon (maintenant je crois que je vois et c'est bon)
 -REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif (a parrement c'est bon je crois  ?) (En faite normalement y'as pas besoin de le faire c'est deja le cas)
+-les variables d'environement, si t'en met ue fausse, ca bug.
