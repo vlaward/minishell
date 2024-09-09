@@ -7,7 +7,7 @@ F_BUILT		= echo.c builtins.c env.c pwd.c exit.c export.c unset.c cd.c #list.c#cd
 FILES		+= $(addprefix builtins/, $(F_BUILT))
 F_EXEC		= redirects.c ft_minisplit.c Les_Guillemets_UwU.c      \
 				get_next_line.c all_good.c tokkens.c Das_signals.c here_doc.c \
-				init_env.c init_cmd_list.c
+				init_env.c init_cmd_list.c execute_cmd.c
 FILES		+= $(addprefix exec/, $(F_EXEC))
 
 # Paths

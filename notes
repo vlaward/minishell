@@ -6,21 +6,28 @@ legende :
 [X] = Fait
 
 Ce qu il reste a faire !
--les built-in 		(check : [ ])
+-les built-in 		(check : [x])<= a verifier mais tout a l'air bon
 -les signaux 		(check : [x])<= a verifier mais tout a l'air bon
--le $?				(check : [ ])<= utiliser notre export ? et
-									mettre l'env '?' a WEXITEDSTATUS
+-le $?				(check : [ ])
 -verifer les free	(check : [~])
 
---TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
+
+
+Primaire
+
+	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
+	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
+	-update les define, mettre un define pour les flags de open
+	-remplacer TOUT les printfs
+	-si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access
+
+secondaire :
+
+	-mettre toutes l;es foncitons en static.
+	--TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
 		|--> faire des "inline" fonction ^^
--mettre toutes l;es foncitons en static.
--export peuy faire une variable sans valeur. r
--modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
--update les define, mettre un define pour les flags de open
--remplacer TOUT les printfs
--verifier avec access avant de executer voir en bas laa
--si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access
+	
+
 ====================================
 
 subtree commands : (exemple[libft])
@@ -40,21 +47,12 @@ notes :
 -les getenv, pas besoin de les free pars ce que ca pointe vers un endroit dans la memoire deja
 -perrror regle beaucoup de probleme 
 
-
-REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier le retour de trim et la facon dont c'est gere.
-	->"cat << EOF" apres deux itteration ca plante. (see valgrind) (limiter.c:36) (hisotique pars ce qu'on est pas des putes !!!)
-	franchement s'ut ete plus simple de faire des putains de structures mais bon... alright
-
 =======================================
 
-NAHLA (je fait chier de ouf) :
--gerer les signaux pendant l'execution des pipes (en soit inutil mais ca demande rien et c'est plus beau)
-
-
 AXEL :
-- gerer le $$ et $_
-- gerer l'etat terminal (ouvrir vim , dans un terminal exteren pkill -KILL vim )
--les wildcards c'est pas mandatory mais c'est cool (un truc genre open pwd)
+- gerer le $$ [flm pas mandatory, et ca me demande de creer un clone au debut pour recupperer le pid]
+- gerer l'etat terminal (ouvrir vim , dans un terminal exteren pkill -KILL vim ) [meme bash il plante te fou pas de ma gueule]
+-les wildcards c'est pas mandatory mais c'est cool (un truc genre open pwd) [cheh]
 
 
 ft_testacces
@@ -94,3 +92,9 @@ FAIT ???
 "-si il n'y a pas d'env le path marche pas donc il faut le gerer dans l'exec" pas sure de ce que je voulais dire donc bon (maintenant je crois que je vois et c'est bon)
 -REPLACE !strcmp pars strcmp == 0. Pars ce que le resultat peu etre negatif (a parrement c'est bon je crois  ?) (En faite normalement y'as pas besoin de le faire c'est deja le cas)
 -les variables d'environement, si t'en met ue fausse, ca bug.
+- gerer le $_
+REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier le retour de trim et la facon dont c'est gere.
+		->"cat << EOF" apres deux itteration ca plante. (see valgrind) (limiter.c:36) (hisotique pars ce qu'on est pas des putes !!!)
+	franchement s'ut ete plus simple de faire des putains de structures mais bon... alright
+-export peuy faire une variable sans valeur.
+-verifier avec access avant de executer voir en bas laa

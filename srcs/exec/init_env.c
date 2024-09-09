@@ -71,7 +71,7 @@ t_list	*init_env(char **env)
 		return (perror("malloc"), NULL);
 	ret = ft_lstnew(content);
 	if (!ret)
-		return (perror("malloc"), NULL);
+		return (perror("malloc"), free(content), NULL);
 	if (!env || !*env)
 		return (env_from_scratch(ret));
 	while (*env)

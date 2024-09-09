@@ -1,78 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/09 14:37:25 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/09/09 14:37:27 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minitest.h"
 
 int	parser(t_list *cmd, t_list *env);
-
-char	**env_to_tabl(t_list *env)
-{
-	char	**ret;
-	char	**tmp;
-
-	ret = (char **)malloc(sizeof(char *) * (ft_lstsize(env) + 1));
-	if (!ret)
-		return (NULL);
-	tmp = ret;
-	while (env)
-	{
-		*(tmp++) = (char *)(env->content);
-		env = env->next;
-	}
-	*tmp = NULL;
-	return (ret);
-}
-
-int     execute_cmd(char **args, t_list *env) 
-{
-	char	**paths;
-	char	*tmp;
-	char	**tabl_env;
-	int		i;
-
-	if (!args)
-	{
-		fprintf(stderr, "Mais weeeesh T^T\n");
-		exit(errno);
-	}
-	if (!args || *args == NULL)
-		exit(0);
-	if (ft_builtins(args[0]))//un ft_strcmp
-		exit(ft_builtins(args[0])(NULL, env, args));
-	
-	/*if (ft_is_builtins(args[0]))
-	{
-		printf("is builtins\n");
-		ft_builtins(args);
-		return (0);
-	}*/
-	tabl_env = env_to_tabl(env);
-	if (!tabl_env)
-	{
-		perror("malloc");
-		exit(errno);
-	}
-	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
-		return (execve(args[0], args, tabl_env), 127);
-	paths = ft_split(ft_getenv("PATH", env), ':');//si on est pas trop con on fait ca avec le nouvel env
-	if (!paths)
-	{
-		exit(fprintf(stderr, "%s : command not found\n", args[0]));
-	}
-	tmp = ft_strjoin("/", args[0]);
-	i = 0;
-	while (paths[i] != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
-	{
-		free(args[0]);
-		args[0] = ft_strjoin(paths[i], tmp);
-		execve(args[0], args, tabl_env);
-		free(paths[i++]);
-	}
-	i = 0; 
-	fprintf(stderr, "%s : command not found\n", args[0]);
-	while (args[i])
-		free(args[i++]);
-	(free(args), free(paths), free(tmp));
-	exit(127);
-	return (0);
-}
 
 char	**pars_command(t_list *cmd, t_list *env)
 {//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
@@ -170,7 +110,6 @@ int	main(int ac, char **av, char **env)
 		line = read_prompt(new_env);
 		if (!line)
 			break ; //127
-		fprintf(stderr, "si ca se trouve ca passe meme pas par la\n");
 		line = tatu_ferme_tes_guillemets(line);
 		if (line)
 		{
