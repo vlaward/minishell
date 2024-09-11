@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minitest.h"
+#define ACCESS_F 1
 
 static char	**env_to_tabl(t_list *env)
 {
@@ -30,12 +31,16 @@ static char	**env_to_tabl(t_list *env)
 	return (ret);
 }
 
-static int access_error(char *file)
+static void access_error(char *file, int flag)
 {
 	if (ft_putestr_fd("minishell: ", STDERR_FILENO) == -1)
 		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
-	if (ft_putestr_fd(strerror(errno), STDERR_FILENO) == -1)
-		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
+	if (flag == ACCESS_F)
+		if (ft_putestr_fd(strerror(errno), STDERR_FILENO) == -1)
+			(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
+	if (flag != ACCESS_F)
+		if (ft_putestr_fd("command not found", STDERR_FILENO) == -1)
+			(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
 	if (ft_putestr_fd(": ", STDERR_FILENO) == -1)
 		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
 	if (ft_putestr_fd(file, STDERR_FILENO) == -1)
@@ -45,7 +50,7 @@ static int access_error(char *file)
 	
 }
 
-static int	launch_executable(char **args, char **tabl_env, char **paths)
+static void	launch_executable(char **args, char **tabl_env, char **paths)
 {
 	int		i;
 	char	*tmp;
@@ -53,12 +58,12 @@ static int	launch_executable(char **args, char **tabl_env, char **paths)
 	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
 	{
 		if (access(args[0], F_OK) == -1 || access(args[0], X_OK) == -1)
-			return (free_args(paths), access_error(args[0]), 1);
+			return (free_args(paths), access_error(args[0], ACCESS_F));
 		execve(args[0], args, tabl_env);
-		return (0);//meme pas sense arriver en soit
+		return ;
 	}
 	if (!paths)
-		exit(fprintf(stderr, "%s : command not found\n", args[0]));
+		return (free_args(paths), access_error(args[0], 0));
 	tmp = ft_strjoin("/", args[0]);
 	if (!tmp)
 		return (free_args(paths), free(paths));
@@ -68,10 +73,10 @@ static int	launch_executable(char **args, char **tabl_env, char **paths)
 		free(args[0]);
 		args[0] = ft_strjoin(paths[i++], tmp);
 		if (!access(args[0], F_OK) && access(args[0], X_OK) == -1)
-			return (free(tmp), free_args(paths), access_error(args[0]), 1);
+			return (free(tmp), free_args(paths), access_error(args[0], ACCESS_F));
 		execve(args[0], args, tabl_env);
 	}
-	return (free_args(paths), free(tmp), 0);
+	return (free_args(paths), free(tmp), access_error(args[0], 0));
 }
 
 int     execute_cmd(char **args, t_list *env) 
@@ -85,13 +90,8 @@ int     execute_cmd(char **args, t_list *env)
 	tabl_env = env_to_tabl(env);
 	if (!tabl_env)
 		(perror("malloc"), exit(errno));
-	if (!launch_executable(args, tabl_env,
-		ft_split(ft_getenv("PATH", env), ':')))
-	{
-		ft_putestr_fd(args[0], STDERR_FILENO);
-		ft_putestr_fd(": command not found\n", STDERR_FILENO);
-		fprintf(stderr, "%s ", args[0]);
-	}
+	launch_executable(args, tabl_env, 
+		ft_split(ft_getenv("PATH", env), ':'));
 	free_args(args);
 	free(tabl_env);
 	if (!errno)
