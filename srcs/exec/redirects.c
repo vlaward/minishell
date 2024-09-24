@@ -19,7 +19,7 @@ int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		close(cmd->in);
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		return(perror("open"), 0);
+		return(perror("open"), free(file), 0);
 	cmd->in = fd;//.je pense qu'il y a pas besoin de ca
 	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	if (!tmp && errno != 0)

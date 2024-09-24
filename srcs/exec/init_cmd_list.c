@@ -25,6 +25,10 @@ void	free_cmd(void *afree)
 {
 	if (!afree)
 		return ;
+	if (((t_cmd *)afree)->in > 3)
+		close(((t_cmd *)afree)->in);
+	if (((t_cmd *)afree)->out > 3)
+		close(((t_cmd *)afree)->out);
 	free(((t_cmd *)afree)->cmd);
 	free(afree);
 }
@@ -61,12 +65,17 @@ t_list	*init_cmd(char *line, t_list *env)
 	while (line[index])
 	{
 		if (line[index] == '>' || line[index] == '<')
+		{
 			if (!redirects(&line, &index, &tmp, env))
 				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
-		if (line[index] == '|')
+		}
+		else if (line[index] == '|')
+		{
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, line, &index, &start_cmd)))
 				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
-		index++;
+		}
+		else
+			index++;
 	}
 	tmp.cmd = ft_strdup(&(line[start_cmd]));
 	if (!tmp.cmd)

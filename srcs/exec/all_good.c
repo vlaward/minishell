@@ -8,10 +8,10 @@ int	verif_tokken(char *line)
 	while (*line)
 	{
 		if (tokkened)
-			if (ft_isin_table(*line, "<>|"))
+			if (ft_isin_table(*line, "<>|") && !(*line != '|' && tokkened == '|'))
 				return (fprintf(stderr, "minishell: errror near unexpected tokken \'%c\'\n", *line), 0);
 		if (!ft_iswhitespace(*line))
-			tokkened = ft_isin_table(*line, "<>|");
+			tokkened = ft_isin_table(*line, "<>|") * *line;
 		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
 			line++;
 		line++;

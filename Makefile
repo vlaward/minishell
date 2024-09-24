@@ -41,6 +41,7 @@ ${NAME}:	libs ${OBJS}
 
 test:		libs ${OBJS}
 			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(OBJS) $(INCS) libft/libft.a
+			valgrind --suppressions=/mnt/nfs/homes/ncrombez/Documents/github/minishell/readline.supp --track-fds=yes --leak-check=full --trace-children=yes --track-origins=yes --show-leak-kinds=all -s -q ./minitest
 
 
 libs :

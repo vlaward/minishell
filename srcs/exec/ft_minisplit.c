@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/04 20:32:28 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:16:15 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	add_to_list(char **line, int *index, t_list *env, t_list **wbr)
 	return (ft_lstadd_front(wbr, ft_lstnew(content)));
 }
 
-char	**ft_minisplit(char	**str, t_list *env)
+char	**ft_minisplit(char	*str, t_list *env)
 {
 	t_list	*will_be_ret;
 	int		i;
@@ -73,15 +73,15 @@ char	**ft_minisplit(char	**str, t_list *env)
 		return (NULL);
 	will_be_ret = NULL;
 	i = -1;
-	while ((*str)[++i])
-		if (!ft_iswhitespace((*str)[i]) && (*str)[i] != '\n')
-			if (!add_to_list(str, &i, env, &will_be_ret))
-				return (perror("malloc"), NULL);
+	while ((str)[++i])
+		if (!ft_iswhitespace((str)[i]) && (str)[i] != '\n')
+			if (!add_to_list(&str, &i, env, &will_be_ret))
+				return (free(str), perror("malloc"), NULL);
 	if (!will_be_ret)
-		return (NULL);
+		return (free(str), NULL);
 	ret = ft_calloc(ft_lstsize(will_be_ret) + 1, sizeof(char *));
 	if (!ret)
-		return (perror("malloc"), NULL);
+		return (free(str), perror("malloc"), NULL);
 	i = -1;
 	while (ft_lstnodi(&will_be_ret, ++i))
 	{
@@ -89,6 +89,7 @@ char	**ft_minisplit(char	**str, t_list *env)
 		fprintf(stderr, "ret[%d] : \"%s\"\n", i, ret[i]);
 	}
 	ft_lstclear(&will_be_ret, NULL);
+	free(str);
 	return (ret);
 }
 //normalement y'as un fdree str

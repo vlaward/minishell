@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/09 15:23:34 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/24 14:28:50 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int	execute_cmd(char **args, t_list *env)
 		ft_split(ft_getenv("PATH", env), ':'));
 	free_args(args);
 	free(tabl_env);
+	ft_lstclear(&env, free);
 	if (!errno)
 		exit(127);
 	exit(errno);

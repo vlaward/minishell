@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ncrombez <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:37:25 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/09 14:37:27 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:17:35 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	parser(t_list *cmd, t_list *env);
 
 char	**pars_command(t_list *cmd, t_list *env)
 {//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
+	char	*str;
+	
 	if (((t_cmd *)(cmd->content))->in && dup2(((t_cmd *)(cmd->content))->in, STDIN_FILENO) == -1)
 			return (perror("dup2 "), NULL);
 	if (((t_cmd *)(cmd->content))->out && dup2(((t_cmd *)(cmd->content))->out, STDOUT_FILENO) == -1)
@@ -24,13 +26,17 @@ char	**pars_command(t_list *cmd, t_list *env)
 		close(((t_cmd *)(cmd->content))->in);
 	if (((t_cmd *)(cmd->content))->out)
 		close(((t_cmd *)(cmd->content))->out);
-	return (ft_minisplit(&(((t_cmd *)(cmd->content))->cmd), env	));
+	str = ((t_cmd *)(cmd->content))->cmd;
+	free(cmd->content);
+	free(cmd);
+	return (ft_minisplit(str, env));
 }
 
 int	fork_thing(t_list *cmd, t_list *env)
 {
 	int		pid;
 	int		pipette[2];
+	t_list	*tmp;
 
 	pipe(pipette);
 	pid = fork();
@@ -40,8 +46,11 @@ int	fork_thing(t_list *cmd, t_list *env)
 	{
 		dup2(pipette[0], STDIN_FILENO);
 		(close(pipette[1]), close(pipette[0]));
-		return (parser(cmd->next, env));
+		tmp = cmd->next;
+		ft_lstdelone(cmd, free_cmd);
+		return (parser(tmp, env));
 	}
+	ft_lstclear(&(cmd->next), free_cmd);
 	fprintf(stderr, "pardon???\n");
 	printf("voici ce qu'est sense etre la putain de ligne : %s\n", ((t_cmd *)(cmd->content))->cmd);
 	dup2(pipette[1], STDOUT_FILENO);
@@ -60,7 +69,7 @@ int	parser(t_list *cmd, t_list *env)
 		if (ft_builtins(((t_cmd *)(cmd->content))->cmd) != NULL)
 		{
 			fprintf(stderr, "\n\nNUUGHUUUUUGH\n\n");
-			return(ft_builtins(((t_cmd *)(cmd->content))->cmd)(cmd->content, env, pars_command(cmd, env)));
+			return(ft_builtins(((t_cmd *)(cmd->content))->cmd)(cmd->content, env, ft_minisplit(ft_strdup(((t_cmd *)(cmd->content))->cmd), env)));
 		}
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
@@ -81,6 +90,7 @@ int	parser(t_list *cmd, t_list *env)
 		dup(TTY_SAVED_FD);
 		return (WEXITSTATUS(status));//mettre status dans $?
 	}
+	close(TTY_SAVED_FD);
 	exit(execute_cmd(pars_command(cmd, env), env));
 }
 
@@ -142,6 +152,7 @@ int	main(int ac, char **av, char **env)
 		}
 		rl_on_new_line();
 	}
+	close(TTY_SAVED_FD);
 	ft_lstclear(&new_env, free);
 	rl_clear_history();
 	return (0);
