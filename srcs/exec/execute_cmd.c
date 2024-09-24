@@ -31,7 +31,7 @@ static char	**env_to_tabl(t_list *env)
 	return (ret);
 }
 
-static void access_error(char *file, int flag)
+static void	access_error(char *file, int flag)
 {
 	if (ft_putestr_fd("minishell: ", STDERR_FILENO) == -1)
 		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
@@ -47,7 +47,6 @@ static void access_error(char *file, int flag)
 		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
 	if (ft_putechar_fd('\n', STDERR_FILENO) == -1)
 		(ft_putechar_fd('\n', STDERR_FILENO), perror("write"));
-	
 }
 
 static void	launch_executable(char **args, char **tabl_env, char **paths)
@@ -73,24 +72,24 @@ static void	launch_executable(char **args, char **tabl_env, char **paths)
 		free(args[0]);
 		args[0] = ft_strjoin(paths[i++], tmp);
 		if (!access(args[0], F_OK) && access(args[0], X_OK) == -1)
-			return (free(tmp), free_args(paths), access_error(args[0], ACCESS_F));
+			return (free(tmp), free_args(paths), access_error(*args, 1));
 		execve(args[0], args, tabl_env);
 	}
 	return (free_args(paths), free(tmp), access_error(args[0], 0));
 }
 
-int     execute_cmd(char **args, t_list *env) 
+int	execute_cmd(char **args, t_list *env)
 {
 	char	**tabl_env;
 
 	if (!args || *args == NULL)
 		exit(errno);
-	if (ft_builtins(args[0]))//un ft_strcmp
+	if (ft_builtins(args[0]))
 		exit(ft_builtins(args[0])(NULL, env, args));
 	tabl_env = env_to_tabl(env);
 	if (!tabl_env)
 		(perror("malloc"), exit(errno));
-	launch_executable(args, tabl_env, 
+	launch_executable(args, tabl_env,
 		ft_split(ft_getenv("PATH", env), ':'));
 	free_args(args);
 	free(tabl_env);

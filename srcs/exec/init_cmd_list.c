@@ -33,9 +33,11 @@ static t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
 {
 	t_cmd	tmp;
 
+	cmd->cmd = ft_strdup(&(line[(*start_cmd)]));
+	if (!cmd->cmd)
+		return (NULL);
 	cmd->has_pipe = 1;
 	line[(*index)++] = '\0';
-	cmd->cmd = ft_strdup(&(line[(*start_cmd)]));
 	*start_cmd = *index;
 	tmp = *cmd;
 	cmd->in = 0;
@@ -56,7 +58,7 @@ t_list	*init_cmd(char *line, t_list *env)
 	start_cmd = 0;
 	ret = NULL;
 	fill_cmd(&tmp, 0 ,0 ,0);
-	while (line[index++])
+	while (line[index])
 	{
 		if (line[index] == '>' || line[index] == '<')
 			if (!redirects(&line, &index, &tmp, env))
@@ -64,6 +66,7 @@ t_list	*init_cmd(char *line, t_list *env)
 		if (line[index] == '|')
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, line, &index, &start_cmd)))
 				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
+		index++;
 	}
 	tmp.cmd = ft_strdup(&(line[start_cmd]));
 	if (!tmp.cmd)

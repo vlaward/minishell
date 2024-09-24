@@ -15,6 +15,7 @@ Ce qu il reste a faire !
 
 Primaire
 
+	-faire en sorte que deux guillemet sans rien soient quand même concidérées comme un mot dans la char ** donné a execve
 	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
 	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 	-update les define, mettre un define pour les flags de open

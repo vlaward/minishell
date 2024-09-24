@@ -54,16 +54,13 @@ static int	add_to_list(char **line, int *index, t_list *env, t_list **wbr)
 		if (!increment_atl(&str, &i, env, witch))
 			return (0);
 	*line = str;
-	if (i != *index)
-	{
-		content = ft_strndup(&str[*index], i - *index);
-		if (!content)
-			return (0);
-		*index = i - 1;
-		return (ft_lstadd_front(wbr, ft_lstnew(content)));
-	}
+	content = ft_strndup(&str[*index], i - *index);
+	if (i - *index == 0)
+		content = ft_strdup("\0");
+	if (!content)
+		return (0);
 	*index = i - 1;
-	return (1);
+	return (ft_lstadd_front(wbr, ft_lstnew(content)));
 }
 
 char	**ft_minisplit(char	**str, t_list *env)
@@ -87,7 +84,10 @@ char	**ft_minisplit(char	**str, t_list *env)
 		return (perror("malloc"), NULL);
 	i = -1;
 	while (ft_lstnodi(&will_be_ret, ++i))
+	{
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
+		fprintf(stderr, "ret[%d] : \"%s\"\n", i, ret[i]);
+	}
 	ft_lstclear(&will_be_ret, NULL);
 	return (ret);
 }

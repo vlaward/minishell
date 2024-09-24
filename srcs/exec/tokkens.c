@@ -75,7 +75,7 @@ char	*trim(char **start_cmd, int *index, int flag, t_list *env)
 		if (*index == -1)
 			return (ft_putestr_fd("Ambiguous redirects\n", errno), NULL);
 	}
-	(*start_cmd)[start_index++] = '\0';
+	(*start_cmd)[start_index] = '\0';
 	//fprintf(stderr, "purtant ca donne ca: %d\n", *index - start_name_index);
 	return (ft_strndup(&(*start_cmd)[start_name_index], *index - start_name_index));
 }

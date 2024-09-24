@@ -49,6 +49,8 @@ char	*tatu_ferme_tes_guillemets(char *str)
 
 	if (!str)
 	  	return (NULL);
+	if (!*str)
+		return (free(str), NULL);
 	voyage = str;
 	while (*voyage)
 	{

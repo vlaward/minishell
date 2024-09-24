@@ -67,11 +67,19 @@ int	parser(t_list *cmd, t_list *env)
 	{
 		if (!gere_sig(0))
 			return (0);
-		while(wait(&status) != -1);
-		status = WEXITSTATUS(status);
+		while(wait(&status) != -1)
+		{
+			if (WEXITSTATUS(status) != ft_atoi(env->content))
+			{
+				free(env->content);
+				env->content = ft_itoa(WEXITSTATUS(status));
+				if (!env->content)
+					return (perror("malloc"), 0);
+			}
+		}	
 		close(STDIN_FILENO);
 		dup(TTY_SAVED_FD);
-		return (0);//mettre status dans $?
+		return (WEXITSTATUS(status));//mettre status dans $?
 	}
 	exit(execute_cmd(pars_command(cmd, env), env));
 }
@@ -97,6 +105,7 @@ int	main(int ac, char **av, char **env)
 	char	*line;
 	t_list	*new_env;
 	t_list	*cmd;
+	int	exitcode;
 
 	(void)ac;
 	(void)av;
@@ -117,7 +126,17 @@ int	main(int ac, char **av, char **env)
 			cmd = init_cmd(line, new_env);
 			if (cmd)
 			{
-				parser(cmd, new_env);
+				exitcode = parser(cmd, new_env);
+				if (exitcode != ft_atoi(new_env->content))
+				{
+					free(new_env->content);
+					new_env->content = ft_itoa(exitcode);
+					if (!new_env->content)
+					{
+						perror("malloc");
+						break ;
+					}
+				}
 				ft_lstclear(&cmd, free_cmd);
 			}
 		}

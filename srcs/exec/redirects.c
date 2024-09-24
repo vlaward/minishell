@@ -90,6 +90,7 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 
 int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 {
+	fprintf(stderr, "ça passe ti pars la ?");
 	if ( ft_strncmp(&(*start_cmd)[*index], ">>", 2) == 0)
 		return(append_handler(start_cmd, index, cmd, env));
 	if ( ft_strncmp(&(*start_cmd)[*index], "<<", 2) == 0)
