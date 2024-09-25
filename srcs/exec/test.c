@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:37:25 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:17:35 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/25 13:46:41 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int	parser(t_list *cmd, t_list *env)
 			return (0);
 		while(wait(&status) != -1)
 		{
+			ft_lstclear(&cmd, free_cmd);
 			if (WEXITSTATUS(status) != ft_atoi(env->content))
 			{
 				free(env->content);
@@ -147,7 +148,7 @@ int	main(int ac, char **av, char **env)
 						break ;
 					}
 				}
-				ft_lstclear(&cmd, free_cmd);
+				// ft_lstclear(&cmd, free_cmd);
 			}
 		}
 		rl_on_new_line();

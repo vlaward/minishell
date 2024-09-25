@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/24 15:16:15 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/25 13:41:59 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	increment_atl(char **str, int *i, t_list *env, char witch)
 {
 	if (ft_isin_table((*str)[*i], "\'\""))
 	{
+		fprintf(stderr, "wtfffff donc laon a : \"%s\" et donc \"___%c___\"\n", *str, (*str)[*i]);
 		witch = (*str)[*i];
 		ft_memcpy(&((*str)[*i]), &(*str)[*i + 1], ft_strlen(&(*str)[*i + 1]));
 		(*str)[*i + ft_strlen(&((*str)[*i])) - 1] = '\0';

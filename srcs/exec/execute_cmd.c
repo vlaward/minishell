@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/24 14:28:50 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/25 19:57:49 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	launch_executable(char **args, char **tabl_env, char **paths)
 	int		i;
 	char	*tmp;
 
-	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
+	if (*(args[0]) == '.' || !ft_strncmp(args[0], "/", 1))
 	{
 		if (access(args[0], F_OK) == -1 || access(args[0], X_OK) == -1)
 			return (free_args(paths), access_error(args[0], ACCESS_F));
@@ -86,6 +86,7 @@ int	execute_cmd(char **args, t_list *env)
 		exit(errno);
 	if (ft_builtins(args[0]))
 		exit(ft_builtins(args[0])(NULL, env, args));
+	close(TTY_SAVED_FD);
 	tabl_env = env_to_tabl(env);
 	if (!tabl_env)
 		(perror("malloc"), exit(errno));

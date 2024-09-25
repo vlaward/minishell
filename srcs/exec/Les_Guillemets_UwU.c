@@ -61,7 +61,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 		{
 			//printf("voici la ligne awawawaw : %s  : %s\n", str, voyage);
 			this_one = *voyage++;
-			while (*(voyage + 1) != '\0' && *voyage != this_one)
+			while (*voyage && *(voyage + 1) != 0 && *voyage != this_one)
 				voyage++;
 			if (*voyage != this_one)
 				return (bah_ferme_les(str));

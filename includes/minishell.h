@@ -1,5 +1,5 @@
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef MINITEST_H
+# define MINITEST_H
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -20,12 +20,12 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
 # endif
-#ifndef PATH_MAX
-# define PATH_MAX 4096
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
 # endif
-#define FIRST_COMMAND 0
-#define NOT_FIRST_COMMAND 1
-#define REDIRECT 1
+# define FIRST_COMMAND 0
+# define NOT_FIRST_COMMAND 1
+# define REDIRECT 1
 # define REDIRECT 1
 # define F_NAME_TRIM 1
 # define H_DOC_TRIM 2
@@ -33,7 +33,7 @@
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
 # define TTY_SAVED_FD 3
-#endif
+
 
 typedef struct s_env
 {
@@ -42,17 +42,28 @@ typedef struct s_env
 	struct s_env *next;
 } t_env;
 
-extern int G_sig_catcher;
+typedef struct s_cmd{
+	int		in;
+	int		out;
+	int		has_pipe;
+	char	*cmd;
+}	t_cmd;
 
-extern char **G_env;
+
+typedef int (*f_builtin)(t_cmd *, t_list *, char **);
+
+extern int G_sig_catcher;
 
 t_list *init_env(char	**env);
 char	*tatu_ferme_tes_guillemets(char *str);
-char	**ft_minisplit(char	*str);
+char	**ft_minisplit(char	*str, t_list *env);
 char	*get_next_line(int fd);
 char	*ft_getenv(const char *name, t_list *env);
-int		all_good(char *line, t_list *env);
+t_list	*init_cmd(char *line, t_list *env);
 int		verif_tokken(char *line);
+void	free_cmd(void *afree);
+int     execute_cmd(char **args, t_list *env);
+
 
 //verif_tokken
 
@@ -61,26 +72,30 @@ int		guille_handler(char **start_cmd, int *i, int flag, t_list *env);
 
 //redirects
 
-int		redirects(char **start_cmd, int *index, int flag, t_list *env);
-int		out_handler(char **start_cmd, int *index, int flag, t_list *env);
-int		append_handler(char **start_cmd, int *index, int flag, t_list *env);
-int		in_handler(char **start_cmd, int *index, int flag, t_list *env);
+int		redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag, t_list *env);
-int		here_doc(char **start_cmd, int *index, int flag, t_list *env);
+int		here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 
 //signals
 
 int		gere_sig(int flag);
 
 //builtins
-void	ft_env(void);
-void	ft_echo(char **av);
-void	ft_builtins(char **av);
-void	ft_pwd(void);
-void	ft_exit(char **av);
-void	ft_export(char **av);
+int	ft_env(t_cmd *redirects, t_list *env, char **cmd);
+int	ft_echo(t_cmd *cmd, t_list *env, char **);
+int	ft_pwd(t_cmd *redirects, t_list *env, char **cmd);
+int	ft_exit(t_cmd *cmd, t_list *env, char **av);
+int	ft_export(t_cmd *redirects, t_list *env, char **av);
+int	ft_unset(t_cmd *redirects, t_list *env, char **av);
+int	ft_cd(t_cmd *redirects, t_list *env, char **av);
 
+void	free_args(char **args);
+t_list	*get_env_node(t_list *env, char *str);
+f_builtin	ft_builtins(char *str);
 int	ft_is_builtins(char *av);
 
 //list
@@ -91,3 +106,4 @@ t_env	*__lstlast(t_env *lst);
 char	*ft_get_value(char *str);
 char	*ft_get_key(char *str);
 t_env	*__tab_lst(char **env);
+#endif

@@ -6,16 +6,15 @@ legende :
 [X] = Fait
 
 Ce qu il reste a faire !
--les built-in 		(check : [x])<= a verifier mais tout a l'air bon
--les signaux 		(check : [x])<= a verifier mais tout a l'air bon
--le $?				(check : [ ])
+-le $?				(check : [~])
 -verifer les free	(check : [~])
 
 
 
 Primaire
-
-	-faire en sorte que deux guillemet sans rien soient quand même concidérées comme un mot dans la char ** donné a execve
+	-cas '$> cat""' fait ct alors que il devraispas pour une rason obscure....
+	-'printf("%u\n", index);
+		' ne marche pas
 	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
 	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 	-update les define, mettre un define pour les flags de open
@@ -99,3 +98,6 @@ REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier 
 	franchement s'ut ete plus simple de faire des putains de structures mais bon... alright
 -export peuy faire une variable sans valeur.
 -verifier avec access avant de executer voir en bas laa
+-faire en sorte que deux guillemet sans rien soient quand même concidérées comme un mot dans la char ** donné a execve
+-les built-in 		(check : [x])<= a verifier mais tout a l'air bon
+-les signaux 		(check : [x])<= a verifier mais tout a l'air bon

@@ -33,35 +33,40 @@ void	free_cmd(void *afree)
 	free(afree);
 }
 
-static t_list	*piped_node(t_cmd *cmd, char *line, int *index, int *start_cmd)
+static t_list	*piped_node(t_cmd *cmd, char **line, int *index)
 {
 	t_cmd	tmp;
+	char	*new_line;
 
-	cmd->cmd = ft_strdup(&(line[(*start_cmd)]));
+	(*line)[(*index)++] = '\0';
+	new_line = ft_strdup(&(*line)[*index]);
+	if (!new_line)
+		return (NULL);
+	cmd->cmd = ft_strdup(*line);
 	if (!cmd->cmd)
 		return (NULL);
 	cmd->has_pipe = 1;
-	line[(*index)++] = '\0';
-	*start_cmd = *index;
 	tmp = *cmd;
 	cmd->in = 0;
 	cmd->out = 0;
+	free(*line);
+	*line = new_line;
+	*index = 0;
 	return (ft_lstnew_content_mandatory(cmd_dup(tmp)));
 }
 
 t_list	*init_cmd(char *line, t_list *env)
 {
 	int		index;
-	int		start_cmd;
 	t_list	*ret;
 	t_cmd	tmp;
 
 	if (!verif_tokken(line))
 		return (0);
 	index = 0;
-	start_cmd = 0;
 	ret = NULL;
 	fill_cmd(&tmp, 0 ,0 ,0);
+	printf("Voici the FUCKING LINE : \'%s\'\n", line);
 	while (line[index])
 	{
 		if (line[index] == '>' || line[index] == '<')
@@ -71,16 +76,17 @@ t_list	*init_cmd(char *line, t_list *env)
 		}
 		else if (line[index] == '|')
 		{
-			if (!ft_lstadd_front(&ret, piped_node(&tmp, line, &index, &start_cmd)))
+			if (!ft_lstadd_front(&ret, piped_node(&tmp, &line, &index)))
 				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
 		}
 		else
 			index++;
+		printf("Voici the FUCKING LINE : \'%s\'\n", line);
+		printf("%u\n", index);
 	}
-	tmp.cmd = ft_strdup(&(line[start_cmd]));
+	tmp.cmd = ft_strdup(line);
 	if (!tmp.cmd)
 		return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
-	start_cmd = index;
 	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
 		return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
 	return (free(line), ret);
