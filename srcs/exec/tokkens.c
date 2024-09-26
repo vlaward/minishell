@@ -56,7 +56,7 @@ char	*trim(char **start_cmd, int *index, int flag, t_list *env)
 	int		start_index;
 	int		start_name_index;
 
-	printf("nous voici medames et messierus avec [%s]\n\t\t et [%s]\n", *start_cmd, (*start_cmd +*index));
+	//printf("nous voici medames et messierus avec [%s]\n\t\t et [%s]\n", *start_cmd, (*start_cmd +*index));
 	start_index = *index;
 	*index += 1;
 	while (ft_iswhitespace((*start_cmd)[*index]))

@@ -24,10 +24,8 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 	}
 	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
 		return (perror("write"), free_args(cmd), 0);
-	//cmd = tmp;
-	//free_args(cmd);
 	free_args(tmp);
-	//free_cmd(redirect);
+	(void)env;
 	return (1);
 }
 

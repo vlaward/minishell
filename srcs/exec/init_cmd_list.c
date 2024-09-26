@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_cmd_list.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/09/26 14:52:03 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minitest.h"
 
 static void	fill_cmd(t_cmd *cmd, int in, int out, int has_pipe)
@@ -11,6 +23,8 @@ static t_cmd	*cmd_dup(t_cmd cmd)
 {
 	t_cmd	*ret;
 
+	if (!cmd.cmd)
+		return (NULL);
 	ret = malloc(sizeof(t_cmd));
 	if (!ret)
 		return (NULL);
@@ -65,29 +79,22 @@ t_list	*init_cmd(char *line, t_list *env)
 		return (0);
 	index = 0;
 	ret = NULL;
-	fill_cmd(&tmp, 0 ,0 ,0);
-	printf("Voici the FUCKING LINE : \'%s\'\n", line);
+	fill_cmd(&tmp, 0, 0, 0);
 	while (line[index])
 	{
+		if (!ft_isin_table(line[index], "<>|"))
+			index++;
 		if (line[index] == '>' || line[index] == '<')
-		{
 			if (!redirects(&line, &index, &tmp, env))
 				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
-		}
-		else if (line[index] == '|')
-		{
+		if (line[index] == '|')
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, &line, &index)))
-				return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
-		}
-		else
-			index++;
-		printf("Voici the FUCKING LINE : \'%s\'\n", line);
-		printf("%u\n", index);
+				return (perror("malloc"), free(line)
+					, ft_lstclear(&ret, free_cmd), NULL);
+		
 	}
 	tmp.cmd = ft_strdup(line);
-	if (!tmp.cmd)
-		return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
 	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
-		return (perror("malloc"), free(line), ft_lstclear(&ret, free_cmd), NULL);
+		return (perror(NULL), free(line), ft_lstclear(&ret, free_cmd), NULL);
 	return (free(line), ret);
 }

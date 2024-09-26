@@ -20,7 +20,7 @@ SRCS		= $(addprefix $(SRCS_PATH), $(FILES))
 OBJS		= $(addprefix $(OBJS_PATH), $(FILES:.c=.o))
 
 # Flags + compilation
-CFLAGS		= -fPIE -g #-Wall -Wextra -Werror -g
+CFLAGS		= -fPIE -Wall -Wextra -Werror -g
 CC			= cc
 INCS		= $(addprefix -I, $(INCS_PATH))
 INCS		+= -lreadline
