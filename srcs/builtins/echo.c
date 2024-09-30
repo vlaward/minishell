@@ -1,6 +1,6 @@
 #include "../../includes/minitest.h"
 
-int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
+int	ft_echo(t_list **redirect, t_list *env, char **cmd)
 {
 	int	bkslsh_n;
 	char	**tmp;
@@ -8,7 +8,7 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 
 	isout = STDOUT_FILENO;
 	if (redirect)
-		isout = redirect->out;
+		isout = ((t_cmd*)((*redirect)->content))->out;
 	tmp = cmd;
 	bkslsh_n = 1;
 	while (++cmd && !ft_strcmp(*cmd, "-n"))
@@ -16,17 +16,17 @@ int	ft_echo(t_cmd *redirect, t_list *env, char **cmd)
 	while (*cmd)
 	{
 		if (ft_putestr_fd(*(cmd++), isout) == -1)
-			return (perror("write"), free_args(cmd), 0);
+			return (ft_lstclear(redirect, free_cmd), perror("write"), free_args(cmd), errno);
 		if (cmd != tmp)
 			if (ft_putechar_fd(' ', isout) == -1)
-				return (perror("write"), free_args(cmd), 0);
+				return (ft_lstclear(redirect, free_cmd), perror("write"), free_args(cmd), errno);
 		
 	}
 	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
-		return (perror("write"), free_args(cmd), 0);
+		return (ft_lstclear(redirect, free_cmd), perror("write"), free_args(cmd), errno);
 	free_args(tmp);
 	(void)env;
-	return (1);
+	return (ft_lstclear(redirect, free_cmd), 0);
 }
 
 

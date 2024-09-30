@@ -8,7 +8,7 @@ int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp;
 
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	fprintf(stderr, "this is the name : %s\n", file);
+	// fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 		if (errno != 0)
 			return (fprintf(stderr, "donc clairement c'est ici\n"), perror("test:"), 0);
@@ -35,27 +35,27 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*file;
 	char	*tmp;
 
+	(*start_cmd)[(*index)++] = '\0';
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	fprintf(stderr, "this is the name : %s\n", file);
-	if (file != NULL)
-	{
-		if (cmd->out != 0)
-			close(cmd->out);
-		fd = open(file, O_RDWR| O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
-		if (fd == -1)
-			return(perror("open"), 0);
-		cmd->out = fd;//.je pense qu'il y a pas besoin de ca
-		tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
-		if (!tmp && errno != 0)
-			return (perror("malloc"), 0);
-		*index -= ft_strlen(file) + 2;
-		free(*start_cmd);
-		*start_cmd = tmp;
-		return (free(file), tmp != NULL);
-	}
-	if (errno != 0)
+	// fprintf(stderr, "this is the name : %s\n", file);
+	if (file == NULL)
+		if (errno != 0)
 			return (fprintf(stderr, "donc clairement c'est ici\n"), perror("test:"), 0);
-	return (1);	
+	if (file == NULL)
+		return (ft_putestr_fd(": : No such file or directory\n", STDERR_FILENO), 0);
+	if (cmd->out != 0)
+		close(cmd->out);
+	fd = open(file, O_RDWR| O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (fd == -1)
+		return(perror("open"), free(file), 0);
+	cmd->out = fd;//.je pense qu'il y a pas besoin de ca
+	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
+	if (!tmp && errno != 0)
+		return (perror("malloc"), 0);
+	*index -= ft_strlen(file) + 3;
+	free(*start_cmd);
+	*start_cmd = tmp;
+	return (free(file), tmp != NULL);
 }
 
 int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
@@ -65,20 +65,17 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp;
 
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	fprintf(stderr, "this is the name : %s\n", file);
+	// fprintf(stderr, "this is the name : %s\n", file);
 	if (file == NULL)
 		if (errno != 0)
 			return (fprintf(stderr, "donc clairement c'est ici\n"), perror("test:"), 0);
-	// {
-	// 	if (!ft_iswhitespace((*start_cmd)[*index]))
-	// 	 	ft_putestr_fd("there aint no file bud ;-;\n", STDERR_FILENO);
-	// 	return (fprintf(stderr, "donc clairement c'est ici\n"), 0);
-	// }
+	if (file == NULL)
+		return (ft_putestr_fd(": : No such file or directory\n", STDERR_FILENO), 0);
 	if (cmd->out != 0)
 		close(cmd->out);
-	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);//si line too longue on peu mettre un define/cree un mod_t 00644
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
-		return(perror("open"), 0);
+		return(perror("open"), free(file), 0);
 	cmd->out = fd;//.je pense qu'il y a pas besoin de ca
 	tmp = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	if (!tmp && errno != 0)
@@ -91,7 +88,6 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 
 int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 {
-	fprintf(stderr, "ça passe ti pars la ?");
 	if ( ft_strncmp(&(*start_cmd)[*index], ">>", 2) == 0)
 		return(append_handler(start_cmd, index, cmd, env));
 	if ( ft_strncmp(&(*start_cmd)[*index], "<<", 2) == 0)
@@ -100,8 +96,40 @@ int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		return(in_handler(start_cmd, index, cmd, env));
 	if ( ft_strncmp(&(*start_cmd)[*index], ">", 1) == 0)
 		return(out_handler(start_cmd, index, cmd, env));
-	return (printf("LA ?????\n"), 0);
+	return (0);
 }
+
+int	init_redirects(t_list *cmd, t_list *env)
+{
+	int	i;
+	int	error;
+	int	tmp;
+	
+	error = 0;
+	tmp = error;
+	while (cmd)
+	{
+		i = 0;
+		while (error == tmp && ((t_cmd*)(cmd->content))->cmd[i])
+		{
+			if (!ft_isin_table(((t_cmd*)(cmd->content))->cmd[i], "><"))
+				i++;
+			else
+				if (!redirects(&((t_cmd*)(cmd->content))->cmd, &i, (t_cmd*)(cmd->content), env))
+					error++;
+		}
+		tmp = error;
+		cmd = cmd->next;
+	}
+	if (error)
+		return (0);
+	return (1);
+}
+/*
+if (line[index] == '>' || line[index] == '<')
+			if (!redirects(&line, &index, &tmp, env))
+				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
+		*/
 /*
 int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
 {

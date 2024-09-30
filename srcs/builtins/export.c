@@ -19,7 +19,7 @@ t_list	*get_env_node(t_list *env, char *str)
 		env = env->next;
 	}
 	if (!ft_lstadd_front(&tmp, ft_lstnew(NULL)))
-		return (NULL);
+		return (NULL);	
 	return (ft_lstlast(tmp));
 }
 
@@ -68,7 +68,7 @@ char	ft_isvar(char *str)
 	return ('=');
 }
 
-int	ft_export(t_cmd *redirects, t_list *env, char **av)
+int	ft_export(t_list **redirect, t_list *env, char **av)
 {
 	int		i;
 	char	type;
@@ -80,15 +80,16 @@ int	ft_export(t_cmd *redirects, t_list *env, char **av)
 	{
 		type = ft_isvar(av[i]);
 		if (!type)
-			return (printf("export: \'%s\': not a valid identifier\n", av[i]), free_args(av), 1);//changer le print
+			return (ft_lstclear(redirect, free_cmd), printf("export: \'%s\': not a valid identifier\n", av[i]), free_args(av), 1);//changer le print
 		if (type == '=')
 			get_env_node(env, av[i])->content = ft_strdup(av[i]);//free la node btw
 		else
 			if (!append_env(get_env_node(env, av[i]), av[i]))
-				return (free_args(av), 0);
+				return (ft_lstclear(redirect, free_cmd), free_args(av), 0);
 		i++;
 	}
 	free_args(av);
-	return (1);
+	(void)redirects;
+	return (ft_lstclear(redirect, free_cmd), 1);
 }
 

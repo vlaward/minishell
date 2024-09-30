@@ -63,7 +63,7 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	{
 		red = readline("here_doc >");
 		if (!here_doc_env(&red, env))
-			return (perror("readline"), free(here_doc), free(limitter), 0);
+			return (free(here_doc), free(limitter), 0);
 		if (ft_strcmp(limitter, red) == 0)
 			break;
 		here_doc = ft_strjoin_n_free(here_doc, ft_strjoin(red, "\n"));

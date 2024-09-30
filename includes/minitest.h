@@ -50,7 +50,7 @@ typedef struct s_cmd{
 }	t_cmd;
 
 
-typedef int (*f_builtin)(t_cmd *, t_list *, char **);
+typedef int (*f_builtin)(t_list	 **, t_list *, char **);
 
 extern int G_sig_catcher;
 
@@ -79,19 +79,20 @@ int		in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag, t_list *env);
 int		here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
+int		init_redirects(t_list *cmd, t_list *env);
 
 //signals
 
 int		gere_sig(int flag);
 
 //builtins
-int	ft_env(t_cmd *redirects, t_list *env, char **cmd);
-int	ft_echo(t_cmd *cmd, t_list *env, char **);
-int	ft_pwd(t_cmd *redirects, t_list *env, char **cmd);
-int	ft_exit(t_cmd *cmd, t_list *env, char **av);
-int	ft_export(t_cmd *redirects, t_list *env, char **av);
-int	ft_unset(t_cmd *redirects, t_list *env, char **av);
-int	ft_cd(t_cmd *redirects, t_list *env, char **av);
+int	ft_env(t_list **redirect, t_list *env, char **cmd);
+int	ft_echo(t_list **cmd, t_list *env, char **);
+int	ft_pwd(t_list **redirect, t_list *env, char **cmd);
+int	ft_exit(t_list **cmd, t_list *env, char **av);
+int	ft_export(t_list **redirect, t_list *env, char **av);
+int	ft_unset(t_list **redirect, t_list *env, char **av);
+int	ft_cd(t_list **redirect, t_list *env, char **av);
 
 void	free_args(char **args);
 t_list	*get_env_node(t_list *env, char *str);

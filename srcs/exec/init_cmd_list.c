@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/26 14:52:03 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/30 01:57:56 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	free_cmd(void *afree)
 		close(((t_cmd *)afree)->in);
 	if (((t_cmd *)afree)->out > 3)
 		close(((t_cmd *)afree)->out);
-	free(((t_cmd *)afree)->cmd);
+	if (((t_cmd *)afree)->cmd)
+		free(((t_cmd *)afree)->cmd);
 	free(afree);
 }
 
@@ -56,13 +57,11 @@ static t_list	*piped_node(t_cmd *cmd, char **line, int *index)
 	new_line = ft_strdup(&(*line)[*index]);
 	if (!new_line)
 		return (NULL);
-	cmd->cmd = ft_strdup(*line);
+	cmd->cmd = ft_strdup(*line);//on est pas oblige de la dup en soit. on peu mettre un 0 a index et l'utiliser tel quel. plus rapide/safe mais plus de RAM
 	if (!cmd->cmd)
 		return (NULL);
 	cmd->has_pipe = 1;
 	tmp = *cmd;
-	cmd->in = 0;
-	cmd->out = 0;
 	free(*line);
 	*line = new_line;
 	*index = 0;
@@ -82,12 +81,9 @@ t_list	*init_cmd(char *line, t_list *env)
 	fill_cmd(&tmp, 0, 0, 0);
 	while (line[index])
 	{
-		if (!ft_isin_table(line[index], "<>|"))
+		if (line[index] != '|')
 			index++;
-		if (line[index] == '>' || line[index] == '<')
-			if (!redirects(&line, &index, &tmp, env))
-				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
-		if (line[index] == '|')
+		else
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, &line, &index)))
 				return (perror("malloc"), free(line)
 					, ft_lstclear(&ret, free_cmd), NULL);
@@ -96,5 +92,13 @@ t_list	*init_cmd(char *line, t_list *env)
 	tmp.cmd = ft_strdup(line);
 	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
 		return (perror(NULL), free(line), ft_lstclear(&ret, free_cmd), NULL);
+	if (!init_redirects(ret, env))
+		return (free(line), ft_lstclear(&ret, free_cmd), NULL);
 	return (free(line), ret);
 }
+
+/*
+if (line[index] == '>' || line[index] == '<')
+	if (!redirects(&line, &index, &tmp, env))
+		return (free(line), ft_lstclear(&ret, free_cmd), NULL);
+*/

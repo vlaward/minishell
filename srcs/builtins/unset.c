@@ -7,7 +7,7 @@
 // 	struct s_env *next;
 // } t_env;
 
-int	ft_unset(t_cmd *redirects, t_list *env, char **av)
+int	ft_unset(t_list **redirect, t_list *env, char **av)
 {
 	int		i;
 	t_list	*tmp;
@@ -29,5 +29,5 @@ int	ft_unset(t_cmd *redirects, t_list *env, char **av)
 		}
 	}
 	free_args(av);
-	return (1);
+	return (ft_lstclear(redirect, free_cmd), 1);
 }

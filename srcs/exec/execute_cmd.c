@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/25 19:57:49 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/30 02:43:01 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,21 +81,24 @@ static void	launch_executable(char **args, char **tabl_env, char **paths)
 int	execute_cmd(char **args, t_list *env)
 {
 	char	**tabl_env;
+	int		ret;
 
-	if (!args || *args == NULL)
-		exit(errno);
-	if (ft_builtins(args[0]))
-		exit(ft_builtins(args[0])(NULL, env, args));
+	ret = 0;
+	if (!args || *args == NULL);
+	else if (!ft_builtins(args[0]))
+	{
+		close(TTY_SAVED_FD);
+		tabl_env = env_to_tabl(env);
+		if (!tabl_env)
+			(perror("malloc"), exit(errno));
+		launch_executable(args, tabl_env,
+			ft_split(ft_getenv("PATH", env), ':'));
+		free(tabl_env);
+		free_args(args);
+	}
+	else 
+		ret = ft_builtins(args[0])(NULL, env, args);
 	close(TTY_SAVED_FD);
-	tabl_env = env_to_tabl(env);
-	if (!tabl_env)
-		(perror("malloc"), exit(errno));
-	launch_executable(args, tabl_env,
-		ft_split(ft_getenv("PATH", env), ':'));
-	free_args(args);
-	free(tabl_env);
 	ft_lstclear(&env, free);
-	if (!errno)
-		exit(127);
-	exit(errno);
+	exit(ret);
 }

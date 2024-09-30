@@ -6,13 +6,13 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:37:25 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/26 16:07:30 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/30 02:33:15 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minitest.h"
 
-int	parser(t_list *cmd, t_list *env);
+int	parser(t_list **cmd, t_list *env);
 
 char	**pars_command(t_list *cmd, t_list *env)
 {//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
@@ -48,29 +48,23 @@ int	fork_thing(t_list *cmd, t_list *env)
 		(close(pipette[1]), close(pipette[0]));
 		tmp = cmd->next;
 		ft_lstdelone(cmd, free_cmd);
-		return (parser(tmp, env));
+		return (parser(&tmp, env));
 	}
 	ft_lstclear(&(cmd->next), free_cmd);
-	fprintf(stderr, "pardon???\n");
-	printf("voici ce qu'est sense etre la putain de ligne : %s\n", ((t_cmd *)(cmd->content))->cmd);
 	dup2(pipette[1], STDOUT_FILENO);
 	(close(pipette[1]), close(pipette[0]));
-	fprintf(stderr, "voici ce qu'est sense etre la putain de ligne : %s\n", ((t_cmd *)(cmd->content))->cmd);
 	exit(execute_cmd(pars_command(cmd, env), env));
 }
 
-int	parser(t_list *cmd, t_list *env)
+int	parser(t_list **cmd, t_list *env)
 {//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
 	int		status;
 
-	if (cmd->next)
-		return (fork_thing(cmd, env));
-	if(!((t_cmd*)(cmd->content))->has_pipe)
-		if (ft_builtins(((t_cmd *)(cmd->content))->cmd) != NULL)
-		{
-			fprintf(stderr, "\n\nNUUGHUUUUUGH\n\n");
-			return(ft_builtins(((t_cmd *)(cmd->content))->cmd)(cmd->content, env, ft_minisplit(ft_strdup(((t_cmd *)(cmd->content))->cmd), env)));
-		}
+	if ((*cmd)->next)
+		return (fork_thing(*cmd, env));
+	if(!((t_cmd*)((*cmd)->content))->has_pipe)
+		if (ft_builtins(((t_cmd*)((*cmd)->content))->cmd) != NULL)
+			return(ft_builtins(((t_cmd *)((*cmd)->content))->cmd)(cmd, env, ft_minisplit(ft_strdup(((t_cmd *)((*cmd)->content))->cmd), env)));
 	status = 0;
 	if (fork())// a securiser mais vas y ntm
 	{
@@ -78,7 +72,7 @@ int	parser(t_list *cmd, t_list *env)
 			return (0);
 		while(wait(&status) != -1)
 		{
-			ft_lstclear(&cmd, free_cmd);
+			ft_lstclear(cmd, free_cmd);
 			if (WEXITSTATUS(status) != ft_atoi(env->content))
 			{
 				free(env->content);
@@ -92,7 +86,7 @@ int	parser(t_list *cmd, t_list *env)
 		return (WEXITSTATUS(status));//mettre status dans $?
 	}
 	close(TTY_SAVED_FD);
-	exit(execute_cmd(pars_command(cmd, env), env));
+	exit(execute_cmd(pars_command(*cmd, env), env));
 }
 
 char	*read_prompt(t_list *env)
@@ -137,7 +131,7 @@ int	main(int ac, char **av, char **env)
 			cmd = init_cmd(line, new_env);
 			if (cmd)
 			{
-				exitcode = parser(cmd, new_env);
+				exitcode = parser(&cmd, new_env);
 				if (exitcode != ft_atoi(new_env->content))
 				{
 					free(new_env->content);
