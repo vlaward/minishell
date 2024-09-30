@@ -99,7 +99,7 @@ int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	return (0);
 }
 
-int	init_redirects(t_list *cmd, t_list *env)
+void	init_redirects(t_list *cmd, t_list *env)
 {
 	int	i;
 	int	error;
@@ -110,41 +110,21 @@ int	init_redirects(t_list *cmd, t_list *env)
 	while (cmd)
 	{
 		i = 0;
-		while (error == tmp && ((t_cmd*)(cmd->content))->cmd[i])
+		while (((t_cmd*)(cmd->content))->cmd && error == tmp
+			&& ((t_cmd*)(cmd->content))->cmd[i])
 		{
 			if (!ft_isin_table(((t_cmd*)(cmd->content))->cmd[i], "><"))
 				i++;
 			else
 				if (!redirects(&((t_cmd*)(cmd->content))->cmd, &i, (t_cmd*)(cmd->content), env))
 					error++;
+			if (error != tmp)
+				((t_cmd*)(cmd->content))->cmd[0] = '\0';
+			if (error != tmp)
+				break ;
 		}
 		tmp = error;
 		cmd = cmd->next;
 	}
-	if (error)
-		return (0);
-	return (1);
 }
-/*
-if (line[index] == '>' || line[index] == '<')
-			if (!redirects(&line, &index, &tmp, env))
-				return (free(line), ft_lstclear(&ret, free_cmd), NULL);
-		*/
-/*
-int	redirects(char **start_cmd, int *index, t_stof *stofs, int flag)
-{
-	int	i;
 
-	i = 1 + ((*start_cmd)[*index] == (*start_cmd)[*index + 1]);
-	while (stofs->str)
-	{
-		if (!ft_strncmp(stofs->str, &((*start_cmd)[*index]), i))
-			break ;
-		stofs++;
-	}
-	//fprintf(stderr, "wii uze ze fukchion : %s, %d\n", stofs->str, i);
-	if (stofs->func != NULL)
-		if (!stofs->func(start_cmd, index, flag))
-			return (0);
-	return (1);
-}*/

@@ -11,7 +11,7 @@ int		env_handler(char **start_cmd, int *i, t_list *env)
 	while ((*start_cmd)[++j] && !ft_isin_table((*start_cmd)[j], " <>|$\'\""))//is ispace surtout
 		(*start_cmd)[j - 1] = (*start_cmd)[j];
 	if (j == *i + 1)
-		return (j);
+		return (++(*i));
 	(*start_cmd)[j - 1] = '\0';
 	env_value = ft_getenv(&(*start_cmd)[*i], env);
 	(*start_cmd)[*i] = '\0';

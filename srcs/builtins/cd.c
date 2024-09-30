@@ -40,10 +40,10 @@ static int change_pwd(t_list *env)
 int	ft_cd(t_list **redirect, t_list *env, char **av)
 {
 	if (!av[1])
-		return (ft_lstclear(redirect, free_cmd), ft_putestr_fd("minishell: cd: too few arguments\n", STDERR_FILENO), 1);
+		return (free_args(av), ft_lstclear(redirect, free_cmd), ft_putestr_fd("minishell: cd: too few arguments\n", STDERR_FILENO), 1);
 	if (av[2])
-		return (ft_lstclear(redirect, free_cmd), ft_putestr_fd("minishell: cd: too many arguments\n", STDERR_FILENO), 1);
+		return (free_args(av), ft_lstclear(redirect, free_cmd), ft_putestr_fd("minishell: cd: too many arguments\n", STDERR_FILENO), 1);
 	if (chdir(av[1]) == -1)
-		return (perror("cd"), 1);
+		return (free_args(av), ft_lstclear(redirect, free_cmd), perror("cd"), 1);
 	return (free_args(av), ft_lstclear(redirect, free_cmd), change_pwd(env));
 }

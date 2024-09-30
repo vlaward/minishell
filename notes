@@ -12,8 +12,7 @@ Ce qu il reste a faire !
 
 
 Primaire
-	-cas '$> cat""' fait ct alors que il devraispas pour une rason obscure....
-	-"time sleep 3"
+	-n'importe quel redirect avec des guillemets ne marche pas 
 	-'printf("%u\n", index);
 		' ne marche pas
 	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
@@ -103,3 +102,5 @@ REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier 
 -les built-in 		(check : [x])<= a verifier mais tout a l'air bon
 -les signaux 		(check : [x])<= a verifier mais tout a l'air bon
 -< ls < cat | < ls < cat < ls < cat | < ls < cat echo oui
+-cas '$> cat""' fait ct alors que il devraispas pour une rason obscure....
+-"time sleep 3"

@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/30 01:57:56 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/09/30 07:32:16 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	free_cmd(void *afree)
 		close(((t_cmd *)afree)->in);
 	if (((t_cmd *)afree)->out > 3)
 		close(((t_cmd *)afree)->out);
-	if (((t_cmd *)afree)->cmd)
+	if (((t_cmd *)afree)->cmd != NULL)
 		free(((t_cmd *)afree)->cmd);
 	free(afree);
 }
@@ -92,8 +92,7 @@ t_list	*init_cmd(char *line, t_list *env)
 	tmp.cmd = ft_strdup(line);
 	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
 		return (perror(NULL), free(line), ft_lstclear(&ret, free_cmd), NULL);
-	if (!init_redirects(ret, env))
-		return (free(line), ft_lstclear(&ret, free_cmd), NULL);
+	init_redirects(ret, env);
 	return (free(line), ret);
 }
 

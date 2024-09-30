@@ -19,7 +19,7 @@ int	builtin_cmp(const char *str, const char *builtin)
 
 	if (ft_strncmp(str, builtin, ft_strlen(builtin)))
 		return (0);
-	tmp = *(builtin + ft_strlen(builtin));
+	tmp = *(str + ft_strlen(builtin));
 	if (ft_iswhitespace(tmp) || !tmp)
 		return (1);
 	return (0);
@@ -27,6 +27,8 @@ int	builtin_cmp(const char *str, const char *builtin)
 
 f_builtin	ft_builtins(char *str)
 {
+	if (!str)
+		return (NULL);
 	while(ft_iswhitespace(*str))
 		str++;
 	if (builtin_cmp(str, "echo"))

@@ -79,7 +79,7 @@ int		in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 char	*limit_handler(char *itterand, char *start_cmd);
 char	*trim(char **start_cmd, int *index, int flag, t_list *env);
 int		here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
-int		init_redirects(t_list *cmd, t_list *env);
+void		init_redirects(t_list *cmd, t_list *env);
 
 //signals
 

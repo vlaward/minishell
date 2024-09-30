@@ -36,7 +36,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	if (ft_isin_table(*itterand, "|"))//maybe more
 	{
 		add_history(str);
-		return(fprintf(stderr, "syntax error near unexpected token \'%c\'\n", *str), free(str), NULL);
+		return(fprintf(stderr, "syntax error near unexpected token \'|\'\n"), free(str), NULL);
 	}
 	return (str);
 }
