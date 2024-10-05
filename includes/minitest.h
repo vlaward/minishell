@@ -33,7 +33,7 @@
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
 # define TTY_SAVED_FD 3
-
+# define MIN_ENV_SIZE 3
 
 typedef struct s_env
 {
@@ -50,9 +50,9 @@ typedef struct s_cmd{
 }	t_cmd;
 
 
-typedef int (*f_builtin)(t_list	 **, t_list *, char **);
+typedef int (*t_builtin)(t_list	 **, t_list *, char **);
 
-extern int G_sig_catcher;
+extern int g_sig_catcher;
 
 t_list *init_env(char	**env);
 char	*tatu_ferme_tes_guillemets(char *str);
@@ -96,7 +96,7 @@ int	ft_cd(t_list **redirect, t_list *env, char **av);
 
 void	free_args(char **args);
 t_list	*get_env_node(t_list *env, char *str);
-f_builtin	ft_builtins(char *str);
+t_builtin	ft_builtins(char *str);
 int	ft_is_builtins(char *av);
 
 //list

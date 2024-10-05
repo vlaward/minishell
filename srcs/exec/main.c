@@ -1,176 +1,165 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 02:52:18 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:47:02 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-int	parser(char *line, int flag, t_list *env);
+static int	start(t_list **cmd, t_list *env);
 
-int     execute_cmd(char **args, t_list *env)
+static char	*cmd_redirects(t_list *cmd)
 {
-	char	**paths;
-	char	*tmp;
-	int		i;
+	char	*str;
 
-	for (int i = 0; args[i]; i++)
-		printf("arg %d is %s\n", i, args[i]);
-
-	close(TTY_SAVED_FD);
-	if (!args || *args == NULL)
-		exit(0);
-	/*if (ft_is_builtins(args[0]))
-	{
-		printf("is builtins\n");
-		ft_builtins(args);
-		return (0);
-	}*/
-	if (!ft_strncmp(args[0], "./", 2) || !ft_strncmp(args[0], "/", 1))
-		return (execve(args[0], args, NULL), 127);
-	paths = ft_split(ft_getenv("PATH", env), ':');//si on est pas trop con on fait ca avec le nouvel env
-	if (!paths)
-	{
-		exit(fprintf(stderr, "%s : command not found\n", args[0]));
-	}
-	tmp = ft_strjoin("/", args[0]);
-	i = 0;
-	while (paths[i] != NULL)//peut etre mettre un compteur avec i pars ce que si tout est incorecte et que il y a une erreur. il nme faut quand meme pas de leaks
-	{
-		free(args[0]);
-		args[0] = ft_strjoin(paths[i], tmp);
-		execve(args[0], args, NULL);
-		free(paths[i++]);
-	}
-	i = 0; 
-	fprintf(stderr, "%s : command not found\n", args[0]);
-	while (args[i])
-		free(args[i++]);
-	(free(args), free(paths), free(tmp));
-	exit(127);
-	return (0);
+	if (((t_cmd *)(cmd->content))->in
+		&& dup2(((t_cmd *)(cmd->content))->in, STDIN_FILENO) == -1)
+		return (perror("dup2 "), free_cmd(cmd), NULL);
+	if (((t_cmd *)(cmd->content))->out
+		&& dup2(((t_cmd *)(cmd->content))->out, STDOUT_FILENO) == -1)
+		return (perror("dup2"), free_cmd(cmd), NULL);
+	if (((t_cmd *)(cmd->content))->in)
+		close(((t_cmd *)(cmd->content))->in);
+	if (((t_cmd *)(cmd->content))->out)
+		close(((t_cmd *)(cmd->content))->out);
+	str = ((t_cmd *)(cmd->content))->cmd;
+	free(cmd->content);
+	free(cmd);
+	return (str);
 }
 
-char	**pars_command(char *cmd, t_list *env)
-{//c'est pars command qui doit faire le free de cmd. pars ce que dans env_handler, je free cmd, et je renvoie une nouvelle chaine de char. vuala
-	int		index;
-
-	fprintf(stderr, "ah bah ca passe au moins la\n");
-	if (!gere_sig(EXECUTING_CMD))
-		return (NULL);
-	index = 0;
-	while (cmd[index])
-	{
-		if (cmd[index] == '$')
-			env_handler(&cmd, &index, env);
-		else if (cmd[index] == '\"' || cmd[index] == '\'' )
-			guille_handler(&cmd, &index, 0, env);
-		else if (cmd[index] == '>' || cmd[index] == '<')
-		{
-			if (!redirects(&cmd, &index, REDIRECT, env))
-				return (free(cmd), NULL);
-		}
-		else if (cmd[index] != '\0')
-			index++;  
-	}
-	return (ft_minisplit(cmd));
-}
-
-int	fork_thing(char *line, int start, int itt, t_list *env)
+static int	fork_thing(t_list *cmd, t_list *env)
 {
 	int		pid;
 	int		pipette[2];
+	t_list	*tmp;
+	char	**splited_cmd;
 
 	pipe(pipette);
-	line[itt] = '\0';
-	//	splat = pars commande
-	//le redirecte = parser la commande
 	pid = fork();
 	if (pid == -1)
 		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
 	if (pid)
 	{
-		//	dup what's savec of the tty 
 		dup2(pipette[0], STDIN_FILENO);
 		(close(pipette[1]), close(pipette[0]));
-		//printf("\n\nca passe pars la mais claaaairement : %s\n\n", &(line[itt + 1]));
-		return (parser(line, itt + 1, env));
+		tmp = cmd->next;
+		ft_lstdelone(cmd, free_cmd);
+		return (start(&tmp, env));
 	}
-	//dup2 le redirecte 
-	//si pas d'autre redirecte
-		dup2(pipette[1], STDOUT_FILENO);
+	ft_lstclear(&(cmd->next), free_cmd);
+	dup2(pipette[1], STDOUT_FILENO);
 	(close(pipette[1]), close(pipette[0]));
-	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
+	splited_cmd = ft_minisplit(cmd_redirects(cmd), env);
+	exit(execute_cmd(splited_cmd, env));
 }
 
-int	parser(char *line, int start, t_list *env)
-{//ici return 0 = tout c'est bien passe. Pars ce qu'on renvois $?
-	int		status;
-	int		itt;
+static int	go_back_to_main(t_list *env)
+{
+	int	status;
 
-	if (*line == '\0')
-	 	return (free(line), 0);
 	status = 0;
-	itt = start;
-	while (line[itt] != '|' && line[itt] != '\0')
-		itt++;
-	if (line[itt] && line[itt] == '|')
-		return (fork_thing(line, start, itt, env));
-	if (fork())// a securiser mais vas y ntm
+	if (!gere_sig(0))
+		return (0);
+	while (wait(&status) != -1)
 	{
-		if (!gere_sig(0))
-			return (0);
-		close(STDIN_FILENO);
-		while(wait(&status) != -1);
-		status = WEXITSTATUS(status);
-		free(line);
-		dup(TTY_SAVED_FD);
-		return (0);//mettre status dans $?
+		if (WEXITSTATUS(status) != ft_atoi(env->content))
+		{
+			free(env->content);
+			env->content = ft_itoa(WEXITSTATUS(status));
+			if (!env->content)
+				return (perror("malloc"), 0);
+		}
 	}
-	exit(execute_cmd(pars_command(ft_strdup(&(line[start])), env), env));
+	close(STDIN_FILENO);
+	dup(TTY_SAVED_FD);
+	return (WEXITSTATUS(status));
 }
 
+static int	start(t_list **cmd, t_list *env)
+{
+	char	**splited_cmd;
 
-char	*read_prompt(t_list *env)
+	if ((*cmd)->next)
+		return (fork_thing(*cmd, env));
+	if (!((t_cmd *)((*cmd)->content))->has_pipe)
+		if (ft_builtins(((t_cmd *)((*cmd)->content))->cmd) != NULL)
+			return (ft_builtins(((t_cmd *)((*cmd)->content))->cmd)(cmd, env
+				, ft_minisplit(ft_strdup(((t_cmd *)((*cmd)->content))->cmd)
+					, env)));
+	if (fork())
+		return (ft_lstclear(cmd, free_cmd), go_back_to_main(env));
+	close(TTY_SAVED_FD);
+	splited_cmd = ft_minisplit(cmd_redirects(*cmd), env);
+	exit(execute_cmd(splited_cmd, env));
+}
+
+static char	*read_prompt(t_list *env)
 {
 	static char	prompt[PATH_MAX];
-	char	*pwd;
-	int		i;
+	char		*pwd;
+	int			i;
 
 	pwd = ft_getenv("PWD", env);
 	i = 0;
 	while (*pwd && i < PATH_MAX - 3)
 		prompt[i++] = *pwd++;
-	ft_memcpy(&(prompt[i], ">\0", 2));
+	ft_memcpy(&(prompt[i]), ">\0", 2);
 	if (*pwd)
-		ft_memcpy(&(prompt[PATH_MAX - 5], "...>\0", 5));
-	printf ("voici le prompt : %s\n", prompt)
-	return (readline(prompt))
+		ft_memcpy(&(prompt[PATH_MAX - 5]), "...>\0", 5);
+	return (readline(prompt));
 }
 
+static int	handle_line(char *line, t_list *env)
+{
+	t_list	*cmd;
+	int		exitcode;
 
+	cmd = init_cmd(line, env);
+	if (cmd)
+	{
+		exitcode = start(&cmd, env);
+		if (exitcode != ft_atoi(env->content))
+		{
+			free(env->content);
+			env->content = ft_itoa(exitcode);
+			if (!env->content)
+				return (perror("malloc"), 0);
+		}
+	}
+	return (1);
+}
 
 int	main(int ac, char **av, char **env)
 {
 	char	*line;
 	t_list	*new_env;
-	int		tmp_sdin;
 
-	(void)ac, (void)av;
+	((void)ac, (void)av);
 	new_env = init_env(env);
-	line = NULL;//poiur valgrind. option en commentaire c pour enlever le problemme valgrind ?
-	while (1)// add signal global test
+	line = NULL;
+	dup(STDIN_FILENO);
+	while (1)
 	{
+		if (!gere_sig(READING_LINE))
+			return (0);
 		line = read_prompt(new_env);
 		if (!line)
-			break ; //127
+			break ;
 		line = tatu_ferme_tes_guillemets(line);
 		if (line)
-		{
-			tmp_sdin = dup(STDIN_FILENO);
-			//add_history(line); <==  c'est plus la mais je laisse pars secu. Nrmlmt d'est dans tatusferme les guillemets
-			fprintf(stderr, "ah bah ca passe au moins la\n");
-			if (all_good(ft_strdup(line), new_env))
-				if (parser(line, 0, new_env) != 0)
-					return (1);
-			dup2(tmp_sdin, STDIN_FILENO);
-			rl_on_new_line();
-		}
+			if (!handle_line(line, new_env))
+				break ;
+		rl_on_new_line();
 	}
+	close(TTY_SAVED_FD);
+	ft_lstclear(&new_env, free);
 	rl_clear_history();
 	return (0);
 }

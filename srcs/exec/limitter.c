@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   limitter.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:10:18 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:46:55 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	do_we_write(t_list **towrite, t_list *limitter, pid_t pipette[0])
 {
-	t_list	 *freele;
+	t_list	*freele;
 
 	if (limitter == NULL)
 		return (0);
@@ -18,7 +30,7 @@ int	do_we_write(t_list **towrite, t_list *limitter, pid_t pipette[0])
 	close(pipette[0]);
 	close(pipette[1]);
 	ft_lstclear(&limitter, &free);
-	*towrite = NULL;//juste pour etre safe
+	*towrite = NULL;
 	return (1);
 }
 
@@ -29,20 +41,19 @@ t_list	*maybe_write_it(t_list *towrite, t_list *limitter)
 
 	i = ft_lstsize(towrite) - ft_lstsize(limitter);
 	if (i < 0)
-		return (NULL);//that's impossible logically
+		return (NULL);
 	tmp = ft_lstnodi(&towrite, i);
 	while (tmp != NULL)
 	{
-		//fprintf(stderr, "voici les deux content : %s : %s \n", (char*)tmp->content, (char*)limitter->content);//<<====ici les probleme est
 		if (ft_strcmp(tmp->content, limitter->content) != 0)
 			return (NULL);
 		tmp = tmp->next;
 		limitter = limitter->next;
 	}
-	return(ft_lstnodi(&towrite, i));
+	return (ft_lstnodi(&towrite, i));
 }
 
-int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
+int	limitter_redirect(pid_t pipette[2], t_list *limitter)
 {
 	t_list	*towrite;
 	char	*content;
@@ -53,9 +64,10 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 	history_fill = NULL;
 	close(STDIN_FILENO);
 	dup(TTY_SAVED_FD);
-	content= readline("> ");
+	content = readline("> ");
 	if (!content)
-		return (fprintf(stderr, "error mon cul at liogne %d :", tputs("\033[6n", 1, putchar)), fprintf(stderr, "\n"), 0);
+		return (fprintf(stderr, "error mon cul at liogne %d :"
+				, tputs("\033[6n", 1, putchar)), fprintf(stderr, "\n"), 0);
 	ft_lstadd_front(&towrite, ft_lstnew(content));
 	while (towrite != NULL)
 	{
@@ -64,11 +76,12 @@ int	limitter_redirect(pid_t pipette[2],  t_list *limitter)
 		{
 			content = readline("> ");
 			if (!content)
-				return (add_history(history_fill), fprintf(stderr, "error mon cul at liogne :\n"), 0);
+				return (add_history(history_fill)
+					, fprintf(stderr, "error mon cul at liogne :\n"), 0);
 			if (history_fill == NULL)
 				join_tmp = ft_strjoin(history_fill, "\n");
 			else
-				join_tmp = ft_strdup(history_fill);	
+				join_tmp = ft_strdup(history_fill);
 			free(history_fill);
 			history_fill = ft_strjoin(join_tmp, content);
 			free(join_tmp);
@@ -85,7 +98,7 @@ int	add_to_limitter(char **start_cmd, int *index, t_list **limitter)
 
 	(*start_cmd)[*index] = '\0';
 	start_index = *index;
-	*index += 1; 
+	*index += 1;
 	toadd = trim(start_cmd, index, H_DOC_TRIM);
 	fprintf(stderr, "voici le limitter : \'%s\'\n", toadd);
 	if (toadd == NULL || *toadd == '\0')
@@ -115,7 +128,7 @@ int	here_doc(char **start_cmd)
 			index += 1;
 	}
 	if (limitter == NULL)
-		return (fprintf(stderr, "c'est pas une erreur y'as jsute pass de here doc\n"), 1);
+		return (1);
 	pipe(pipette);
 	if (!limitter_redirect(pipette, limitter))
 		return (ft_lstclear(&limitter, &free), free(limitter), 0);

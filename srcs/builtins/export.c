@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:46:01 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/10/05 07:02:18 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minitest.h"
 
 t_list	*get_env_node(t_list *env, char *str)
@@ -14,16 +26,17 @@ t_list	*get_env_node(t_list *env, char *str)
 	while (env)
 	{
 		if (ft_strncmp(str, env->content, size) == 0)
-			if (*((char *)env->content + size) == '=' || *((char *)env->content + size) == '=')
-		 		return (env);
+			if (*((char *)env->content + size) == '='
+				|| *((char *)env->content + size) == '=')
+				return (env);
 		env = env->next;
 	}
 	if (!ft_lstadd_front(&tmp, ft_lstnew(NULL)))
-		return (NULL);	
+		return (NULL);
 	return (ft_lstlast(tmp));
 }
 
-int append_env(t_list *node, char *str)
+int	append_env(t_list *node, char *str)
 {
 	char	*tmp;
 
@@ -50,9 +63,6 @@ int append_env(t_list *node, char *str)
 
 char	ft_isvar(char *str)
 {
-	char	*tmp;
-
-	tmp = str;
 	if (!ft_isalpha(*str++))
 		return (0);
 	while (*str && *str != '=')
@@ -80,9 +90,11 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 	{
 		type = ft_isvar(av[i]);
 		if (!type)
-			return (ft_lstclear(redirect, free_cmd), printf("export: \'%s\': not a valid identifier\n", av[i]), free_args(av), 1);//changer le print
+			return (ft_lstclear(redirect, free_cmd)
+				, printf("export: \'%s\': not a valid identifier\n", av[i])
+				, free_args(av), 1);
 		if (type == '=')
-			get_env_node(env, av[i])->content = ft_strdup(av[i]);//free la node btw
+			get_env_node(env, av[i])->content = ft_strdup(av[i]);
 		else
 			if (!append_env(get_env_node(env, av[i]), av[i]))
 				return (ft_lstclear(redirect, free_cmd), free_args(av), 0);
@@ -92,4 +104,3 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 	(void)redirects;
 	return (ft_lstclear(redirect, free_cmd), 1);
 }
-

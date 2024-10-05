@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:45:56 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/10/05 06:49:15 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minitest.h"
 
 int	dowe_write_node(char *str)
@@ -16,15 +28,17 @@ int	ft_env(t_list **redirect, t_list *env, char **cmd)
 
 	isout = STDOUT_FILENO;
 	if (redirect)
-		isout = ((t_cmd*)((*redirect)->content))->out;
+		isout = ((t_cmd *)((*redirect)->content))->out;
 	while (env)
 	{
 		if (dowe_write_node(env->content))
 		{
 			if (ft_putestr_fd(env->content, isout) == -1)
-				return (ft_lstclear(redirect, free_cmd), perror("write"), free_args(cmd), 0);
+				return (ft_lstclear(redirect, free_cmd)
+					, perror("write"), free_args(cmd), 0);
 			if (ft_putechar_fd('\n', isout) == -1)
-				return (ft_lstclear(redirect, free_cmd), perror("write"), free_args(cmd), 0);
+				return (ft_lstclear(redirect, free_cmd)
+					, perror("write"), free_args(cmd), 0);
 		}
 		env = env->next;
 	}

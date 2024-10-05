@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 13:15:36 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/06/19 16:37:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/05 06:46:24 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*putret(char buff[], char *ret, int fd, int *p)
 	o = 0;
 	i = 0;
 	while (i < BUFFER_SIZE)
-			buff[i++] = '\0';
+		buff[i++] = '\0';
 	i = 0;
 	read(fd, buff, BUFFER_SIZE);
 	ret2 = malloc(lelen(ret, 1, 0) + lelen(buff, 2, 0) + 1);

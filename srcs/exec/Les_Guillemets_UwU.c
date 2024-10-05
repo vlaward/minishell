@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Les_Guillemets_UwU.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:46:49 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*tatu_ferme_tes_guillemets(char *str);
@@ -9,8 +21,7 @@ char	*bah_ferme_les(char *str)
 	char	*and_another_one;
 
 	if (!gere_sig(GUILLEMETS))
-		return (NULL);//free peuit etre aussi ?
-	//fprintf(stderr, "mhhh I see I see\n");
+		return (NULL);
 	rl_getc_function = getc;
 	one = readline("> ");
 	rl_getc_function = rl_getc;
@@ -33,10 +44,10 @@ char	*et_le_pipe(char *str, char *itterand)
 		itterand++;
 	if (*itterand == '\0')
 		return (bah_ferme_les(str));
-	if (ft_isin_table(*itterand, "|"))//maybe more
+	if (ft_isin_table(*itterand, "|"))
 	{
 		add_history(str);
-		return(fprintf(stderr, "syntax error near unexpected token \'|\'\n"), free(str), NULL);
+		return (fprintf(stderr, "syntax error near unexpected token \'|\'\n"), free(str), NULL);
 	}
 	return (str);
 }
@@ -48,7 +59,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	char	*pipe_good;
 
 	if (!str)
-	  	return (NULL);
+		return (NULL);
 	if (!*str)
 		return (free(str), NULL);
 	voyage = str;
@@ -59,7 +70,6 @@ char	*tatu_ferme_tes_guillemets(char *str)
 			return (pipe_good);
 		if (*voyage == '\"' || *voyage == '\'')
 		{
-			//printf("voici la ligne awawawaw : %s  : %s\n", str, voyage);
 			this_one = *voyage++;
 			while (*voyage && *(voyage + 1) != 0 && *voyage != this_one)
 				voyage++;
@@ -68,7 +78,5 @@ char	*tatu_ferme_tes_guillemets(char *str)
 		}
 		voyage++;
 	}
-	add_history(str);//Ca pourrais etre bien de faire en sorte que les lignes vides et les lignes remplis que de uspace ne soit pas mis dans l'historique.
-	//ca prends pas le here doc en compte.... ca fait chier un peu....
-	return (str);
+	return (add_history(str), str);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:45:58 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/10/05 06:49:30 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minitest.h"
 
 int	ft_ac(char **av)
@@ -42,7 +54,7 @@ int	ft_exit(t_list **redirect, t_list *env, char **av)
 	if (!redirect)
 		(ft_lstclear(&env, free), free_args(av));
 	if (ac == 1)
-		(ft_lstclear(redirect, free_cmd),exit(127));//changer avec valeur actuelle de retour
+		(ft_lstclear(redirect, free_cmd), exit(127));
 	if (!ft_istr_num(av[1]))
 		ft_alpharg(av[1], redirect);
 	if (ac > 2)

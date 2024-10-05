@@ -6,15 +6,12 @@ legende :
 [X] = Fait
 
 Ce qu il reste a faire !
--le $?				(check : [~])
--verifer les free	(check : [~])
+-le $?				(check : [~])<-deux trois codes d'erreures a gerer
+-verifer les free	(check : [~])<-deux trois cas particuliers
 
 
 
 Primaire
-	-n'importe quel redirect avec des guillemets ne marche pas 
-	-'printf("%u\n", index);
-		' ne marche pas
 	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
 	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 	-update les define, mettre un define pour les flags de open
@@ -104,3 +101,6 @@ REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier 
 -< ls < cat | < ls < cat < ls < cat | < ls < cat echo oui
 -cas '$> cat""' fait ct alors que il devraispas pour une rason obscure....
 -"time sleep 3"
+-n'importe quel redirect avec des guillemets ne marche pas 
+	-'printf("%u\n", index);
+		' ne marche pas

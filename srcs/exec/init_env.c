@@ -1,4 +1,15 @@
-#define MIN_ENV_SIZE 3
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_env.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:16:40 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:46:40 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*ft_getenv(const char *name, t_list *env)
@@ -6,7 +17,7 @@ char	*ft_getenv(const char *name, t_list *env)
 	int		size;
 
 	if (!name)
-		return("$");
+		return ("$");
 	if (!env)
 		return (NULL);
 	if (*name == '?')
@@ -17,12 +28,11 @@ char	*ft_getenv(const char *name, t_list *env)
 		if (ft_strncmp(name, env->content, size) == 0)
 		{
 			if (*((char *)env->content + size) == '=')
-		 		return (env->content + size + 1);
+				return (env->content + size + 1);
 		}
 		env = env->next;
 	}
 	return (NULL);
-
 }
 
 t_list	*env_from_scratch(t_list *ret)
@@ -35,7 +45,7 @@ t_list	*env_from_scratch(t_list *ret)
 		return (NULL);
 	if (!ft_lstadd_front(&ret, ft_lstnew(ft_strjoin("PWD=", cwd)))
 		|| !ft_lstlast(ret)->content)
-		 return (ft_lstclear(&ret, free), perror("malloc"), NULL);
+		return (ft_lstclear(&ret, free), perror("malloc"), NULL);
 	if (!ft_lstadd_front(&ret, ft_lstnew(ft_strdup("SHLVL=1")))
 		|| !ft_lstlast(ret)->content)
 		return (ft_lstclear(&ret, free), perror("malloc"), NULL);
@@ -46,7 +56,7 @@ t_list	*env_from_scratch(t_list *ret)
 		|| !ft_lstlast(ret)->content)
 		return (ft_lstclear(&ret, free), free(tmp), perror("malloc"), NULL);
 	return (ret);
-	}
+}
 
 char	*shlvl_increment(char	*env)
 {
@@ -59,7 +69,6 @@ char	*shlvl_increment(char	*env)
 	ret = ft_strjoin("SHLVL=", nbr);
 	return (free(nbr), ret);
 }
-
 
 t_list	*init_env(char **env)
 {
@@ -81,7 +90,7 @@ t_list	*init_env(char **env)
 		else
 			ft_lstadd_front(&ret, ft_lstnew(ft_strdup(*(env++))));
 		if (!ft_lstlast(ret)->content)
-			return (ft_lstclear(&ret, free), perror("malloc"), NULL);//<===============================FREE THE FUCKING TABLE DON'T YOU FORGET U SUCKER (of course use ret 'caus you ain't dumb)
+			return (ft_lstclear(&ret, free), perror("malloc"), NULL);
 	}
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/26 15:59:26 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/05 06:46:22 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static int	increment_atl(char **str, int *i, t_list *env, char witch)
 {
 	if (ft_isin_table((*str)[*i], "\'\""))
 	{
-		// fprintf(stderr, "wtfffff donc laon a : \"%s\" et donc \"___%s___\"\n", *str, &(*str)[*i]);
 		witch = (*str)[*i];
 		ft_memcpy(&((*str)[*i]), &(*str)[*i + 1], ft_strlen(&(*str)[*i + 1]));
 		(*str)[ft_strlen(*str) - 1] = '\0';
@@ -85,12 +84,8 @@ char	**ft_minisplit(char	*str, t_list *env)
 		return (free(str), perror("malloc"), NULL);
 	i = -1;
 	while (ft_lstnodi(&will_be_ret, ++i))
-	{
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
-		fprintf(stderr, "ret[%d] : \"%s\"\n", i, ret[i]);
-	}
 	ft_lstclear(&will_be_ret, NULL);
 	free(str);
 	return (ret);
 }
-//normalement y'as un fdree str

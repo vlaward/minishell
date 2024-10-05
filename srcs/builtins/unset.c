@@ -1,11 +1,16 @@
-#include "../../includes/minitest.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:46:08 by ncrombez          #+#    #+#             */
+/*   Updated: 2024/10/05 06:51:15 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// typedef struct s_env
-// {
-// 	char *key;
-// 	char *value;
-// 	struct s_env *next;
-// } t_env;
+#include "../../includes/minitest.h"
 
 int	ft_unset(t_list **redirect, t_list *env, char **av)
 {
@@ -19,7 +24,8 @@ int	ft_unset(t_list **redirect, t_list *env, char **av)
 	while (av[++i])
 	{
 		incr = env;
-		while (incr->next != NULL && ft_strncmp(av[i], incr->next->content, ft_strlen(av[i])))
+		while (incr->next != NULL && ft_strncmp(av[i]
+				, incr->next->content, ft_strlen(av[i])))
 			incr = incr->next;
 		if (incr->next)
 		{

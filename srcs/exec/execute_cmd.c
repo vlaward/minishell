@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/30 02:43:01 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/05 06:46:17 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ int	execute_cmd(char **args, t_list *env)
 	int		ret;
 
 	ret = 0;
-	if (!args || *args == NULL);
-	else if (!ft_builtins(args[0]))
+	if (args && *args != NULL && !ft_builtins(args[0]))
 	{
 		close(TTY_SAVED_FD);
 		tabl_env = env_to_tabl(env);
@@ -96,7 +95,7 @@ int	execute_cmd(char **args, t_list *env)
 		free(tabl_env);
 		free_args(args);
 	}
-	else 
+	else if (args && *args != NULL)
 		ret = ft_builtins(args[0])(NULL, env, args);
 	close(TTY_SAVED_FD);
 	ft_lstclear(&env, free);

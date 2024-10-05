@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/09/30 07:32:16 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/05 06:46:37 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static t_list	*piped_node(t_cmd *cmd, char **line, int *index)
 	new_line = ft_strdup(&(*line)[*index]);
 	if (!new_line)
 		return (NULL);
-	cmd->cmd = ft_strdup(*line);//on est pas oblige de la dup en soit. on peu mettre un 0 a index et l'utiliser tel quel. plus rapide/safe mais plus de RAM
+	cmd->cmd = ft_strdup(*line);
 	if (!cmd->cmd)
 		return (NULL);
 	cmd->has_pipe = 1;
@@ -87,7 +87,6 @@ t_list	*init_cmd(char *line, t_list *env)
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, &line, &index)))
 				return (perror("malloc"), free(line)
 					, ft_lstclear(&ret, free_cmd), NULL);
-		
 	}
 	tmp.cmd = ft_strdup(line);
 	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
@@ -95,9 +94,3 @@ t_list	*init_cmd(char *line, t_list *env)
 	init_redirects(ret, env);
 	return (free(line), ret);
 }
-
-/*
-if (line[index] == '>' || line[index] == '<')
-	if (!redirects(&line, &index, &tmp, env))
-		return (free(line), ft_lstclear(&ret, free_cmd), NULL);
-*/

@@ -1,5 +1,16 @@
-#include "../../includes/minitest.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:46:31 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../../includes/minitest.h"
 
 int	write_here(char *towrite)
 {
@@ -31,7 +42,7 @@ int	here_doc_env(char **red, t_list *env)
 			i = env_handler(red, &i, env);
 		else
 			i++;
-		if (i < 0)		
+		if (i < 0)
 			return (0);
 	}
 	return (1);
@@ -45,16 +56,12 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp_cmd;
 	int		start_index;
 
-	//fprintf(stderr, "voici voila : %s\n", *start_cmd);
-	(*start_cmd)[*index] = '\0';
 	start_index = *index;
-	*index += 1;
 	limitter = trim(start_cmd, index, H_DOC_TRIM, env);
 	if (limitter == NULL)
 	{
 		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd("syntax error near unexpecterd token \'newline\'", STDERR_FILENO);
-		//fprintf(stderr, "soit c'est ca mais c'est pas logique\n");
 		return (0);
 	}
 	red = NULL;
@@ -65,7 +72,7 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		if (!here_doc_env(&red, env))
 			return (free(here_doc), free(limitter), 0);
 		if (ft_strcmp(limitter, red) == 0)
-			break;
+			break ;
 		here_doc = ft_strjoin_n_free(here_doc, ft_strjoin(red, "\n"));
 		if (!here_doc)
 			return (ft_putestr_fd("don't know\n", STDERR_FILENO), 0);
@@ -75,6 +82,6 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	(free(red), free(limitter), free(*start_cmd));
 	*start_cmd = tmp_cmd;
-	*index = start_index	;
+	*index = start_index;
 	return (1);
 }

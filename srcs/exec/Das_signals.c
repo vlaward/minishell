@@ -1,6 +1,16 @@
-#include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Das_signals.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/05 06:21:58 by doreetorac        #+#    #+#             */
+/*   Updated: 2024/10/05 06:46:14 by ncrombez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	G_sig_catcher;
+#include "../../includes/minishell.h"
 
 void	sa_c_handler(int sig)
 {
@@ -31,7 +41,6 @@ int	gere_sig(int flag)
 {
 	struct sigaction	sa_c;
 
-	
 	sa_c.sa_handler = sa_c_waiting_handler;
 	if (flag == READING_LINE)
 		sa_c.sa_handler = sa_c_handler;
