@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 18:21:01 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:22:32 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,10 @@ char	*bah_ferme_les(char *str)
 
 char	*et_le_pipe(char *str, char *itterand)
 {
-	if (!ft_isin_table(*itterand, "|><"))
+	if (*itterand != '|')
 		return (str);
 	itterand++;
 	while (*itterand && (ft_iswhitespace(*itterand) || *itterand == '\n'))
-		itterand++;
-	if (ft_isin_table(*itterand, "\'\"") && ft_isin_table(*(++itterand), "\'\""))
 		itterand++;
 	if (*itterand == '\0')
 		return (bah_ferme_les(str));

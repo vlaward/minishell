@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:39:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 15:42:50 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:27:37 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ char	*trim(char **cmd, int *index, int flag, t_list *env)
 		else
 			*index += 1;
 		if (*index == -1 && big_error())
-			return (ft_putestr_fd("Ambiguous redirects\n", STDERR_FILENO), "F");
-		if (*index == -1)
 			return (NULL);
+		if (*index == -1)
+			return (ft_putestr_fd("Ambiguous redirects\n", STDERR_FILENO), "F");
 	}
 	(*cmd)[start_index] = '\0';
 	return (ft_strndup(&(*cmd)[start_name_index], *index - start_name_index));
