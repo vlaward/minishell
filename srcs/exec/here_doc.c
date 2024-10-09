@@ -6,11 +6,12 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/05 06:46:31 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:28:55 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minitest.h"
+#define SYNTAX_ERR_NL "syntax error near unexpecterd token \'newline\'"
 
 int	write_here(char *towrite)
 {
@@ -36,34 +37,25 @@ int	here_doc_env(char **red, t_list *env)
 	if (!(*red))
 		return (0);
 	i = 0;
-	while ((*red)[i] != '\0')
+	while (*red && (*red)[i] != '\0')
 	{
 		if ((*red)[i] == '$')
 			i = env_handler(red, &i, env);
 		else
 			i++;
 		if (i < 0)
-			return (0);
+			return (free(red), 0);
 	}
+	if (!*red)
+		return (0);
 	return (1);
 }
 
-int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
+char	*read_doc(char *limitter, t_list *env)
 {
-	char	*limitter;
 	char	*red;
 	char	*here_doc;
-	char	*tmp_cmd;
-	int		start_index;
 
-	start_index = *index;
-	limitter = trim(start_cmd, index, H_DOC_TRIM, env);
-	if (limitter == NULL)
-	{
-		if (!ft_iswhitespace((*start_cmd)[*index]))
-			ft_putestr_fd("syntax error near unexpecterd token \'newline\'", STDERR_FILENO);
-		return (0);
-	}
 	red = NULL;
 	here_doc = NULL;
 	while (1)
@@ -75,12 +67,34 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 			break ;
 		here_doc = ft_strjoin_n_free(here_doc, ft_strjoin(red, "\n"));
 		if (!here_doc)
-			return (ft_putestr_fd("don't know\n", STDERR_FILENO), 0);
+			return (perror("malloc"), NULL);
 		free(red);
 	}
+	free(red);
+	return (here_doc);
+}
+
+int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
+{
+	char	*limitter;
+	char	*tmp_cmd;
+	int		start_index;
+	char	*here_doc;
+
+	start_index = *index;
+	limitter = trim(start_cmd, index, H_DOC_TRIM, env);
+	if (limitter == NULL)
+	{
+		if (!ft_iswhitespace((*start_cmd)[*index]))
+			ft_putestr_fd(SYNTAX_ERR_NL, STDERR_FILENO);
+		return (0);
+	}
+	here_doc = read_doc(limitter, env);
+	if (!here_doc)
+		return (free(limitter), 0);
 	cmd->in = write_here(here_doc);
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
-	(free(red), free(limitter), free(*start_cmd));
+	(free(limitter), free(*start_cmd));
 	*start_cmd = tmp_cmd;
 	*index = start_index;
 	return (1);

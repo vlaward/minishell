@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:39:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/05 06:47:11 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/06 23:22:46 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	env_handler(char **start_cmd, int *i, t_list *env)
 	(*start_cmd)[j - 1] = '\0';
 	env_value = ft_getenv(&(*start_cmd)[*i], env);
 	(*start_cmd)[*i] = '\0';
-	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));
+	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));//secure it???????
 	*start_cmd = ft_strjoin_n_free(*start_cmd, tmp);
 	if (env_value == NULL)
 		return (*i);
