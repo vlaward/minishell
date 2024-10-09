@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 02:52:18 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 12:41:24 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:26:51 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	fork_thing(t_list *cmd, t_list *env)
 	pipe(pipette);
 	pid = fork();
 	if (pid == -1)
-		return (printf("NIQUE BIEN TQ GRQND MERER SQLQLRLKWEQAEHQEAtr\n"), -1);
+		return (-1);
 	if (pid)
 	{
 		dup2(pipette[0], STDIN_FILENO);
@@ -93,7 +93,7 @@ static int	start(t_list **cmd, t_list *env)
 			return (ft_builtins(((t_cmd *)((*cmd)->content))->cmd)(cmd, env
 				, ft_minisplit(ft_strdup(((t_cmd *)((*cmd)->content))->cmd)
 					, env)));
-	if (errno == ENOMEM)
+	if (big_error())
 		return (ft_lstclear(cmd, free_cmd), -1);
 	if (fork())
 		return (ft_lstclear(cmd, free_cmd), go_back_to_main(env));
@@ -137,7 +137,7 @@ static int	handle_line(char *line, t_list *env)
 				return (perror("malloc"), 0);
 		}
 	}
-	if (errno & (ENOMEM | EMFILE | ENFILE | ENOSPC))
+	if (big_error())
 		return (0);
 	return (1);
 }
@@ -153,6 +153,7 @@ int	main(int ac, char **av, char **env)
 	dup(STDIN_FILENO);
 	while (1)
 	{
+		g_sig_catcher = 0;
 		errno = 0;
 		if (!gere_sig(READING_LINE))
 			return (0);
@@ -161,12 +162,11 @@ int	main(int ac, char **av, char **env)
 			break ;
 		line = tatu_ferme_tes_guillemets(line);
 		if ((line && !handle_line(line, new_env)) || (!line
-				&& (errno & (EINVAL | ENOMEM))))
+				&& big_error()))
 			break ;
 		rl_on_new_line();
 	}
 	close(TTY_SAVED_FD);
-	ft_lstclear(&new_env, free);
-	rl_clear_history();
-	return (0);
+	(ft_lstclear(&new_env, free), rl_clear_history());
+	return (errno);
 }

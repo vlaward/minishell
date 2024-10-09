@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 11:32:56 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:34:27 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,20 @@ typedef struct s_cmd
 	char	*cmd;
 }	t_cmd;
 
+extern int	g_sig_catcher;
+
 typedef int	(*t_builtin)(t_list **, t_list *, char **);
 
+//environement
+
+t_list		*get_env_node(t_list *env, char *str);
 t_list		*init_env(char	**env);
-char		*tatu_ferme_tes_guillemets(char *str);
-char		**ft_minisplit(char	*str, t_list *env);
-char		*get_next_line(int fd);
 char		*ft_getenv(const char *name, t_list *env);
-t_list		*init_cmd(char *line, t_list *env);
+
+//verif
+
+char		*tatu_ferme_tes_guillemets(char *str);
 int			verif_tokken(char *line);
-void		free_cmd(void *afree);
-int			execute_cmd(char **args, t_list *env);
-
-//verif_tokken
-
-int			env_handler(char **start_cmd, int *i, t_list *env);
-int			guille_handler(char **start_cmd, int *i, int flag, t_list *env);
 
 //redirects
 
@@ -95,10 +93,25 @@ int			ft_exit(t_list **cmd, t_list *env, char **av);
 int			ft_export(t_list **redirect, t_list *env, char **av);
 int			ft_unset(t_list **redirect, t_list *env, char **av);
 int			ft_cd(t_list **redirect, t_list *env, char **av);
+t_builtin	ft_builtins(char *str);
+
+//errors
+
+int			big_error(void);
+
+//memory
 
 void		free_args(char **args);
-t_list		*get_env_node(t_list *env, char *str);
-t_builtin	ft_builtins(char *str);
-int			ft_is_builtins(char *av);
+void		free_cmd(void *afree);
+
+//other
+
+char		**ft_minisplit(char	*str, t_list *env);
+char		*get_next_line(int fd);
+t_list		*init_cmd(char *line, t_list *env);
+int			execute_cmd(char **args, t_list *env);
+int			guille_handler(char **start_cmd, int *i, int flag, t_list *env);
+int			env_handler(char **start_cmd, int *i, t_list *env);
+char		*second_readline(char *str);
 
 #endif

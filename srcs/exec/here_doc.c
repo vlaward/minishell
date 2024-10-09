@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 12:39:09 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:03:47 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ int	write_here(char *towrite)
 	ret = dup(pipette[0]);
 	if (ret == -1)
 		return (free(towrite), perror("dup"), 0);
-	ft_putestr_fd(towrite, pipette[1]);
-	close(pipette[0]);
-	close(pipette[1]);
+	if (!ft_putestr_fd(towrite, pipette[1]))
+		return (0);
 	free(towrite);
+	if (close(pipette[0]) == -1 || close(pipette[1]) == -1)
+		return (0);
 	return (ret);
 }
 
@@ -34,7 +35,7 @@ int	here_doc_env(char **red, t_list *env)
 {
 	int	i;
 
-	if (!(*red))
+	if (!red || !(*red))
 		return (0);
 	i = 0;
 	while (*red && (*red)[i] != '\0')
@@ -60,43 +61,50 @@ char	*read_doc(char *limitter, t_list *env)
 	here_doc = NULL;
 	while (1)
 	{
-		red = readline("here_doc >");
-		if (!here_doc_env(&red, env))
-			return (free(here_doc), free(limitter), NULL);
+		red = second_readline("here_doc >");
+		if (!red)
+		{
+			if (g_sig_catcher != SIGINT)
+				ft_putestr_fd("bash : warning : here-doc delimited by EOF\n",
+					STDERR_FILENO);
+			return (free(here_doc), NULL);
+		}
 		if (ft_strcmp(limitter, red) == 0)
 			break ;
+		if (!here_doc_env(&red, env))
+			return (free(here_doc), NULL);
 		here_doc = ft_strjoin_n_free(here_doc, ft_strjoin(red, "\n"));
+		free(red);
 		if (!here_doc)
 			return (perror("malloc"), NULL);
-		free(red);
 	}
-	free(red);
-	return (here_doc);
+	return (free(red), here_doc);
 }
 
 int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 {
-	char	*limitter;
+	char	*limit;
 	char	*tmp_cmd;
 	int		start_index;
 	char	*here_doc;
 
 	start_index = *index;
-	limitter = trim(start_cmd, index, H_DOC_TRIM, env);
-	if (limitter == NULL)
-	{
+	limit = trim(start_cmd, index, H_DOC_TRIM, env);
+	if (limit == NULL)
 		if (!ft_iswhitespace((*start_cmd)[*index]))
 			ft_putestr_fd(SYNTAX_ERR_NL, STDERR_FILENO);
+	if (limit == NULL)
 		return (0);
-	}
-	here_doc = read_doc(limitter, env);
+	here_doc = read_doc(limit, env);
 	if (!here_doc)
-		return (free(limitter), 0);
+		return (free(limit), 0);
 	cmd->in = write_here(here_doc);
+	if (cmd->in == 0)
+		return (free(limit), 0);
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	if (!tmp_cmd)
-		return (free(limitter), 0);
-	(free(limitter), free(*start_cmd));
+		return (free(limit), 0);
+	(free(limit), free(*start_cmd));
 	*start_cmd = tmp_cmd;
 	*index = start_index;
 	return (1);

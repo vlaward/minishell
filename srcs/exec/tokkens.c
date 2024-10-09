@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:39:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 11:46:55 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:42:50 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,14 @@ int	env_handler(char **start_cmd, int *i, t_list *env)
 	(*start_cmd)[j - 1] = '\0';
 	env_value = ft_getenv(&(*start_cmd)[*i], env);
 	(*start_cmd)[*i] = '\0';
-	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));//secure it???????
+	tmp = ft_strjoin(env_value, &((*start_cmd)[j]));
+	if (!tmp)
+		return (-1);
 	*start_cmd = ft_strjoin_n_free(*start_cmd, tmp);
-	if (env_value == NULL)
-		return (*i);
-	j = 0;
-	while (env_value[j])
-		if (ft_iswhitespace(env_value[j++]))
-			if (env_value[j] && !ft_iswhitespace(env_value[j]))
-				return (-1);
-	j += *i - 1;
+	if (env_value == NULL || *start_cmd == NULL)
+		return (-1);
 	*i += ft_strlen(env_value) - 1;
-	return (j);
+	return (*i);
 }
 
 int	guille_handler(char **start_cmd, int *i, int flag, t_list *env)
@@ -58,7 +54,11 @@ int	guille_handler(char **start_cmd, int *i, int flag, t_list *env)
 	(*start_cmd)[j] = '\0';
 	(*start_cmd)[*i] = '\0';
 	tmp = ft_strjoin(&(*start_cmd)[*i + 1], &(*start_cmd)[j + 1]);
+	if (!tmp)
+		return (-1);
 	*start_cmd = ft_strjoin_n_free(*start_cmd, tmp);
+	if (!*start_cmd)
+		return (-1);
 	*i = j - 1;
 	return (j - 1);
 }
@@ -83,11 +83,11 @@ char	*trim(char **cmd, int *index, int flag, t_list *env)
 			*index = env_handler(cmd, index, env);
 		else
 			*index += 1;
+		if (*index == -1 && big_error())
+			return (ft_putestr_fd("Ambiguous redirects\n", STDERR_FILENO), "F");
 		if (*index == -1)
-			return (ft_putestr_fd("Ambiguous redirects\n", errno), NULL);
+			return (NULL);
 	}
-	if ((*cmd)[start_index] == (*cmd)[start_index + 1])
-		(*cmd)[start_index++] = '\0';
 	(*cmd)[start_index] = '\0';
 	return (ft_strndup(&(*cmd)[start_name_index], *index - start_name_index));
 }

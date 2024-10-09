@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:23 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:22:54 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	increment_atl(char **str, int *i, t_list *env, char witch)
 			if ((*str)[*i] != '$' || ((*str)[*i] == '$' && witch == '\''))
 				(*i)++;
 			else
-				if (env_handler(str, i, env) == -1)
+				if (env_handler(str, i, env) == -1 && big_error())
 					return (0);
 		}
 		if ((*str)[*i])
@@ -35,7 +35,7 @@ static int	increment_atl(char **str, int *i, t_list *env, char witch)
 	else if ((*str)[*i] != '$')
 		(*i)++;
 	else
-		if (env_handler(str, i, env) == -1)
+		if (env_handler(str, i, env) == -1 && big_error())
 			return (0);
 	return (1);
 }

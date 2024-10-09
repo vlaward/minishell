@@ -6,15 +6,17 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:21:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 10:39:58 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:11:33 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+int	g_sig_catcher;
+
 void	sa_c_handler(int sig)
 {
-	(void)sig;
+	g_sig_catcher = sig;
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -23,16 +25,17 @@ void	sa_c_handler(int sig)
 
 void	sa_c_waiting_handler(int sig)
 {
-	(void)sig;
+	g_sig_catcher = sig;
 }
 
 void	sa_c_guillemets_handler(int sig)
 {
-	(void)sig;
+	g_sig_catcher = sig;
 }
 
 void	sa_exit_handler(int sig)
 {
+	g_sig_catcher = sig;
 	write(STDOUT_FILENO, "\0", 1);
 	exit(sig);
 }

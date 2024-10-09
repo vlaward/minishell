@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 12:37:42 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:52:07 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp;
 
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	if (file == NULL)
-		if (errno != 0)
-			return (0);
+	if ((file == NULL && errno != 0) || (file && !ft_strcmp(file, "F")))
+		return (0);
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
@@ -49,9 +48,8 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp;
 
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	if (file == NULL)
-		if (errno != 0)
-			return (0);
+	if ((file == NULL && errno != 0) || (file && !ft_strcmp(file, "F")))
+		return (0);
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
@@ -78,9 +76,8 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	char	*tmp;
 
 	file = trim(start_cmd, index, F_NAME_TRIM, env);
-	if (file == NULL)
-		if (errno != 0)
-			return (0);
+	if ((file == NULL && errno != 0) || (file && !ft_strcmp(file, "F")))
+		return (0);
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
@@ -121,21 +118,20 @@ int	init_redirects(t_list *cmd, t_list *env)
 	while (cmd)
 	{
 		error = 0;
-		i = 0;
-		while (((t_cmd *)(cmd->content))->cmd && !error
-			&& ((t_cmd *)(cmd->content))->cmd[i])
+		i = -1;
+		while (cmd && ((t_cmd *)(cmd->content))->cmd && !error
+			&& ((t_cmd *)(cmd->content))->cmd[++i])
 		{
-			if (!ft_isin_table(((t_cmd *)(cmd->content))->cmd[i], "><"))
-				i++;
-			else
+			if (ft_isin_table(((t_cmd *)(cmd->content))->cmd[i], "><"))
 				if (!redirects(&((t_cmd *)(cmd->content))->cmd
 					, &i, (t_cmd *)(cmd->content), env))
 					error = 1;
-			((t_cmd *)(cmd->content))->cmd[0] *= !error;
-			if (error)
+			if (((t_cmd *)(cmd->content))->cmd)
+				((t_cmd *)(cmd->content))->cmd[0] *= !error;
+			if (error || !((t_cmd *)(cmd->content))->cmd[i])
 				break ;
 		}
-		if (errno & (ENOMEM | EMFILE | ENFILE | ENOSPC | EIO))
+		if (big_error())
 			return (0);
 		cmd = cmd->next;
 	}

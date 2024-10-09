@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:06:25 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,16 +88,21 @@ int	execute_cmd(char **args, t_list *env)
 	{
 		close(TTY_SAVED_FD);
 		tabl_env = env_to_tabl(env);
-		if (!tabl_env)
-			(perror("malloc"), exit(errno));
-		launch_executable(args, tabl_env,
-			ft_split(ft_getenv("PATH", env), ':'));
-		free(tabl_env);
-		free_args(args);
+		if (tabl_env)
+		{
+			launch_executable(args, tabl_env,
+				ft_split(ft_getenv("PATH", env), ':'));
+			(free(tabl_env), free_args(args), close(TTY_SAVED_FD));
+			ft_lstclear(&env, free);
+			exit(127);
+		}
+		(perror("malloc"), free_args(args));
 	}
 	else if (args && *args != NULL)
 		ret = ft_builtins(args[0])(NULL, env, args);
 	close(TTY_SAVED_FD);
 	ft_lstclear(&env, free);
+	if (errno)
+		exit(errno);
 	exit(ret);
 }

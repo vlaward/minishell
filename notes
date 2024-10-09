@@ -12,6 +12,8 @@ Ce qu il reste a faire !
 
 
 Primaire
+	-faire comme pour la pipe si il n'y a rien deriere un redirect
+		-si il y a des guillemets derriere il faut quand meme expand
 	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
 	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
 	-update les define, mettre un define pour les flags de open
