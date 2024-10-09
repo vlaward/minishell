@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 void	free_args(char **args)
 {

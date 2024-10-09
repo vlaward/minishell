@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:53 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/05 06:51:35 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 int	ft_echo(t_list **redirect, t_list *env, char **cmd)
 {
@@ -40,3 +40,4 @@ int	ft_echo(t_list **redirect, t_list *env, char **cmd)
 			, perror("write"), free_args(cmd), errno);
 	return (free_args(tmp), (void)env, ft_lstclear(redirect, free_cmd), 0);
 }
+//VERIFIER L'UTILISATION DE WRITE

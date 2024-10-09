@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/05 06:46:22 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:23 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 static int	increment_atl(char **str, int *i, t_list *env, char witch)
 {

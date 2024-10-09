@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:43:07 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/05 06:48:03 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 static int	oldpwd_updater(t_list *env, t_list *PWD)
 {
@@ -38,12 +38,12 @@ static int	change_pwd(t_list *env)
 
 	pwd = get_env_node(env, "PWD");
 	if (!oldpwd_updater(env, pwd))
-		return (errno);
+		return (-1);
 	if (!getcwd(content, PATH_MAX))
 		return (perror("getcwd"), errno);
 	tmp = ft_strjoin("PWD=", content);
 	if (!tmp)
-		return (perror("malloc"), errno);
+		return (perror("malloc"), -1);
 	free(pwd->content);
 	pwd->content = tmp;
 	return (0);

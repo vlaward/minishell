@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:56 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/05 06:49:15 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 int	dowe_write_node(char *str)
 {
@@ -45,3 +45,4 @@ int	ft_env(t_list **redirect, t_list *env, char **cmd)
 	free_args(cmd);
 	return (ft_lstclear(redirect, free_cmd), 1);
 }
+//VERIFIER L'UTILISATION DE WRITE

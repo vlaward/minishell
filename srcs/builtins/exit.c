@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:58 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/06 21:33:24 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 int	ft_ac(char **av)
 {

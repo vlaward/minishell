@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ncrombez <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/09 10:12:45 by ncrombez          #+#    #+#              #
+#    Updated: 2024/10/09 10:13:44 by ncrombez         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 include Colors.mk
 
 # Names 
@@ -43,6 +55,10 @@ test:		libs ${OBJS}
 			@$(CC) $(CFLAGS) srcs/exec/test.c -o minitest $(OBJS) $(INCS) libft/libft.a
 			valgrind --suppressions=./readline.supp --track-fds=yes --leak-check=full --trace-children=yes --track-origins=yes --show-leak-kinds=all -s -q ./minitest
 
+
+val:		libs ${OBJS}
+			make
+			valgrind --suppressions=./readline.supp --track-fds=yes --leak-check=full --trace-children=yes --track-origins=yes --show-leak-kinds=all -s -q ./minishell
 
 libs :
 	@echo "\033[1;33mBoup Bip Bip !\033[m \033[1;35m\nCompiling libs :\033[m"

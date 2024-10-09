@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/05 06:46:49 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 10:48:15 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ char	*bah_ferme_les(char *str)
 	if (!one)
 		return (add_history(str), fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\n syntax error unexpected end of file\n"), NULL);
 	if (!gere_sig(READING_LINE))
-		return (0);
+		return (NULL);
 	another_one = ft_strjoin(str, "\n");
+	if (!another_one)
+		return (free(one), NULL);
 	and_another_one = ft_strjoin(another_one, one);
 	(free(one), free(another_one), free(str));
 	return (tatu_ferme_tes_guillemets(and_another_one));

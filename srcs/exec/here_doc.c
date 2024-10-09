@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/08 15:28:55 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:39:09 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 #define SYNTAX_ERR_NL "syntax error near unexpecterd token \'newline\'"
 
 int	write_here(char *towrite)
@@ -62,7 +62,7 @@ char	*read_doc(char *limitter, t_list *env)
 	{
 		red = readline("here_doc >");
 		if (!here_doc_env(&red, env))
-			return (free(here_doc), free(limitter), 0);
+			return (free(here_doc), free(limitter), NULL);
 		if (ft_strcmp(limitter, red) == 0)
 			break ;
 		here_doc = ft_strjoin_n_free(here_doc, ft_strjoin(red, "\n"));
@@ -94,6 +94,8 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		return (free(limitter), 0);
 	cmd->in = write_here(here_doc);
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
+	if (!tmp_cmd)
+		return (free(limitter), 0);
 	(free(limitter), free(*start_cmd));
 	*start_cmd = tmp_cmd;
 	*index = start_index;

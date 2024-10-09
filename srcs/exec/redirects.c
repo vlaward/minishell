@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/08 14:40:55 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:37:42 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 //verifier si errno est bien a 0 a la base
 int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
@@ -27,7 +27,8 @@ int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
 	if (cmd->in != 0)
-		close(cmd->in);
+		if (close(cmd->in) == -1)
+			return (free(file), 0);
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
@@ -55,7 +56,8 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
 	if (cmd->out != 0)
-		close(cmd->out);
+		if (close(cmd->out) == -1)
+			return (free(file), 0);
 	fd = open(file, O_RDWR | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
@@ -83,7 +85,8 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
 	if (cmd->out != 0)
-		close(cmd->out);
+		if (close(cmd->out) == -1)
+			return (free(file), 0);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
@@ -110,18 +113,16 @@ int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	return (0);
 }
 
-void	init_redirects(t_list *cmd, t_list *env)
+int	init_redirects(t_list *cmd, t_list *env)
 {
 	int	i;
 	int	error;
-	int	tmp;
 
-	error = 0;
-	tmp = error;
 	while (cmd)
 	{
+		error = 0;
 		i = 0;
-		while (((t_cmd *)(cmd->content))->cmd && error == tmp
+		while (((t_cmd *)(cmd->content))->cmd && !error
 			&& ((t_cmd *)(cmd->content))->cmd[i])
 		{
 			if (!ft_isin_table(((t_cmd *)(cmd->content))->cmd[i], "><"))
@@ -129,12 +130,14 @@ void	init_redirects(t_list *cmd, t_list *env)
 			else
 				if (!redirects(&((t_cmd *)(cmd->content))->cmd
 					, &i, (t_cmd *)(cmd->content), env))
-					error++;
-			((t_cmd *)(cmd->content))->cmd[0] *= (error == tmp);
-			if (error != tmp)
+					error = 1;
+			((t_cmd *)(cmd->content))->cmd[0] *= !error;
+			if (error)
 				break ;
 		}
-		tmp = error;
+		if (errno & (ENOMEM | EMFILE | ENFILE | ENOSPC | EIO))
+			return (0);
 		cmd = cmd->next;
 	}
+	return (1);
 }

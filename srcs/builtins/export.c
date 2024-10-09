@@ -6,11 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:46:01 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/05 07:02:18 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minitest.h"
+#include "../../includes/minishell.h"
 
 t_list	*get_env_node(t_list *env, char *str)
 {
@@ -71,7 +71,7 @@ char	ft_isvar(char *str)
 		{
 			if (*str++ == '+' && *str == '=')
 				return ('+');
-			return (printf("cecooooo\n"), 0);
+			return (0);
 		}
 		str++;
 	}
@@ -97,7 +97,9 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 			get_env_node(env, av[i])->content = ft_strdup(av[i]);
 		else
 			if (!append_env(get_env_node(env, av[i]), av[i]))
-				return (ft_lstclear(redirect, free_cmd), free_args(av), 0);
+				return (ft_lstclear(redirect, free_cmd), free_args(av), -1);
+		if (!get_env_node(env, av[i]) || !get_env_node(env, av[i])->content)
+			return (ft_lstclear(redirect, free_cmd), free_args(av), -1);
 		i++;
 	}
 	free_args(av);

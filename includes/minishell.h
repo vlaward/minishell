@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: doreetorac <doreetorac@student.42.fr>      +#+  +:+       +#+        */
+/*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/05 06:37:01 by doreetorac       ###   ########.fr       */
+/*   Updated: 2024/10/09 11:32:56 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int			in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 char		*limit_handler(char *itterand, char *start_cmd);
 char		*trim(char **start_cmd, int *index, int flag, t_list *env);
 int			here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
-void		init_redirects(t_list *cmd, t_list *env);
+int			init_redirects(t_list *cmd, t_list *env);
 
 //signals
 
