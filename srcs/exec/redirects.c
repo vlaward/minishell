@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 17:47:34 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:29:30 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ int	init_redirects(t_list *cmd, t_list *env)
 		while (cmd && ((t_cmd *)(cmd->content))->cmd && !error
 			&& ((t_cmd *)(cmd->content))->cmd[++i])
 		{
+			i = passe_les_guillemets(((t_cmd *)(cmd->content))->cmd, i);
 			if (ft_isin_table(((t_cmd *)(cmd->content))->cmd[i], "><"))
 				if (!redirects(&((t_cmd *)(cmd->content))->cmd
 					, &i, (t_cmd *)(cmd->content), env))

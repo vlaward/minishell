@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 16:32:49 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:26:39 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,18 @@ t_list	*init_cmd(char *line, t_list *env)
 	fill_cmd(&tmp, 0, 0, 0);
 	while (line[index])
 	{
-		if (line[index] != '|')
+		index = passe_les_guillemets(line, index);
+		if (line[index] && line[index] != '|')
 			index++;
-		else
+		else if (line[index])
 			if (!ft_lstadd_front(&ret, piped_node(&tmp, &line, &index)))
 				return (perror("malloc"), free(line)
 					, ft_lstclear(&ret, free_cmd), NULL);
 	}
 	tmp.cmd = ft_strdup(line);
 	free(line);
-	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp))))
-		return (perror("malloc"), ft_lstclear(&ret, free_cmd), NULL);
-	if (!init_redirects(ret, env))
+	if (!ft_lstadd_front(&ret, ft_lstnew_content_mandatory(cmd_dup(tmp)))
+		|| !init_redirects(ret, env))
 		return (perror("malloc"), ft_lstclear(&ret, free_cmd), NULL);
 	return (ret);
 }

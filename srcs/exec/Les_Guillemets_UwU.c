@@ -6,11 +6,26 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 15:22:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:27:20 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+
+int	passe_les_guillemets(char *str, int i)
+{
+	char	tmp;
+
+	if (str[i] != '\'' && str[i] != '\'')
+		return (i);
+	tmp = str[i++];
+	while (str[i] && str[i] != tmp)
+		i++;
+	if (str[i])
+		i++;
+	return (i);
+}
 
 char	*tatu_ferme_tes_guillemets(char *str);
 

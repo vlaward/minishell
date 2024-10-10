@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 17:43:01 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:20:02 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,6 @@ int			guille_handler(char **start_cmd, int *i, int flag, t_list *env);
 int			env_handler(char **start_cmd, int *i, t_list *env);
 char		*second_readline(char *str);
 int			handle_line(char *line, t_list *env);
+int			passe_les_guillemets(char *str, int i);
 
 #endif
