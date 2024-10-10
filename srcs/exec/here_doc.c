@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 16:50:09 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:03:42 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int	write_here(char *towrite, t_cmd *cmd)
 	ret = dup(pipette[0]);
 	if (ret == -1)
 		return (free(towrite), perror("dup"), 0);
-	if (!ft_putestr_fd(towrite, pipette[1]))
+	if (ft_putestr_fd(towrite, pipette[1]) == -1)
 		return (free(towrite), 0);
-	if (!ft_putechar_fd('\0', pipette[1]))
+	if (ft_putechar_fd('\0', pipette[1]) == -1)
 		return (free(towrite), 0);
 	free(towrite);
 	if (close(pipette[0]) == -1 || close(pipette[1]) == -1)
@@ -100,7 +100,7 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (limit == NULL)
 		return (0);
 	here_doc = read_doc(limit, env, cmd);
-	if (here_doc != NULL)
+	if (!here_doc)
 		return (free(limit), 0);
 	cmd->in = write_here(here_doc, cmd);
 	if (cmd->in == 0)
