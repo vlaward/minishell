@@ -77,7 +77,7 @@ fclean:
 			@echo "${MSG_RMV}${OBJS_PATH}*"
 			@rm -rf ${NAME}
 			@echo "${MSG_RMV}${NAME}"
-			@make clean --no-print-directory -C libft
+			@make fclean --no-print-directory -C libft
 #			@echo "\033[1;32mEvrything's clean now 0w0\
 
 re:			

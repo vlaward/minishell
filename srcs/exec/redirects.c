@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 16:33:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:47:34 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (cmd->out != 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
-	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 664);
+	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
 	cmd->out = fd;
@@ -84,7 +84,7 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (cmd->out != 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
-	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 664);
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC,  0644);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
 	cmd->out = fd;
