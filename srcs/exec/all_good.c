@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:31:14 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/06 23:10:47 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:16:36 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ int	verif_tokken(char *line)
 		if (tokkened)
 			if (ft_isin_table(*line, "<>|")
 				&& !(*line != '|' && tokkened == '|'))
-				return (fprintf(stderr
-						, "minishell: syntax errror near unexpected tokken \'%c\'\n"
-						, *line), 0);
+				return (syntax_error(line), 0);
 		if (!ft_iswhitespace(*line))
 			tokkened = ft_isin_table(*line, "<>|") * *line;
 		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
@@ -32,8 +30,7 @@ int	verif_tokken(char *line)
 		line++;
 	}
 	if (tokkened && tokkened != '|')
-		return (fprintf(stderr
-				, "minishell: syntax errror near unexpected tokken 'newline'\n"), 0);
+		return (syntax_error(NULL), 0);
 	return (1);
 }
 

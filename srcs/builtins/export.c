@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:46:01 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:06:49 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,7 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 		type = ft_isvar(av[i]);
 		if (!type)
 			return (ft_lstclear(redirect, free_cmd)
-				, printf("export: \'%s\': not a valid identifier\n", av[i])
-				, free_args(av), 1);
+				, export_error(av[i]), free_args(av), 1);
 		if (type == '=')
 			get_env_node(env, av[i])->content = ft_strdup(av[i]);
 		else
@@ -104,5 +103,5 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 	}
 	free_args(av);
 	(void)redirects;
-	return (ft_lstclear(redirect, free_cmd), 1);
+	return (ft_lstclear(redirect, free_cmd), 0);
 }

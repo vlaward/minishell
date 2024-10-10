@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:44:35 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:32:49 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static t_cmd	*cmd_dup(t_cmd cmd)
 	ret->in = cmd.in;
 	ret->out = cmd.out;
 	ret->has_pipe = cmd.has_pipe;
+	ret->here_doc = 0;
+	ret->here_doc_number = 0;
 	return (ret);
 }
 

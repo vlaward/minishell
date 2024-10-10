@@ -6,25 +6,29 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:26:56 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 16:03:47 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:50:09 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #define SYNTAX_ERR_NL "syntax error near unexpecterd token \'newline\'"
 
-int	write_here(char *towrite)
+int	write_here(char *towrite, t_cmd *cmd)
 {
 	int	pipette[2];
 	int	ret;
 
+	if (cmd->in && close(cmd->in) == -1)
+		return (0);
 	if (pipe(pipette) == -1)
 		return (free(towrite), perror("pipe"), 0);
 	ret = dup(pipette[0]);
 	if (ret == -1)
 		return (free(towrite), perror("dup"), 0);
 	if (!ft_putestr_fd(towrite, pipette[1]))
-		return (0);
+		return (free(towrite), 0);
+	if (!ft_putechar_fd('\0', pipette[1]))
+		return (free(towrite), 0);
 	free(towrite);
 	if (close(pipette[0]) == -1 || close(pipette[1]) == -1)
 		return (0);
@@ -52,14 +56,14 @@ int	here_doc_env(char **red, t_list *env)
 	return (1);
 }
 
-char	*read_doc(char *limitter, t_list *env)
+char	*read_doc(char *limitter, t_list *env, t_cmd *cmd)
 {
 	char	*red;
 	char	*here_doc;
 
 	red = NULL;
 	here_doc = NULL;
-	while (1)
+	while (1 && cmd->here_doc_number <= 16)
 	{
 		red = second_readline("here_doc >");
 		if (!red)
@@ -95,12 +99,12 @@ int	here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 			ft_putestr_fd(SYNTAX_ERR_NL, STDERR_FILENO);
 	if (limit == NULL)
 		return (0);
-	here_doc = read_doc(limit, env);
-	if (!here_doc)
+	here_doc = read_doc(limit, env, cmd);
+	if (here_doc != NULL)
 		return (free(limit), 0);
-	cmd->in = write_here(here_doc);
+	cmd->in = write_here(here_doc, cmd);
 	if (cmd->in == 0)
-		return (free(limit), 0);
+		return (free(limit), free(here_doc), 0);
 	tmp_cmd = ft_strjoin(*start_cmd, &(*start_cmd)[*index]);
 	if (!tmp_cmd)
 		return (free(limit), 0);

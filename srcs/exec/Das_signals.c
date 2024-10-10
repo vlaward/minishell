@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:21:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 14:11:33 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:08:42 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	g_sig_catcher;
 void	sa_c_handler(int sig)
 {
 	g_sig_catcher = sig;
-	printf("\n");
+	ft_putechar('\n');
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();

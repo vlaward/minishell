@@ -6,26 +6,11 @@ legende :
 [X] = Fait
 
 Ce qu il reste a faire !
--le $?				(check : [~])<-deux trois codes d'erreures a gerer
--verifer les free	(check : [~])<-deux trois cas particuliers
-
-
+-le $?				(check : [x])
+-verifer les free	(check : [X])
 
 Primaire
-#	-faire comme pour la pipe si il n'y a rien deriere un redirect
-#		-si il y a des guillemets derriere il faut quand meme expand    APAREMENT MAINTENANT NON POUR UNE RAISON QUI M'ECHAPPE :DDDDDDD AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH
-	-refaire les codes d'erreur des opens. ex "chmod test && cat < test"
-	-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
-	-update les define, mettre un define pour les flags de open
-	-remplacer TOUT les printfs
-	-si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access
-
-secondaire :
-
-	-mettre toutes l;es foncitons en static.
-	--TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
-		|--> faire des "inline" fonction ^^
-	
+	-si 'environement est plus gros quye la taille donne quand tu lance ston bahs que nique sa mere. 
 
 ====================================
 
@@ -45,6 +30,9 @@ branchs list normalement :
 notes :
 -les getenv, pas besoin de les free pars ce que ca pointe vers un endroit dans la memoire deja
 -perrror regle beaucoup de probleme 
+--TROP CHIANT ! On peu pas utiliser des define (je voulais faire un define pour recup[erer le contenus d'une node directement sans la cast et tout mais interdit])
+	|--> faire des "inline" fonction ^^
+
 
 =======================================
 
@@ -106,3 +94,8 @@ REMEMBER : J'en suis a verifier les erreur dans redirects. En train de verifier 
 -n'importe quel redirect avec des guillemets ne marche pas 
 	-'printf("%u\n", index);
 		' ne marche pas
+-update les define, mettre un define pour les flags de open
+-remplacer TOUT les printfs
+-mettre toutes l;es foncitons en static.
+-modifier les putestr/ft_putechar etc.... pour qu'il retroune mauvais si jamais il y a une error de write.
+-Donc si acess me dit oui, mais que exec me dit non. C'est pas le meme code d'erreur ! Voila pourquoi access

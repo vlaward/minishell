@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 14:34:27 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:32:28 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ typedef struct s_cmd
 	int		in;
 	int		out;
 	int		has_pipe;
+	int		here_doc;
+	int		here_doc_number;
 	char	*cmd;
 }	t_cmd;
 
@@ -80,6 +82,8 @@ char		*limit_handler(char *itterand, char *start_cmd);
 char		*trim(char **start_cmd, int *index, int flag, t_list *env);
 int			here_doc(char **start_cmd, int *index, t_cmd *cmd, t_list *env);
 int			init_redirects(t_list *cmd, t_list *env);
+int			cmd_hdoc_only_case(t_cmd *cmd, char **line);
+char		*cmd_redirects(t_list *cmd);
 
 //signals
 
@@ -98,6 +102,9 @@ t_builtin	ft_builtins(char *str);
 //errors
 
 int			big_error(void);
+void		export_error(char *str);
+void		syntax_error(char *str);
+void		guille_error(void);
 
 //memory
 
@@ -113,5 +120,6 @@ int			execute_cmd(char **args, t_list *env);
 int			guille_handler(char **start_cmd, int *i, int flag, t_list *env);
 int			env_handler(char **start_cmd, int *i, t_list *env);
 char		*second_readline(char *str);
+int			handle_line(char *line, t_list *env);
 
 #endif

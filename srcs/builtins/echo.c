@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:53 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 14:36:15 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,14 @@ int	ft_echo(t_list **redirect, t_list *env, char **cmd)
 	{
 		if (ft_putestr_fd(*(cmd++), isout) == -1)
 			return (ft_lstclear(redirect, free_cmd)
-				, perror("write"), free_args(cmd), errno);
+				, perror("write"), free_args(tmp), errno);
 		if (cmd != tmp)
 			if (ft_putechar_fd(' ', isout) == -1)
 				return (ft_lstclear(redirect, free_cmd)
-					, perror("write"), free_args(cmd), errno);
+					, perror("write"), free_args(tmp), errno);
 	}
 	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
 		return (ft_lstclear(redirect, free_cmd)
-			, perror("write"), free_args(cmd), errno);
+			, perror("write"), free_args(tmp), errno);
 	return (free_args(tmp), (void)env, ft_lstclear(redirect, free_cmd), 0);
 }
-//VERIFIER L'UTILISATION DE WRITE

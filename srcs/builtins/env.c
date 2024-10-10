@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:56 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 14:37:00 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	ft_env(t_list **redirect, t_list *env, char **cmd)
 		{
 			if (ft_putestr_fd(env->content, isout) == -1)
 				return (ft_lstclear(redirect, free_cmd)
-					, perror("write"), free_args(cmd), 0);
+					, perror("write"), free_args(cmd), errno);
 			if (ft_putechar_fd('\n', isout) == -1)
 				return (ft_lstclear(redirect, free_cmd)
-					, perror("write"), free_args(cmd), 0);
+					, perror("write"), free_args(cmd), errno);
 		}
 		env = env->next;
 	}

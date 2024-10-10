@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 18:27:37 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:33:53 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (cmd->out != 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
-	fd = open(file, O_RDWR | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 664);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
 	cmd->out = fd;
@@ -84,7 +84,7 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (cmd->out != 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
-	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 664);
 	if (fd == -1)
 		return (perror("open"), free(file), 0);
 	cmd->out = fd;
@@ -102,9 +102,16 @@ int	redirects(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (ft_strncmp(&(*start_cmd)[*index], ">>", 2) == 0)
 		return (append_handler(start_cmd, index, cmd, env));
 	if (ft_strncmp(&(*start_cmd)[*index], "<<", 2) == 0)
+	{
+		cmd->here_doc = 1;
+		cmd->here_doc_number++;
 		return (here_doc(start_cmd, index, cmd, env));
+	}
 	if (ft_strncmp(&(*start_cmd)[*index], "<", 1) == 0)
+	{
+		cmd->here_doc = 0;
 		return (in_handler(start_cmd, index, cmd, env));
+	}
 	if (ft_strncmp(&(*start_cmd)[*index], ">", 1) == 0)
 		return (out_handler(start_cmd, index, cmd, env));
 	return (0);

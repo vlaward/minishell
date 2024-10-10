@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 18:22:32 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:22:53 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*bah_ferme_les(char *str)
 	if (!one)
 	{
 		if (g_sig_catcher != SIGINT)
-			return (add_history(str), fprintf(stderr, "unexpected EOF while lookink for matching `\'\'\nsyntax error unexpected end of file\n"), NULL);
+			return (add_history(str), guille_error(), NULL);
 		return (add_history(str), NULL);
 	}
 	another_one = ft_strjoin(str, "\n");
@@ -62,7 +62,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	if (*itterand == '|')
 	{
 		add_history(str);
-		return (fprintf(stderr, "syntax error near unexpected token \'|\'\n"), free(str), NULL);
+		return (syntax_error(itterand), free(str), NULL);
 	}
 	return (str);
 }
