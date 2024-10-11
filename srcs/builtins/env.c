@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:56 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 14:37:00 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:24:40 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ft_env(t_list **redirect, t_list *env, char **cmd)
 	int	isout;
 
 	isout = STDOUT_FILENO;
-	if (redirect)
+	if (redirect && ((t_cmd *)((*redirect)->content))->out)
 		isout = ((t_cmd *)((*redirect)->content))->out;
 	while (env)
 	{

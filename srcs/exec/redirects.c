@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:40:57 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 18:29:30 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:47:05 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	in_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
-	if (cmd->in != 0)
+	if (cmd->in > 0)
 		if (close(cmd->in) == -1)
 			return (free(file), 0);
 	fd = open(file, O_RDONLY);
@@ -53,7 +53,7 @@ int	append_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
-	if (cmd->out != 0)
+	if (cmd->out > 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
 	fd = open(file, O_RDWR | O_APPEND | O_CREAT, 0644);
@@ -81,7 +81,7 @@ int	out_handler(char **start_cmd, int *index, t_cmd *cmd, t_list *env)
 	if (file == NULL)
 		return (ft_putestr_fd(": : No such file or directory\n"
 				, STDERR_FILENO), 0);
-	if (cmd->out != 0)
+	if (cmd->out > 0)
 		if (close(cmd->out) == -1)
 			return (free(file), 0);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC,  0644);

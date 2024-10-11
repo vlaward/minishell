@@ -6,13 +6,20 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 16:00:02 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 16:04:10 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 18:19:40 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 static int	start(t_list **cmd, t_list *env);
+
+int	is_empty(char *str)
+{
+	while (ft_iswhitespace(*str))
+		str++;
+	return (*str == '\0');
+}
 
 static int	fork_thing(t_list *cmd, t_list *env)
 {
@@ -37,6 +44,8 @@ static int	fork_thing(t_list *cmd, t_list *env)
 	ft_lstclear(&(cmd->next), free_cmd);
 	dup2(pipette[1], STDOUT_FILENO);
 	(close(pipette[1]), close(pipette[0]));
+	if (is_empty(((t_cmd *)((cmd)->content))->cmd))
+		(ft_lstclear(&cmd, free_cmd), ft_lstclear(&env, free), exit(1));
 	splited_cmd = ft_minisplit(cmd_redirects(cmd), env);
 	exit(execute_cmd(splited_cmd, env));
 }
@@ -67,6 +76,8 @@ static int	start(t_list **cmd, t_list *env)
 {
 	char	**splited_cmd;
 
+	if (big_error())
+		return (ft_lstclear(cmd, free_cmd), -1);
 	if ((*cmd)->next)
 		return (fork_thing(*cmd, env));
 	if (!((t_cmd *)((*cmd)->content))->has_pipe)
@@ -74,10 +85,14 @@ static int	start(t_list **cmd, t_list *env)
 			return (ft_builtins(((t_cmd *)((*cmd)->content))->cmd)(cmd, env
 				, ft_minisplit(ft_strdup(((t_cmd *)((*cmd)->content))->cmd)
 					, env)));
+	if (big_error() && ((t_cmd *)((*cmd)->content))->has_pipe)
+		(ft_lstclear(cmd, free_cmd), ft_lstclear(&env, free), exit(errno));
 	if (big_error())
 		return (ft_lstclear(cmd, free_cmd), -1);
 	if (fork())
 		return (ft_lstclear(cmd, free_cmd), go_back_to_main(env));
+	if (is_empty(((t_cmd *)((*cmd)->content))->cmd))
+		(ft_lstclear(cmd, free_cmd), ft_lstclear(&env, free), exit(1));
 	close(TTY_SAVED_FD);
 	splited_cmd = ft_minisplit(cmd_redirects(*cmd), env);
 	exit(execute_cmd(splited_cmd, env));

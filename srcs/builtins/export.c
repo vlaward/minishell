@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:46:01 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 15:06:49 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:56:24 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,20 @@ int	append_env(t_list *node, char *str)
 char	ft_isvar(char *str)
 {
 	if (!ft_isalpha(*str++))
-		return (0);
+		return (-1);
 	while (*str && *str != '=')
 	{
 		if (!ft_isalnum(*str))
 		{
 			if (*str++ == '+' && *str == '=')
 				return ('+');
-			return (0);
+			return (-1);
 		}
 		str++;
 	}
-	return ('=');
+	if (*str)
+		return ('=');
+	return (0);
 }
 
 int	ft_export(t_list **redirect, t_list *env, char **av)
@@ -89,9 +91,9 @@ int	ft_export(t_list **redirect, t_list *env, char **av)
 	while (av[i])
 	{
 		type = ft_isvar(av[i]);
-		if (!type)
+		if (type <= 0)
 			return (ft_lstclear(redirect, free_cmd)
-				, export_error(av[i]), free_args(av), 1);
+				, export_error(av[i], type), free_args(av), type == -1);
 		if (type == '=')
 			get_env_node(env, av[i])->content = ft_strdup(av[i]);
 		else

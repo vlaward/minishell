@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 15:19:26 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 18:25:53 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ static char	**env_to_tabl(t_list *env)
 
 static void	access_error(char *file, int flag)
 {
-	if (ft_putestr_fd("minishell: ", STDERR_FILENO) == -1)
+	if (ft_putestr_fd("minishell: ", STDERR_FILENO) == -1
+		|| ft_putestr_fd(file, STDERR_FILENO) == -1
+		|| ft_putestr_fd(": ", STDERR_FILENO) == -1)
 		perror("write");
 	if (flag == ACCESS_F)
 		if (ft_putestr_fd(strerror(errno), STDERR_FILENO) == -1)
@@ -41,9 +43,7 @@ static void	access_error(char *file, int flag)
 	if (flag != ACCESS_F)
 		if (ft_putestr_fd("command not found", STDERR_FILENO) == -1)
 			perror("write");
-	if (ft_putestr_fd(": ", STDERR_FILENO) == -1
-		|| ft_putestr_fd(file, STDERR_FILENO) == -1
-		|| ft_putechar_fd('\n', STDERR_FILENO) == -1)
+	if (ft_putechar_fd('\n', STDERR_FILENO) == -1)
 		perror("write");
 }
 

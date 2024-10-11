@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:39:58 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/09 18:27:37 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:44:05 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@ int	env_handler(char **start_cmd, int *i, t_list *env)
 	char	*tmp;
 
 	j = *i;
-	while ((*start_cmd)[++j] && !ft_isin_table((*start_cmd)[j], " <>|$\'\""))
-		(*start_cmd)[j - 1] = (*start_cmd)[j];
+	j += 2 * ((*start_cmd)[j + 1] == '?');
+	if (j == *i + 2)
+		(*start_cmd)[*i] = '?';
+	else
+		while ((*start_cmd)[++j] && !ft_isin_table((*start_cmd)[j], " <>|$\'\""))
+			(*start_cmd)[j - 1] = (*start_cmd)[j];
 	if (j == *i + 1)
 		return (++(*i));
 	(*start_cmd)[j - 1] = '\0';
@@ -41,7 +45,7 @@ int	guille_handler(char **start_cmd, int *i, int flag, t_list *env)
 	int		j;
 	char	*tmp;
 
-	j = *i + 1;
+	j = (*i) + 1;
 	while ((*start_cmd)[j] && (*start_cmd)[j] != (*start_cmd)[*i])
 	{
 		if (flag != H_DOC_TRIM

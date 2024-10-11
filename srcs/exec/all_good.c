@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:31:14 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 15:16:36 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 13:12:16 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,30 @@
 
 int	verif_tokken(char *line)
 {
-	int	tokkened;
+	int		tokkened;
+	char	tmp;
 
 	tokkened = 0;
+	tmp = 0;
 	while (*line)
 	{
-		if (tokkened)
+		if (*line == '\'' || *line == '\"')
+			tmp = *line++;
+		if (tmp == '\'' || tmp == '\"')
+			while (*line && *line != tmp)
+				line++;
+		else if (tokkened)
 			if (ft_isin_table(*line, "<>|")
 				&& !(*line != '|' && tokkened == '|'))
 				return (syntax_error(line), 0);
 		if (!ft_iswhitespace(*line))
 			tokkened = ft_isin_table(*line, "<>|") * *line;
-		if (*(line + 1) == *line && (*line == '>' || *line == '<'))
+		if (*line && *(line + 1) == *line && (*line == '>' || *line == '<'))
 			line++;
-		line++;
+		line += (*line != '\0');
 	}
 	if (tokkened && tokkened != '|')
 		return (syntax_error(NULL), 0);
 	return (1);
 }
 
-int	all_good(char *line, t_list *env)
-{
-	int		index;
-
-	index = 0;
-	if (!verif_tokken(line))
-		return (0);
-	while (line[index])
-	{
-		if (line[index] == '>' || line[index] == '<')
-			if (!redirects(&line, &index, 0, env))
-				return (free(line), 0);
-		if (line[index] != '\0')
-			index++;
-	}
-	free(line);
-	return (1);
-}

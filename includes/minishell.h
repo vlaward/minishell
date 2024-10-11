@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 18:20:02 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:51:40 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ t_builtin	ft_builtins(char *str);
 //errors
 
 int			big_error(void);
-void		export_error(char *str);
+void		export_error(char *str, int i);
 void		syntax_error(char *str);
 void		guille_error(void);
 

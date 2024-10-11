@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 18:27:20 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:13:49 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	passe_les_guillemets(char *str, int i)
 {
 	char	tmp;
 
-	if (str[i] != '\'' && str[i] != '\'')
+	if (str[i] != '\"' && str[i] != '\'')
 		return (i);
 	tmp = str[i++];
 	while (str[i] && str[i] != tmp)

@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:46:08 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 11:34:13 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:56:48 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,5 @@ int	ft_unset(t_list **redirect, t_list *env, char **av)
 		}
 	}
 	free_args(av);
-	return (ft_lstclear(redirect, free_cmd), 1);
+	return (ft_lstclear(redirect, free_cmd), 0);
 }
