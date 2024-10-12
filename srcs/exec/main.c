@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 02:52:18 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/12 16:12:14 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:26:23 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	main_loop(char *line, t_list *env)
 	{
 		free(line);
 		line = NULL;
-		if (!change_qm(g_sig_catcher, env))
+		if (!change_qm(2, env))
 			return (0);
 	}
 	line = tatu_ferme_tes_guillemets(line, env);

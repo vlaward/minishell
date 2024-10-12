@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/12 16:12:31 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:35:27 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ char	*et_le_pipe(char *str, char *itterand, t_list *env)
 	if (*itterand == '|')
 	{
 		add_history(str);
+		change_qm(2, env);
 		return (syntax_error(itterand), free(str), NULL);
 	}
 	return (str);

@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:17:49 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/12 16:16:19 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:35:37 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ t_list	*init_cmd(char *line, t_list *env)
 	t_list	*ret;
 	t_cmd	tmp;
 
-	if (!verif_tokken(line) && !change_qm(2, env))
-		return (NULL);
+	if (!verif_tokken(line))
+		return (change_qm(2, env), NULL);
 	index = 0;
 	ret = NULL;
 	fill_cmd(&tmp, 0, 0, 0);
