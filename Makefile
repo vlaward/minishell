@@ -81,11 +81,8 @@ fclean:
 #			@echo "\033[1;32mEvrything's clean now 0w0\
 
 re:			
-			@rm -rf ${OBJS_PATH}
-			@echo "${MSG_RMV}${OBJS_PATH}*"
-			@rm -rf ${NAME}
-			@echo "${MSG_RMV}${NAME}"
-			@make -s
+			@make fclean
+			@make 
 
 panda:
 			@echo "${PANDA}"
