@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:23:40 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/11 12:51:40 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:10:24 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # define READING_LINE 1
 # define EXECUTING_CMD 2
 # define GUILLEMETS 3
+# define QUITE_CORE 4
 # define TTY_SAVED_FD 3
 # define MIN_ENV_SIZE 3
 
@@ -69,8 +70,9 @@ char		*ft_getenv(const char *name, t_list *env);
 
 //verif
 
-char		*tatu_ferme_tes_guillemets(char *str);
+char		*tatu_ferme_tes_guillemets(char *str, t_list *env);
 int			verif_tokken(char *line);
+int			started_by_pipe(char *line);
 
 //redirects
 
@@ -105,6 +107,7 @@ int			big_error(void);
 void		export_error(char *str, int i);
 void		syntax_error(char *str);
 void		guille_error(void);
+void		execve_error(char *file);
 
 //memory
 
@@ -122,5 +125,7 @@ int			env_handler(char **start_cmd, int *i, t_list *env);
 char		*second_readline(char *str);
 int			handle_line(char *line, t_list *env);
 int			passe_les_guillemets(char *str, int i);
+int			is_empty(char *str);
+int			change_qm(int i, t_list *env);
 
 #endif

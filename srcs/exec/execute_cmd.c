@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:36:05 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/11 18:25:53 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:15:17 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,33 +47,33 @@ static void	access_error(char *file, int flag)
 		perror("write");
 }
 
-static void	launch_executable(char **args, char **tabl_env, char **paths)
+static int	launch_executable(char **args, char **tabl_env, char **paths)
 {
 	int		i;
 	char	*tmp;
 
-	if (*(args[0]) == '.' || !ft_strncmp(args[0], "/", 1))
-	{
-		if (access(args[0], F_OK) == -1 || access(args[0], X_OK) == -1)
-			return (free_args(paths), access_error(args[0], ACCESS_F));
-		execve(args[0], args, tabl_env);
-		return ;
-	}
+	if (*(args[0]) == '.' || *(args[0]) == '/')
+		if (access(args[0], F_OK) == -1)
+			return (free_args(paths), access_error(args[0], ACCESS_F), 1);
+	if (*(args[0]) == '.' || *(args[0]) == '/')
+		if (execve(args[0], args, tabl_env) == -1)
+			return (free_args(paths), execve_error(args[0]), 0);
 	if (!paths)
-		return (free_args(paths), access_error(args[0], 0));
+		return (free_args(paths), access_error(args[0], 0), errno - 126);
 	tmp = ft_strjoin("/", args[0]);
 	if (!tmp)
-		return (free_args(paths), free(paths));
+		return (free_args(paths), free(paths), errno - 126);
 	i = 0;
 	while (paths[i] != NULL)
 	{
 		free(args[0]);
 		args[0] = ft_strjoin(paths[i++], tmp);
-		if (!access(args[0], F_OK) && access(args[0], X_OK) == -1)
-			return (free(tmp), free_args(paths), access_error(*args, 1));
-		execve(args[0], args, tabl_env);
+		if (!args[0])
+			return (free(tmp), free_args(paths), errno - 126);
+		if (!access(args[0], F_OK) && execve(args[0], args, tabl_env))
+			return (free(tmp), free_args(paths), execve_error(args[0]), 0);
 	}
-	return (free_args(paths), free(tmp), access_error(args[0], 0));
+	return (free_args(paths), free(tmp), access_error(args[0], 0), 1);
 }
 
 int	execute_cmd(char **args, t_list *env)
@@ -82,23 +82,22 @@ int	execute_cmd(char **args, t_list *env)
 	int		ret;
 
 	ret = 0;
+	close(TTY_SAVED_FD);
 	if (args && *args != NULL && !ft_builtins(args[0]))
 	{
-		close(TTY_SAVED_FD);
 		tabl_env = env_to_tabl(env);
 		if (tabl_env)
 		{
-			launch_executable(args, tabl_env,
-				ft_split(ft_getenv("PATH", env), ':'));
-			(free(tabl_env), free_args(args), close(TTY_SAVED_FD));
+			ret = 126 + launch_executable(args, tabl_env,
+					ft_split(ft_getenv("PATH", env), ':'));
+			(free(tabl_env), free_args(args));
 			ft_lstclear(&env, free);
-			exit(127);
+			exit(ret);
 		}
 		(perror("malloc"), free_args(args));
 	}
 	else if (args && *args != NULL)
 		ret = ft_builtins(args[0])(NULL, env, args);
-	close(TTY_SAVED_FD);
 	ft_lstclear(&env, free);
 	if (errno)
 		exit(errno);

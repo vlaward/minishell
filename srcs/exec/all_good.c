@@ -6,11 +6,20 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:31:14 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/11 13:12:16 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:13:43 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int	started_by_pipe(char *line)
+{
+	while (*line && ft_iswhitespace(*line))
+		line++;
+	if (*line == '|')
+		return (syntax_error(line), 1);
+	return (0);
+}
 
 int	verif_tokken(char *line)
 {
@@ -40,4 +49,3 @@ int	verif_tokken(char *line)
 		return (syntax_error(NULL), 0);
 	return (1);
 }
-

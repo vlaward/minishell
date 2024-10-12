@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 08:06:20 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/09 16:22:54 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 14:03:58 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static int	add_to_list(char **line, int *index, t_list *env, t_list **wbr)
 		if (!increment_atl(&str, &i, env, witch))
 			return (0);
 	*line = str;
+	if (i - *index == 0 && !witch)
+		return (1);
 	content = ft_strndup(&str[*index], i - *index);
 	if (i - *index == 0)
 		content = ft_strdup("\0");
@@ -73,10 +75,14 @@ char	**ft_minisplit(char	*str, t_list *env)
 		return (NULL);
 	will_be_ret = NULL;
 	i = -1;
-	while ((str)[++i])
+	while (str[++i])
+	{
 		if (!ft_iswhitespace((str)[i]) && (str)[i] != '\n')
 			if (!add_to_list(&str, &i, env, &will_be_ret))
 				return (free(str), perror("malloc"), NULL);
+		if (!str[i])
+			break ;
+	}
 	if (!will_be_ret)
 		return (free(str), NULL);
 	ret = ft_calloc(ft_lstsize(will_be_ret) + 1, sizeof(char *));
@@ -85,7 +91,5 @@ char	**ft_minisplit(char	*str, t_list *env)
 	i = -1;
 	while (ft_lstnodi(&will_be_ret, ++i))
 		ret[i] = ft_lstnodi(&will_be_ret, i)->content;
-	ft_lstclear(&will_be_ret, NULL);
-	free(str);
-	return (ret);
+	return (ft_lstclear(&will_be_ret, NULL), free(str), ret);
 }

@@ -6,12 +6,11 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:12:59 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/11 12:13:49 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:12:31 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 int	passe_les_guillemets(char *str, int i)
 {
@@ -27,7 +26,7 @@ int	passe_les_guillemets(char *str, int i)
 	return (i);
 }
 
-char	*tatu_ferme_tes_guillemets(char *str);
+char	*tatu_ferme_tes_guillemets(char *str, t_list *env);
 
 char	*second_readline(char *str)
 {
@@ -44,7 +43,7 @@ char	*second_readline(char *str)
 	return (red);
 }
 
-char	*bah_ferme_les(char *str)
+char	*bah_ferme_les(char *str, t_list *env)
 {
 	char	*one;
 	char	*another_one;
@@ -62,10 +61,10 @@ char	*bah_ferme_les(char *str)
 		return (free(one), NULL);
 	and_another_one = ft_strjoin(another_one, one);
 	(free(one), free(another_one), free(str));
-	return (tatu_ferme_tes_guillemets(and_another_one));
+	return (tatu_ferme_tes_guillemets(and_another_one, env));
 }
 
-char	*et_le_pipe(char *str, char *itterand)
+char	*et_le_pipe(char *str, char *itterand, t_list *env)
 {
 	if (*itterand != '|')
 		return (str);
@@ -73,7 +72,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	while (*itterand && (ft_iswhitespace(*itterand) || *itterand == '\n'))
 		itterand++;
 	if (*itterand == '\0')
-		return (bah_ferme_les(str));
+		return (bah_ferme_les(str, env));
 	if (*itterand == '|')
 	{
 		add_history(str);
@@ -82,7 +81,7 @@ char	*et_le_pipe(char *str, char *itterand)
 	return (str);
 }
 
-char	*tatu_ferme_tes_guillemets(char *str)
+char	*tatu_ferme_tes_guillemets(char *str, t_list *env)
 {
 	char	*voyage;
 	char	this_one;
@@ -95,7 +94,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 	voyage = str;
 	while (*voyage)
 	{
-		pipe_good = et_le_pipe(str, voyage);
+		pipe_good = et_le_pipe(str, voyage, env);
 		if (pipe_good != str)
 			return (pipe_good);
 		if (*voyage == '\"' || *voyage == '\'')
@@ -104,7 +103,7 @@ char	*tatu_ferme_tes_guillemets(char *str)
 			while (*voyage && *(voyage + 1) != 0 && *voyage != this_one)
 				voyage++;
 			if (*voyage != this_one)
-				return (bah_ferme_les(str));
+				return (bah_ferme_les(str, env));
 		}
 		voyage++;
 	}

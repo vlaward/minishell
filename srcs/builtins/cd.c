@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:43:07 by doreetorac        #+#    #+#             */
-/*   Updated: 2024/10/10 15:20:34 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 14:32:10 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	change_pwd(t_list *env)
 	if (!oldpwd_updater(env, pwd))
 		return (-1);
 	if (!getcwd(content, PATH_MAX))
-		return (perror("getcwd"), errno);
+		return (perror("getcwd"), 1);
 	tmp = ft_strjoin("PWD=", content);
 	if (!tmp)
 		return (perror("malloc"), -1);

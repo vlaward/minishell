@@ -6,7 +6,7 @@
 /*   By: ncrombez <ncrombez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 06:45:53 by ncrombez          #+#    #+#             */
-/*   Updated: 2024/10/10 18:13:03 by ncrombez         ###   ########.fr       */
+/*   Updated: 2024/10/12 14:32:51 by ncrombez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ int	ft_echo(t_list **redirect, t_list *env, char **cmd)
 	{
 		if (ft_putestr_fd(*(cmd++), isout) == -1)
 			return (ft_lstclear(redirect, free_cmd)
-				, perror("write"), free_args(tmp), errno);
+				, perror("write"), free_args(tmp), 1);
 		if (*cmd)
 			if (ft_putechar_fd(' ', isout) == -1)
 				return (ft_lstclear(redirect, free_cmd)
-					, perror("write"), free_args(tmp), errno);
+					, perror("write"), free_args(tmp), 1);
 	}
 	if (ft_putechar_fd('\n' * bkslsh_n, isout) == -1)
 		return (ft_lstclear(redirect, free_cmd)
-			, perror("write"), free_args(tmp), errno);
+			, perror("write"), free_args(tmp), 1);
 	return (free_args(tmp), (void)env, ft_lstclear(redirect, free_cmd), 0);
 }
